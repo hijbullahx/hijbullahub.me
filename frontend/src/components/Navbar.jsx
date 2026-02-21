@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { NavLink, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useTheme } from "../contexts/ThemeContext";
 
 const links = [
   ["/", "Home"],
@@ -12,6 +13,7 @@ const links = [
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,13 +33,17 @@ export default function Navbar() {
       transition={{ duration: 0.8, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
         scrolled
-          ? "backdrop-blur-3xl bg-dark-base/98 shadow-2xl shadow-primary-cyan/10"
-          : "backdrop-blur-xl bg-dark-base/60"
-      }`}
+          ? "backdrop-blur-3xl shadow-2xl shadow-primary-cyan/10"
+          : "backdrop-blur-xl"
+      } ${theme === 'dark' ? 'bg-dark-base/98 dark:bg-dark-base/98' : 'bg-white/95 light:bg-white/95'}`}
       style={{
         borderBottom: scrolled 
-          ? '1px solid rgba(34, 211, 238, 0.3)' 
-          : '1px solid rgba(255, 255, 255, 0.05)',
+          ? theme === 'dark' 
+            ? '1px solid rgba(34, 211, 238, 0.3)' 
+            : '1px solid rgba(34, 211, 238, 0.2)'
+          : theme === 'dark'
+            ? '1px solid rgba(255, 255, 255, 0.05)'
+            : '1px solid rgba(0, 0, 0, 0.1)',
       }}
     >
       {/* Animated moving gradient background */}
@@ -233,7 +239,9 @@ export default function Navbar() {
                     className={`relative text-base font-bold tracking-widest uppercase transition-all duration-300 ${
                       isActive
                         ? "text-transparent bg-clip-text"
-                        : "text-slate-200 group-hover:text-white"
+                        : theme === 'dark' 
+                          ? "text-slate-200 group-hover:text-white"
+                          : "text-slate-700 group-hover:text-slate-900"
                     }`}
                     style={isActive ? {
                       backgroundImage: 'linear-gradient(90deg, #22d3ee, #10b981)',
@@ -323,6 +331,91 @@ export default function Navbar() {
             </NavLink>
           ))}
 
+          {/* Theme Toggle Button */}
+          <motion.button
+            onClick={toggleTheme}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ 
+              delay: links.length * 0.1 + 0.05, 
+              duration: 0.5,
+              scale: {
+                type: "spring",
+                stiffness: 400,
+                damping: 10
+              }
+            }}
+            className="relative group px-4 py-2.5 text-2xl"
+            aria-label="Toggle theme"
+          >
+            {/* Robotic frame background with sharp edges */}
+            <motion.div 
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300"
+              style={{
+                background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.15), rgba(16, 185, 129, 0.15))',
+                clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
+                border: '1px solid rgba(34, 211, 238, 0)',
+                boxShadow: '0 0 0 rgba(34, 211, 238, 0)',
+              }}
+              whileHover={{
+                border: '1px solid rgba(34, 211, 238, 0.5)',
+                boxShadow: '0 0 20px rgba(34, 211, 238, 0.4), inset 0 0 20px rgba(16, 185, 129, 0.1)',
+              }}
+            />
+
+            {/* Corner brackets */}
+            <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-cyan-500 opacity-40 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-emerald-500 opacity-40 group-hover:opacity-100 transition-opacity duration-300" />
+            
+            {/* Scan line effect */}
+            <motion.div
+              className="absolute inset-0 opacity-0 group-hover:opacity-30"
+              style={{
+                background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(34, 211, 238, 0.1) 2px, rgba(34, 211, 238, 0.1) 4px)',
+              }}
+              animate={{
+                y: ['-100%', '100%'],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            />
+            
+            {/* Theme emoji with rotation animation */}
+            <motion.span
+              className="relative block"
+              animate={{ rotate: theme === 'dark' ? 0 : 180 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              style={{
+                filter: 'drop-shadow(0 0 8px rgba(34, 211, 238, 0.6))',
+              }}
+            >
+              {theme === 'dark' ? '🌙' : '☀️'}
+            </motion.span>
+
+            {/* Circular glow pulse on hover */}
+            <motion.div
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: 'radial-gradient(circle, rgba(34, 211, 238, 0.2), transparent 70%)',
+              }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileHover={{
+                opacity: [0, 1, 0],
+                scale: [0.8, 1.2, 1.5],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+          </motion.button>
+
           {/* Admin Button - Dashboard Link */}
           <Link 
             to="/dashboard"
@@ -380,7 +473,11 @@ export default function Navbar() {
               
               {/* Admin icon + text */}
               <motion.span
-                className="relative text-base font-bold tracking-widest uppercase transition-all duration-300 text-slate-200 group-hover:text-white flex items-center gap-2"
+                className={`relative text-base font-bold tracking-widest uppercase transition-all duration-300 flex items-center gap-2 ${
+                  theme === 'dark' 
+                    ? 'text-slate-200 group-hover:text-white' 
+                    : 'text-slate-700 group-hover:text-slate-900'
+                }`}
                 style={{
                   fontFamily: 'monospace',
                 }}

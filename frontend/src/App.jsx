@@ -11,6 +11,7 @@ import ResearchPage from "./pages/ResearchPage";
 
 // Dashboard imports
 import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import { ToastProvider } from "./dashboard/components/ToastContext";
 import DashboardLayout from "./dashboard/DashboardLayout";
 import LoginPage from "./dashboard/LoginPage";
@@ -30,10 +31,11 @@ import SettingsAdmin from "./dashboard/pages/SettingsAdmin";
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <ToastProvider>
-          <CustomCursor />
-          <div className="min-h-screen">
+      <ThemeProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <CustomCursor />
+            <div className="min-h-screen">
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={
@@ -103,6 +105,7 @@ export default function App() {
           </div>
         </ToastProvider>
       </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

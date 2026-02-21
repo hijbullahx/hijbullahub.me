@@ -14,6 +14,11 @@ export default {
           elevated: '#1a1f2e',
           surface: '#151922',
         },
+        light: {
+          base: '#ffffff',
+          elevated: '#f8fafc',
+          surface: '#f1f5f9',
+        },
       },
       animation: {
         'fade-in': 'fadeIn 0.6s ease-out',
