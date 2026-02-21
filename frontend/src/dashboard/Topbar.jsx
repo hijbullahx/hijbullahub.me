@@ -13,7 +13,8 @@ export default function Topbar({ onMenuClick }) {
 
   const handleGoHome = () => {
     logout();
-    navigate("/");
+    // Force full page navigation to homepage
+    window.location.href = "/";
   };
 
   return (
