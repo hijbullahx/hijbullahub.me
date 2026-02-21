@@ -29,8 +29,8 @@ class Project(TimeStampedModel):
 
     title = models.CharField(max_length=180)
     slug = models.SlugField(max_length=200, unique=True, blank=True)
-    short_description = models.CharField(max_length=300)
-    full_description = models.TextField()
+    short_description = models.CharField(max_length=300, blank=True)
+    full_description = models.TextField(blank=True)
     problem_statement = models.TextField(blank=True)
     architecture_overview = models.TextField(blank=True)
     tech_stack = models.ManyToManyField(Tag, related_name="projects", blank=True)
@@ -41,6 +41,7 @@ class Project(TimeStampedModel):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="ongoing")
     featured = models.BooleanField(default=False)
     display_order = models.PositiveIntegerField(default=0)
+    featured_image = models.ImageField(upload_to="projects/featured/", blank=True, null=True)
 
     class Meta:
         ordering = ["display_order", "-created_at"]

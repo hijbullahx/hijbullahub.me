@@ -13,6 +13,16 @@ class ProjectImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectImage
         fields = "__all__"
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+        
+        # Build absolute URI for image field
+        if instance.image and request:
+            data['image'] = request.build_absolute_uri(instance.image.url)
+        
+        return data
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -45,7 +55,21 @@ class ProjectSerializer(serializers.ModelSerializer):
             "status",
             "featured",
             "display_order",
+            "featured_image",
             "images",
             "created_at",
             "updated_at",
         ]
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+        
+        # Build absolute URIs for image fields if they exist
+        if instance.featured_image and request:
+            data['featured_image'] = request.build_absolute_uri(instance.featured_image.url)
+            data['thumbnail'] = request.build_absolute_uri(instance.featured_image.url)
+        else:
+            data['thumbnail'] = data.get('featured_image')
+        
+        return data

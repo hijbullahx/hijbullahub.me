@@ -256,12 +256,29 @@ export default function HomePage() {
             >
               <GlassCard className="overflow-hidden group">
                 <div className="relative h-48 mb-4 -mx-6 -mt-6 overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary-cyan/20 to-primary-emerald/20" />
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.4 }}
-                    className="w-full h-full bg-gradient-to-br from-dark-elevated to-dark-surface"
-                  />
+                  {project.thumbnail || project.featured_image || (project.images && project.images[0]?.image) ? (
+                    <motion.img
+                      src={project.thumbnail || project.featured_image || project.images[0].image}
+                      alt={project.title}
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.4 }}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary-cyan/20 to-primary-emerald/20" />
+                      <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.4 }}
+                        className="w-full h-full bg-gradient-to-br from-dark-elevated to-dark-surface flex items-center justify-center"
+                      >
+                        <span className="text-5xl gradient-text font-bold">
+                          {project.title.charAt(0)}
+                        </span>
+                      </motion.div>
+                    </>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-dark-base/80 to-transparent" />
                 </div>
                 <div className="flex flex-wrap gap-2 mb-3">
                   {project.tech_stack?.slice(0, 3).map((tech) => (

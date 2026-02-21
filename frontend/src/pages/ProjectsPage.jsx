@@ -44,13 +44,21 @@ export default function ProjectsPage() {
                   <motion.div
                     whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.4 }}
-                    className="w-full h-full bg-gradient-to-br from-primary-cyan/10 via-primary-emerald/10 to-dark-elevated"
+                    className="w-full h-full"
                   >
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-5xl gradient-text font-bold">
-                        {project.title.charAt(0)}
-                      </span>
-                    </div>
+                    {project.thumbnail || project.featured_image || (project.images && project.images[0]?.image) ? (
+                      <img
+                        src={project.thumbnail || project.featured_image || project.images[0].image}
+                        alt={project.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-primary-cyan/10 via-primary-emerald/10 to-dark-elevated flex items-center justify-center">
+                        <span className="text-5xl gradient-text font-bold">
+                          {project.title.charAt(0)}
+                        </span>
+                      </div>
+                    )}
                   </motion.div>
                   <div className="absolute inset-0 bg-gradient-to-t from-dark-base/80 to-transparent" />
                   <div className="absolute top-3 right-3">
@@ -93,9 +101,17 @@ export default function ProjectsPage() {
         {selectedProject && (
           <div>
             <div className="relative h-64 -mx-8 -mt-8 mb-6 overflow-hidden rounded-t-2xl">
-              <div className="w-full h-full bg-gradient-to-br from-primary-cyan/20 via-primary-emerald/20 to-dark-elevated flex items-center justify-center">
-                <span className="text-8xl gradient-text font-bold">{selectedProject.title.charAt(0)}</span>
-              </div>
+              {selectedProject.thumbnail || selectedProject.featured_image || (selectedProject.images && selectedProject.images[0]?.image) ? (
+                <img
+                  src={selectedProject.thumbnail || selectedProject.featured_image || selectedProject.images[0].image}
+                  alt={selectedProject.title}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-primary-cyan/20 via-primary-emerald/20 to-dark-elevated flex items-center justify-center">
+                  <span className="text-8xl gradient-text font-bold">{selectedProject.title.charAt(0)}</span>
+                </div>
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-dark-base to-transparent" />
             </div>
 
@@ -130,7 +146,39 @@ export default function ProjectsPage() {
                   <p className="text-slate-300 leading-relaxed">{selectedProject.architecture_overview}</p>
                 </div>
               )}
+{/* Gallery Section */}
+              {selectedProject.images && selectedProject.images.length > 0 && (
+                <div>
+                  <h3 className="text-xl font-semibold text-primary-cyan mb-4">Gallery</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {selectedProject.images.map((img) => (
+                      <motion.div
+                        key={img.id}
+                        whileHover={{ scale: 1.05 }}
+                        className="relative aspect-video rounded-lg overflow-hidden cursor-pointer group"
+                      >
+                        <img
+                          src={img.image}
+                          alt={img.caption || "Project screenshot"}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                          </svg>
+                        </div>
+                        {img.caption && (
+                          <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-xs p-2">
+                            {img.caption}
+                          </div>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
+              
               {selectedProject.research_direction && (
                 <div>
                   <h3 className="text-xl font-semibold text-primary-cyan mb-2">Research Direction</h3>
