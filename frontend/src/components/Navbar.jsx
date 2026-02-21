@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 const links = [
@@ -87,89 +87,91 @@ export default function Navbar() {
         scrolled ? "py-3" : "py-6"
       }`}>
         {/* Logo with cinematic effects */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          animate={{ 
-            scale: scrolled ? 0.95 : 1,
-          }}
-          transition={{ duration: 0.5 }}
-          className="relative group cursor-pointer"
-        >
-          {/* Background glow with moving gradient */}
-          <motion.div 
-            className="absolute -inset-4 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-            style={{
-              background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.4), rgba(16, 185, 129, 0.4), rgba(34, 211, 238, 0.4))',
-              backgroundSize: '200% 200%',
+        <Link to="/" className="no-underline">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            animate={{ 
+              scale: scrolled ? 0.95 : 1,
             }}
-            animate={{
-              backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-            }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />
-          
-          <motion.h1
-            className={`relative font-black tracking-tight transition-all duration-500 ${
-              scrolled ? "text-2xl" : "text-3xl"
-            }`}
-            whileHover={{ letterSpacing: "0.05em" }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.5 }}
+            className="relative group cursor-pointer"
           >
-            {/* Hijbullah with animated gradient */}
-            <motion.span 
-              className="relative bg-clip-text text-transparent font-extrabold"
+            {/* Background glow with moving gradient */}
+            <motion.div 
+              className="absolute -inset-4 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
               style={{
-                backgroundImage: 'linear-gradient(90deg, #22d3ee, #10b981, #22d3ee)',
-                backgroundSize: '200% 100%',
+                background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.4), rgba(16, 185, 129, 0.4), rgba(34, 211, 238, 0.4))',
+                backgroundSize: '200% 200%',
               }}
               animate={{
-                backgroundPosition: ['0% 50%', '200% 50%'],
-              }}
-              transition={{
-                duration: 6,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            >
-              Hijbullah
-            </motion.span>
-
-            {/* Hub with animated gradient - different color */}
-            <motion.span 
-              className="relative bg-clip-text text-transparent font-extrabold"
-              style={{
-                backgroundImage: 'linear-gradient(90deg, #a855f7, #ec4899, #a855f7)',
-                backgroundSize: '200% 100%',
-              }}
-              animate={{
-                backgroundPosition: ['0% 50%', '200% 50%'],
+                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
               }}
               transition={{
                 duration: 5,
                 repeat: Infinity,
                 ease: "linear",
               }}
-            >
-              Hub
-            </motion.span>
-            
-            {/* Animated underline with glow */}
-            <motion.div
-              className="absolute -bottom-1 left-0 h-[2px] rounded-full"
-              style={{
-                background: 'linear-gradient(90deg, #22d3ee, #10b981)',
-                boxShadow: '0 0 10px rgba(34, 211, 238, 0.6)',
-              }}
-              initial={{ width: "0%" }}
-              whileHover={{ width: "100%" }}
-              transition={{ duration: 0.3 }}
             />
-          </motion.h1>
-        </motion.div>
+            
+            <motion.h1
+              className={`relative font-black tracking-tight transition-all duration-500 ${
+                scrolled ? "text-2xl" : "text-3xl"
+              }`}
+              whileHover={{ letterSpacing: "0.05em" }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* Hijbullah with animated gradient */}
+              <motion.span 
+                className="relative bg-clip-text text-transparent font-extrabold"
+                style={{
+                  backgroundImage: 'linear-gradient(90deg, #22d3ee, #10b981, #22d3ee)',
+                  backgroundSize: '200% 100%',
+                }}
+                animate={{
+                  backgroundPosition: ['0% 50%', '200% 50%'],
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              >
+                Hijbullah
+              </motion.span>
+
+              {/* Hub with animated gradient - different color */}
+              <motion.span 
+                className="relative bg-clip-text text-transparent font-extrabold"
+                style={{
+                  backgroundImage: 'linear-gradient(90deg, #a855f7, #ec4899, #a855f7)',
+                  backgroundSize: '200% 100%',
+                }}
+                animate={{
+                  backgroundPosition: ['0% 50%', '200% 50%'],
+                }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              >
+                Hub
+              </motion.span>
+              
+              {/* Animated underline with glow */}
+              <motion.div
+                className="absolute -bottom-1 left-0 h-[2px] rounded-full"
+                style={{
+                  background: 'linear-gradient(90deg, #22d3ee, #10b981)',
+                  boxShadow: '0 0 10px rgba(34, 211, 238, 0.6)',
+                }}
+                initial={{ width: "0%" }}
+                whileHover={{ width: "100%" }}
+                transition={{ duration: 0.3 }}
+              />
+            </motion.h1>
+          </motion.div>
+        </Link>
 
         {/* Navigation links with enhanced robotic effects */}
         <div className="flex gap-3">
