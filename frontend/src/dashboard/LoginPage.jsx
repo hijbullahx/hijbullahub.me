@@ -31,7 +31,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0B0F19] px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#0B0F19] px-4">
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" />
@@ -42,7 +42,7 @@ export default function LoginPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md relative z-10"
+        className="w-full max-w-md relative z-10 flex-1 flex items-center justify-center"
       >
         <GlassCard className="p-8">
           {/* Logo/Title */}
@@ -125,6 +125,14 @@ export default function LoginPage() {
           </form>
         </GlassCard>
       </motion.div>
+
+      {/* Footer */}
+      <footer className="relative z-10 py-6 w-full">
+        <p className="text-center text-xs text-slate-500">
+          © {new Date().getFullYear()}{" "}
+          <span className="font-semibold text-cyan-400">Md. Taher Bin Omar Hijbullah</span>. All rights reserved.
+        </p>
+      </footer>
     </div>
   );
 }

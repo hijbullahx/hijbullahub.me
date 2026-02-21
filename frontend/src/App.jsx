@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import CustomCursor from "./components/CustomCursor";
 import ProtectedRoute from "./components/ProtectedRoute";
 import BlogPage from "./pages/BlogPage";
@@ -44,6 +45,7 @@ export default function App() {
                   <main className="mx-auto max-w-6xl px-4 py-8">
                     <HomePage />
                   </main>
+                  <Footer />
                 </>
               } />
               <Route path="/projects" element={
@@ -52,6 +54,7 @@ export default function App() {
                   <main className="mx-auto max-w-6xl px-4 py-8">
                     <ProjectsPage />
                   </main>
+                  <Footer />
                 </>
               } />
               <Route path="/blog" element={
@@ -60,6 +63,7 @@ export default function App() {
                   <main className="mx-auto max-w-6xl px-4 py-8">
                     <BlogPage />
                   </main>
+                  <Footer />
                 </>
               } />
               <Route path="/research" element={
@@ -68,6 +72,7 @@ export default function App() {
                   <main className="mx-auto max-w-6xl px-4 py-8">
                     <ResearchPage />
                   </main>
+                  <Footer />
                 </>
               } />
               <Route path="/contact" element={
@@ -76,6 +81,7 @@ export default function App() {
                   <main className="mx-auto max-w-6xl px-4 py-8">
                     <ContactPage />
                   </main>
+                  <Footer />
                 </>
               } />
 
