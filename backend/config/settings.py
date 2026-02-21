@@ -117,6 +117,9 @@ STORAGES = {
     },
 }
 
+# Backwards compatibility for django-cloudinary-storage
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
