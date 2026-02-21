@@ -83,7 +83,6 @@ export default function HomePage() {
                 transition={{ duration: 0.6 }}
                 className="mb-4"
               >
-                <GradientBadge>AI & Robotics Engineer</GradientBadge>
               </motion.div>
               
               <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
