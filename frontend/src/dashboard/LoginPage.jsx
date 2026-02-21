@@ -123,11 +123,6 @@ export default function LoginPage() {
               )}
             </GlowButton>
           </form>
-
-          {/* Footer Note */}
-          <div className="mt-6 text-center text-sm text-gray-500">
-            Default credentials: admin / admin123
-          </div>
         </GlassCard>
       </motion.div>
     </div>
