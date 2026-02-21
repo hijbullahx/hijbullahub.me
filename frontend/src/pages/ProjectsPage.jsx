@@ -14,6 +14,7 @@ import SectionTitle from "../components/SectionTitle";
 export default function ProjectsPage() {
   const [state, setState] = useState({ loading: true, error: "", projects: [] });
   const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     fetchList("/projects/")
@@ -155,6 +156,7 @@ export default function ProjectsPage() {
                       <motion.div
                         key={img.id}
                         whileHover={{ scale: 1.05 }}
+                        onClick={() => setSelectedImage(img)}
                         className="relative aspect-video rounded-lg overflow-hidden cursor-pointer group"
                       >
                         <img
@@ -202,6 +204,43 @@ export default function ProjectsPage() {
           </div>
         )}
       </Modal>
+
+      {/* Image Lightbox Modal */}
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-4"
+          onClick={() => setSelectedImage(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setSelectedImage(null)}
+            className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-colors z-10"
+          >
+            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="relative max-w-7xl max-h-[90vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={selectedImage.image}
+              alt={selectedImage.caption || "Project screenshot"}
+              className="max-w-full max-h-[90vh] object-contain rounded-lg"
+            />
+            {selectedImage.caption && (
+              <div className="absolute bottom-0 left-0 right-0 bg-black/80 text-white p-4 rounded-b-lg">
+                <p className="text-center">{selectedImage.caption}</p>
+              </div>
+            )}
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }
