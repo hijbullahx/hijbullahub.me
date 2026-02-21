@@ -20,6 +20,7 @@ export default {
         'slide-up': 'slideUp 0.6s ease-out',
         'glow-pulse': 'glowPulse 2s ease-in-out infinite',
         'float': 'float 3s ease-in-out infinite',
+        'gradient-x': 'gradientX 3s ease infinite',
       },
       keyframes: {
         fadeIn: {
@@ -37,6 +38,10 @@ export default {
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-10px)' },
+        },
+        gradientX: {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
         },
       },
     },
