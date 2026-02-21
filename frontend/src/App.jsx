@@ -2,28 +2,107 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import CustomCursor from "./components/CustomCursor";
+import ProtectedRoute from "./components/ProtectedRoute";
 import BlogPage from "./pages/BlogPage";
 import ContactPage from "./pages/ContactPage";
 import HomePage from "./pages/HomePage";
 import ProjectsPage from "./pages/ProjectsPage";
 import ResearchPage from "./pages/ResearchPage";
 
+// Dashboard imports
+import { AuthProvider } from "./contexts/AuthContext";
+import { ToastProvider } from "./dashboard/components/ToastContext";
+import DashboardLayout from "./dashboard/DashboardLayout";
+import LoginPage from "./dashboard/LoginPage";
+import DashboardHome from "./dashboard/pages/DashboardHome";
+import ProjectsAdmin from "./dashboard/pages/ProjectsAdmin";
+import BlogAdmin from "./dashboard/pages/BlogAdmin";
+import ContactAdmin from "./dashboard/pages/ContactAdmin";
+import HeroAdmin from "./dashboard/pages/HeroAdmin";
+import AboutAdmin from "./dashboard/pages/AboutAdmin";
+import SkillsAdmin from "./dashboard/pages/SkillsAdmin";
+import ExperienceAdmin from "./dashboard/pages/ExperienceAdmin";
+import AchievementsAdmin from "./dashboard/pages/AchievementsAdmin";
+import ResearchAdmin from "./dashboard/pages/ResearchAdmin";
+import AILabAdmin from "./dashboard/pages/AILabAdmin";
+import SettingsAdmin from "./dashboard/pages/SettingsAdmin";
+
 export default function App() {
   return (
     <BrowserRouter>
-      <CustomCursor />
-      <div className="min-h-screen">
-        <Navbar />
-        <main className="mx-auto max-w-6xl px-4 py-8">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/projects" element={<ProjectsPage />} />
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/research" element={<ResearchPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-          </Routes>
-        </main>
-      </div>
+      <AuthProvider>
+        <ToastProvider>
+          <CustomCursor />
+          <div className="min-h-screen">
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={
+                <>
+                  <Navbar />
+                  <main className="mx-auto max-w-6xl px-4 py-8">
+                    <HomePage />
+                  </main>
+                </>
+              } />
+              <Route path="/projects" element={
+                <>
+                  <Navbar />
+                  <main className="mx-auto max-w-6xl px-4 py-8">
+                    <ProjectsPage />
+                  </main>
+                </>
+              } />
+              <Route path="/blog" element={
+                <>
+                  <Navbar />
+                  <main className="mx-auto max-w-6xl px-4 py-8">
+                    <BlogPage />
+                  </main>
+                </>
+              } />
+              <Route path="/research" element={
+                <>
+                  <Navbar />
+                  <main className="mx-auto max-w-6xl px-4 py-8">
+                    <ResearchPage />
+                  </main>
+                </>
+              } />
+              <Route path="/contact" element={
+                <>
+                  <Navbar />
+                  <main className="mx-auto max-w-6xl px-4 py-8">
+                    <ContactPage />
+                  </main>
+                </>
+              } />
+
+              {/* Dashboard Login */}
+              <Route path="/dashboard/login" element={<LoginPage />} />
+
+              {/* Protected Dashboard Routes */}
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              }>
+                <Route index element={<DashboardHome />} />
+                <Route path="projects" element={<ProjectsAdmin />} />
+                <Route path="blog" element={<BlogAdmin />} />
+                <Route path="contact" element={<ContactAdmin />} />
+                <Route path="hero" element={<HeroAdmin />} />
+                <Route path="about" element={<AboutAdmin />} />
+                <Route path="skills" element={<SkillsAdmin />} />
+                <Route path="experience" element={<ExperienceAdmin />} />
+                <Route path="achievements" element={<AchievementsAdmin />} />
+                <Route path="research" element={<ResearchAdmin />} />
+                <Route path="ai-lab" element={<AILabAdmin />} />
+                <Route path="settings" element={<SettingsAdmin />} />
+              </Route>
+            </Routes>
+          </div>
+        </ToastProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

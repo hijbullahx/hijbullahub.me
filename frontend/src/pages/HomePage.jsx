@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 import { fetchList } from "../api/client";
@@ -98,14 +99,17 @@ export default function HomePage() {
               </p>
               
               <div className="flex flex-wrap gap-4">
-                <GlowButton href="#projects">View Projects</GlowButton>
-                <motion.a
-                  href="#contact"
-                  whileHover={{ scale: 1.05 }}
-                  className="px-6 py-3 rounded-full border-2 border-primary-cyan/30 text-primary-cyan font-semibold hover:bg-primary-cyan/10 transition-all duration-300"
-                >
-                  Get in Touch
-                </motion.a>
+                <Link to="/projects">
+                  <GlowButton>View Projects</GlowButton>
+                </Link>
+                <Link to="/contact">
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    className="px-6 py-3 rounded-full border-2 border-primary-cyan/30 text-primary-cyan font-semibold hover:bg-primary-cyan/10 transition-all duration-300 inline-block"
+                  >
+                    Get in Touch
+                  </motion.div>
+                </Link>
               </div>
             </motion.div>
 

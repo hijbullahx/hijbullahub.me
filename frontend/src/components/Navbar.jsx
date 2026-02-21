@@ -322,6 +322,108 @@ export default function Navbar() {
               )}
             </NavLink>
           ))}
+
+          {/* Admin Button - Dashboard Link */}
+          <Link 
+            to="/dashboard"
+            className="no-underline"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.1 }}
+              transition={{ 
+                delay: links.length * 0.1, 
+                duration: 0.5,
+                scale: {
+                  type: "spring",
+                  stiffness: 400,
+                  damping: 10
+                }
+              }}
+              className="relative group px-5 py-2.5"
+            >
+              {/* Robotic frame background with sharp edges - purple/pink theme */}
+              <motion.div 
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.15))',
+                  clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
+                  border: '1px solid rgba(168, 85, 247, 0)',
+                  boxShadow: '0 0 0 rgba(168, 85, 247, 0)',
+                }}
+                whileHover={{
+                  border: '1px solid rgba(168, 85, 247, 0.5)',
+                  boxShadow: '0 0 20px rgba(168, 85, 247, 0.4), inset 0 0 20px rgba(236, 72, 153, 0.1)',
+                }}
+              />
+
+              {/* Corner brackets - purple theme */}
+              <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-purple-500 opacity-40 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-pink-500 opacity-40 group-hover:opacity-100 transition-opacity duration-300" />
+              
+              {/* Scan line effect - purple tint */}
+              <motion.div
+                className="absolute inset-0 opacity-0 group-hover:opacity-30"
+                style={{
+                  background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(168, 85, 247, 0.1) 2px, rgba(168, 85, 247, 0.1) 4px)',
+                }}
+                animate={{
+                  y: ['-100%', '100%'],
+                }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              />
+              
+              {/* Admin icon + text */}
+              <motion.span
+                className="relative text-base font-bold tracking-widest uppercase transition-all duration-300 text-slate-200 group-hover:text-white flex items-center gap-2"
+                style={{
+                  fontFamily: 'monospace',
+                }}
+                whileHover={{ 
+                  y: -2,
+                  textShadow: '0 0 12px rgba(168, 85, 247, 0.6)',
+                  letterSpacing: '0.2em',
+                }}
+              >
+                <svg 
+                  className="w-4 h-4" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" 
+                  />
+                </svg>
+                Admin
+              </motion.span>
+
+              {/* Angular underline with purple glow */}
+              <motion.div
+                className="absolute bottom-0 left-0 right-0 h-[3px]"
+                style={{
+                  background: 'linear-gradient(90deg, #a855f7, #ec4899)',
+                  clipPath: 'polygon(0 50%, 5px 0, calc(100% - 5px) 0, 100% 50%, calc(100% - 5px) 100%, 5px 100%)',
+                  originX: 0.5,
+                }}
+                initial={{ scaleX: 0, opacity: 0 }}
+                whileHover={{
+                  scaleX: 1,
+                  opacity: 1,
+                  boxShadow: '0 0 18px rgba(168, 85, 247, 0.9)',
+                }}
+                transition={{ duration: 0.3 }}
+              />
+            </motion.div>
+          </Link>
         </div>
       </nav>
 

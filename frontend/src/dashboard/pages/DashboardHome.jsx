@@ -1,0 +1,161 @@
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import api from "../../api/client";
+
+export default function DashboardHome() {
+  const [stats, setStats] = useState({
+    projects: 0,
+    blog: 0,
+    messages: 0,
+    research: 0,
+  });
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      const [projects, blog, contact, research] = await Promise.all([
+        api.get("/projects/"),
+        api.get("/blog/"),
+        api.get("/contact/"),
+        api.get("/research/"),
+      ]);
+
+      setStats({
+        projects: (projects.data.results || projects.data).length,
+        blog: (blog.data.results || blog.data).length,
+        messages: (contact.data.results || contact.data).filter((m) => !m.is_read).length,
+        research: (research.data.results || research.data).length,
+      });
+    } catch (error) {
+      console.error("Failed to fetch stats");
+    }
+  };
+
+  const statCards = [
+    {
+      title: "Projects",
+      value: stats.projects,
+      icon: "🚀",
+      color: "from-cyan-500 to-blue-500",
+      link: "/dashboard/projects",
+    },
+    {
+      title: "Blog Posts",
+      value: stats.blog,
+      icon: "✍️",
+      color: "from-emerald-500 to-green-500",
+      link: "/dashboard/blog",
+    },
+    {
+      title: "Unread Messages",
+      value: stats.messages,
+      icon: "📧",
+      color: "from-purple-500 to-pink-500",
+      link: "/dashboard/contact",
+    },
+    {
+      title: "Research Papers",
+      value: stats.research,
+      icon: "🔬",
+      color: "from-amber-500 to-orange-500",
+      link: "/dashboard/research",
+    },
+  ];
+
+  const quickLinks = [
+    { title: "Edit Hero Section", icon: "🌟", link: "/dashboard/hero" },
+    { title: "Manage Skills", icon: "⚡", link: "/dashboard/skills" },
+    { title: "Update Experience", icon: "💼", link: "/dashboard/experience" },
+    { title: "Add Achievement", icon: "🏆", link: "/dashboard/achievements" },
+    { title: "AI Lab Metrics", icon: "🤖", link: "/dashboard/ai-lab" },
+    { title: "Site Settings", icon: "⚙️", link: "/dashboard/settings" },
+  ];
+
+  return (
+    <div className="space-y-8">
+      {/* Welcome Section */}
+      <div>
+        <h1 className="text-4xl font-bold text-white mb-2">
+          Welcome Back! 👋
+        </h1>
+        <p className="text-gray-400 text-lg">
+          Here's what's happening with HijbullahHub today
+        </p>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {statCards.map((stat, index) => (
+          <Link key={index} to={stat.link}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="relative group"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br opacity-10 group-hover:opacity-20 transition-opacity rounded-xl blur-xl"
+                style={{ background: `linear-gradient(to bottom right, var(--tw-gradient-stops))` }}
+              />
+              <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-white/20 transition-all group-hover:scale-105">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-gray-400 text-sm font-medium mb-1">
+                      {stat.title}
+                    </p>
+                    <p className="text-4xl font-bold text-white">
+                      {stat.value}
+                    </p>
+                  </div>
+                  <div className="text-4xl">{stat.icon}</div>
+                </div>
+              </div>
+            </motion.div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Quick Actions */}
+      <div>
+        <h2 className="text-2xl font-bold text-white mb-4">Quick Actions</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {quickLinks.map((link, index) => (
+            <Link key={index} to={link.link}>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4 + index * 0.05 }}
+                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 hover:bg-white/10 hover:border-white/20 transition-all group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="text-3xl">{link.icon}</div>
+                  <div>
+                    <p className="text-white font-medium group-hover:text-cyan-400 transition-colors">
+                      {link.title}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* Recent Activity (Placeholder) */}
+      <div>
+        <h2 className="text-2xl font-bold text-white mb-4">Recent Activity</h2>
+        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
+          <div className="text-center text-gray-400 py-8">
+            <svg className="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p>Activity tracking coming soon</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
