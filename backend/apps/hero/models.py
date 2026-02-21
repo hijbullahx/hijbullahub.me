@@ -6,6 +6,8 @@ from apps.core.models import TimeStampedModel
 class Hero(TimeStampedModel):
     BACKGROUND_CHOICES = [
         ("gradient", "Gradient"),
+        ("particles", "Particles"),
+        ("solid", "Solid Color"),
         ("image", "Image"),
         ("video", "Video"),
     ]
