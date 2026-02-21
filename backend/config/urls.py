@@ -13,5 +13,6 @@ urlpatterns = [
     path("api/", include("config.api_router")),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve media files in all environments (including production)
+# Note: For production, consider using Cloudinary/S3 for persistent storage
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
