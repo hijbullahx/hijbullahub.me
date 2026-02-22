@@ -48,3 +48,21 @@ class ContactProfile(TimeStampedModel):
 
     def __str__(self):
         return self.title
+
+
+class Feedback(TimeStampedModel):
+    RATING_CHOICES = [(i, str(i)) for i in range(1, 6)]
+
+    name = models.CharField(max_length=120)
+    email = models.EmailField(blank=True, default="")
+    rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES, default=5)
+    comment = models.TextField(blank=True, default="")
+    is_visible = models.BooleanField(default=True, help_text="Show publicly on site")
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Feedback"
+        verbose_name_plural = "Feedbacks"
+
+    def __str__(self):
+        return f"{self.name} — {self.rating}★"

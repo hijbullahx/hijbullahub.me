@@ -6,7 +6,7 @@ import api from "../../api/client";
 export default function DashboardHome() {
   const [stats, setStats] = useState({
     projects: 0,
-    messages: 0,
+    feedbacks: 0,
     research: 0,
     contributions: 0,
     acquisitions: 0,
@@ -19,18 +19,18 @@ export default function DashboardHome() {
 
   const fetchStats = async () => {
     try {
-      const [projects, contact, research, contributions, acquisitions, hireReqs] = await Promise.all([
+      const [projects, research, contributions, acquisitions, hireReqs, feedbackRes] = await Promise.all([
         api.get("/projects/"),
-        api.get("/contact/"),
         api.get("/research/"),
         api.get("/research-contributions/"),
         api.get("/project-acquisitions/"),
         api.get("/hire-requests/"),
+        api.get("/feedback/"),
       ]);
 
       setStats({
         projects: (projects.data.results || projects.data).length,
-        messages: (contact.data.results || contact.data).filter((m) => !m.is_read).length,
+        feedbacks: (feedbackRes.data.results || feedbackRes.data).length,
         research: (research.data.results || research.data).length,
         contributions: (contributions.data.results || contributions.data).filter((c) => c.status === "pending").length,
         acquisitions: (acquisitions.data.results || acquisitions.data).filter((a) => a.status === "pending").length,
@@ -50,11 +50,11 @@ export default function DashboardHome() {
       link: "/dashboard/projects",
     },
     {
-      title: "Unread Messages",
-      value: stats.messages,
-      icon: "📧",
-      color: "from-purple-500 to-pink-500",
-      link: "/dashboard/contact",
+      title: "Feedback",
+      value: stats.feedbacks,
+      icon: "⭐",
+      color: "from-amber-500 to-orange-500",
+      link: "/dashboard/feedback",
     },
     {
       title: "Research Papers",
@@ -94,6 +94,7 @@ export default function DashboardHome() {
     { title: "Add Achievement", icon: "🏆", link: "/dashboard/achievements" },
     { title: "AI/ML Lab Projects", icon: "🤖", link: "/dashboard/ai-lab" },
     { title: "Edit Contact Info", icon: "📡", link: "/dashboard/contact-profiles" },
+    { title: "Manage Feedback", icon: "⭐", link: "/dashboard/feedback" },
     { title: "Site Settings", icon: "⚙️", link: "/dashboard/settings" },
   ];
 

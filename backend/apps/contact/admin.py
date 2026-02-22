@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Contact, ContactProfile
+from .models import Contact, ContactProfile, Feedback
 
 
 @admin.register(Contact)
@@ -68,3 +68,16 @@ class ContactProfileAdmin(admin.ModelAdmin):
     list_display = ["title", "icon_type", "link", "image_opacity", "display_order", "is_active"]
     list_filter = ["icon_type", "is_active"]
     ordering = ["display_order"]
+
+
+@admin.register(Feedback)
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = ["name", "email", "rating", "short_comment", "is_visible", "created_at"]
+    list_filter = ["rating", "is_visible"]
+    search_fields = ["name", "email", "comment"]
+    list_editable = ["is_visible"]
+    ordering = ["-created_at"]
+
+    def short_comment(self, obj):
+        return obj.comment[:80] + "…" if len(obj.comment) > 80 else obj.comment
+    short_comment.short_description = "Comment"

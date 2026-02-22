@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 
 import { fetchList } from "../api/client";
 import AnimatedSection from "../components/AnimatedSection";
@@ -13,20 +12,36 @@ import LoadingState from "../components/LoadingState";
 import ParticleBackground from "../components/ParticleBackground";
 import SectionTitle from "../components/SectionTitle";
 import TypingAnimation from "../components/TypingAnimation";
+import FeedbackModal from "../components/FeedbackModal";
 
 export default function HomePage() {
   const [state, setState] = useState({ loading: true, error: "", data: {} });
   const [scrollY, setScrollY] = useState(0);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [hireOpen, setHireOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [feedbacks, setFeedbacks] = useState([]);
+
+  useEffect(() => {
+    const loadFeedbacks = () =>
+      fetchList("/feedback/").then((data) => setFeedbacks(data.filter((f) => f.is_visible))).catch(() => {});
+
+    loadFeedbacks();
+
+    // Re-fetch whenever user returns to this tab so hidden items disappear immediately
+    const onVisible = () => { if (document.visibilityState === "visible") loadFeedbacks(); };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, []);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const [hero, about, skills] = await Promise.all([
+        const [hero, about, skills, experience] = await Promise.all([
           fetchList("/hero/"),
           fetchList("/about/"),
           fetchList("/skills/"),
+          fetchList("/experience/"),
         ]);
 
         setState({
@@ -36,6 +51,7 @@ export default function HomePage() {
             hero: hero.find((h) => h.is_active) ?? hero[0],
             about: about[0],
             skills,
+            experience,
           },
         });
       } catch {
@@ -67,7 +83,7 @@ export default function HomePage() {
   if (state.loading) return <LoadingState />;
   if (state.error) return <ErrorState message={state.error} />;
 
-  const { hero, about, skills } = state.data;
+  const { hero, about, skills, experience } = state.data;
 
   // Calculate angle for mouse icon to follow cursor
   const iconX = typeof window !== 'undefined' ? window.innerWidth / 2 : 0;
@@ -113,14 +129,13 @@ export default function HomePage() {
                 <GlowButton onClick={() => setHireOpen(true)}>
                   💼 Hire Me
                 </GlowButton>
-                <Link to="/contact">
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    className="px-6 py-3 rounded-full border-2 border-primary-cyan/30 text-primary-cyan font-semibold hover:bg-primary-cyan/10 transition-all duration-300 inline-block"
-                  >
-                    Get in Touch
-                  </motion.div>
-                </Link>
+                <motion.button
+                  onClick={() => setFeedbackOpen(true)}
+                  whileHover={{ scale: 1.05 }}
+                  className="px-6 py-3 rounded-full border-2 border-primary-cyan/30 text-primary-cyan font-semibold hover:bg-primary-cyan/10 transition-all duration-300"
+                >
+                  ⭐ Feedback
+                </motion.button>
               </div>
             </motion.div>
 
@@ -273,7 +288,162 @@ export default function HomePage() {
         </div>
       </AnimatedSection>
 
+      {/* Experience Section */}
+      {experience?.length > 0 && (
+        <AnimatedSection className="section-padding max-w-7xl mx-auto" id="experience">
+          <SectionTitle subtitle="Roles, organizations &amp; highlights">
+            Experience
+          </SectionTitle>
+          <div className="mt-10 relative">
+            {/* Vertical timeline line */}
+            <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-cyan-500/40 via-emerald-500/20 to-transparent hidden md:block" />
+
+            <div className="space-y-6">
+              {experience.map((exp, idx) => (
+                <motion.div
+                  key={exp.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.08 }}
+                  className="md:pl-16 relative"
+                >
+                  {/* Timeline dot */}
+                  <div className="absolute left-4 top-5 w-4 h-4 rounded-full bg-gradient-to-br from-cyan-500 to-emerald-500 border-2 border-dark-base z-10 hidden md:block" />
+
+                  <div className={`relative bg-white/[0.03] border rounded-2xl p-5 hover:border-white/20 transition-all group ${
+                    exp.highlight ? "border-amber-500/30 hover:border-amber-500/50" : "border-white/10"
+                  }`}>
+                    {exp.highlight && (
+                      <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                        ⭐ Highlight
+                      </span>
+                    )}
+
+                    <div className="flex items-start gap-4">
+                      {/* Logo */}
+                      {exp.logo_url ? (
+                        <img
+                          src={exp.logo_url}
+                          alt={exp.organization || exp.role}
+                          className="w-12 h-12 rounded-xl object-cover border border-white/10 flex-shrink-0 mt-0.5"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-emerald-500/20 border border-white/10 flex items-center justify-center text-2xl flex-shrink-0 mt-0.5">
+                          💼
+                        </div>
+                      )}
+
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-lg font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:to-emerald-400 transition-all">
+                          {exp.role}
+                        </h3>
+                        {exp.organization && (
+                          <p className="text-sm text-slate-400 mt-0.5">{exp.organization}</p>
+                        )}
+                        {exp.duration && (
+                          <span className="inline-block mt-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-slate-400">
+                            🕐 {exp.duration}
+                          </span>
+                        )}
+                        {exp.description && (
+                          <p className="mt-3 text-sm text-slate-400 leading-relaxed line-clamp-3">
+                            {exp.description}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </AnimatedSection>
+      )}
+
       <HireDrawer isOpen={hireOpen} onClose={() => setHireOpen(false)} />
+
+      {feedbackOpen && (
+        <FeedbackModal
+          onClose={() => setFeedbackOpen(false)}
+          onSubmitted={(newFb) => setFeedbacks((prev) => [newFb, ...prev])}
+        />
+      )}
+
+      {/* Feedback Section — always visible */}
+      <AnimatedSection className="section-padding max-w-7xl mx-auto pb-24">
+        <SectionTitle subtitle="What visitors are saying">
+          Feedback &amp; Reviews
+        </SectionTitle>
+
+        {feedbacks.length > 0 ? (
+          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {feedbacks.map((fb, idx) => (
+              <motion.div
+                key={fb.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.07 }}
+                className="relative bg-white/[0.03] border border-white/10 rounded-2xl p-5 hover:border-white/20 transition-all group"
+              >
+                {/* Gradient accent top-left */}
+                <div className="absolute top-0 left-0 w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500/10 to-emerald-500/10 blur-2xl" />
+
+                {/* Stars */}
+                <div className="flex gap-1 mb-3">
+                  {[1,2,3,4,5].map((s) => (
+                    <svg key={s} className="w-4 h-4" viewBox="0 0 24 24"
+                      fill={s <= fb.rating ? "currentColor" : "none"}
+                      stroke="currentColor" strokeWidth={1.5}
+                      style={{ color: s <= fb.rating ? "#f59e0b" : "rgba(255,255,255,0.15)" }}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round"
+                        d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
+                      />
+                    </svg>
+                  ))}
+                </div>
+
+                {/* Comment */}
+                <p className="text-slate-300 text-sm leading-relaxed mb-4 line-clamp-4">
+                  &ldquo;{fb.comment}&rdquo;
+                </p>
+
+                {/* Author */}
+                <div className="flex items-center gap-2 mt-auto">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center text-white text-xs font-bold">
+                    {fb.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-white">{fb.name}</p>
+                    <p className="text-xs text-gray-500">
+                      {new Date(fb.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-10 text-center py-16 bg-white/[0.02] border border-white/10 rounded-2xl">
+            <p className="text-5xl mb-4">💬</p>
+            <p className="text-slate-400 text-lg mb-2">No feedback yet.</p>
+            <p className="text-slate-500 text-sm">Be the first to share your thoughts!</p>
+          </div>
+        )}
+
+          {/* CTA to leave feedback */}
+          <div className="text-center mt-10">
+            <motion.button
+              onClick={() => setFeedbackOpen(true)}
+              whileHover={{ scale: 1.05 }}
+              className="px-8 py-3 rounded-full border-2 border-primary-cyan/30 text-primary-cyan font-semibold hover:bg-primary-cyan/10 transition-all duration-300"
+            >
+              ⭐ Leave Your Feedback
+            </motion.button>
+          </div>
+      </AnimatedSection>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Contact, ContactProfile
+from .models import Contact, ContactProfile, Feedback
 
 
 class ContactSerializer(serializers.ModelSerializer):
@@ -23,3 +23,10 @@ class ContactProfileSerializer(serializers.ModelSerializer):
                 return request.build_absolute_uri(obj.profile_image.url)
             return obj.profile_image.url
         return None
+
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = "__all__"
+        read_only_fields = ["id", "created_at", "updated_at"]
