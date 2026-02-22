@@ -98,15 +98,20 @@ export default function AILabAdmin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!formData.title.trim()) {
+      toast.error("Title is required.");
+      return;
+    }
+
     const data = new FormData();
     data.append("title", formData.title);
-    data.append("link", formData.link);
-    data.append("details", formData.details);
-    data.append("experiment_title", formData.experiment_title);
-    data.append("model_name", formData.model_name);
-    data.append("dataset_name", formData.dataset_name);
+    if (formData.link) data.append("link", formData.link);
+    if (formData.details) data.append("details", formData.details);
+    if (formData.experiment_title) data.append("experiment_title", formData.experiment_title);
+    if (formData.model_name) data.append("model_name", formData.model_name);
+    if (formData.dataset_name) data.append("dataset_name", formData.dataset_name);
     data.append("status", formData.status);
-    data.append("performance_notes", formData.performance_notes);
+    if (formData.performance_notes) data.append("performance_notes", formData.performance_notes);
 
     if (formData.accuracy) data.append("accuracy", formData.accuracy);
     if (formData.precision) data.append("precision", formData.precision);
@@ -116,20 +121,24 @@ export default function AILabAdmin() {
 
     try {
       if (editingProject) {
-        await api.patch(`/ai-lab/${editingProject.id}/`, data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.patch(`/ai-lab/${editingProject.id}/`, data);
         toast.success("Project updated successfully");
       } else {
-        await api.post("/ai-lab/", data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.post("/ai-lab/", data);
         toast.success("Project created successfully");
       }
       setModalOpen(false);
       fetchProjects();
     } catch (error) {
-      toast.error(editingProject ? "Failed to update project" : "Failed to create project");
+      const detail = error.response?.data;
+      console.error("AI Lab save error:", error.response?.status, detail);
+      let msg = editingProject ? "Failed to update project" : "Failed to create project";
+      if (detail && typeof detail === "object" && !Array.isArray(detail)) {
+        msg = Object.entries(detail).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(", ") : v}`).join(" | ");
+      } else if (typeof detail === "string" && detail.length < 200) {
+        msg = detail;
+      }
+      toast.error(msg);
     }
   };
 
@@ -225,8 +234,8 @@ export default function AILabAdmin() {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         title={editingProject ? "Edit AI/ML Project" : "Add New Project"}
-        onSubmit={handleSubmit}
       >
+        <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 gap-4">
           {/* Required Title */}
           <div>
@@ -434,6 +443,7 @@ export default function AILabAdmin() {
             {editingProject ? "Update" : "Create"} Project
           </button>
         </div>
+        </form>
       </FormModal>
     </div>
   );
