@@ -7,7 +7,6 @@ import AnimatedSection from "../components/AnimatedSection";
 import ErrorState from "../components/ErrorState";
 import GlassCard from "../components/GlassCard";
 import GlowButton from "../components/GlowButton";
-import GradientBadge from "../components/GradientBadge";
 import HoverTiltCard from "../components/HoverTiltCard";
 import LoadingState from "../components/LoadingState";
 import ParticleBackground from "../components/ParticleBackground";
@@ -20,11 +19,10 @@ export default function HomePage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [hero, about, skills, projects] = await Promise.all([
+        const [hero, about, skills] = await Promise.all([
           fetchList("/hero/"),
           fetchList("/about/"),
           fetchList("/skills/"),
-          fetchList("/projects/?featured=true"),
         ]);
 
         setState({
@@ -34,7 +32,6 @@ export default function HomePage() {
             hero: hero.find((h) => h.is_active) ?? hero[0],
             about: about[0],
             skills,
-            projects,
           },
         });
       } catch {
@@ -47,7 +44,7 @@ export default function HomePage() {
   if (state.loading) return <LoadingState />;
   if (state.error) return <ErrorState message={state.error} />;
 
-  const { hero, about, skills, projects } = state.data;
+  const { hero, about, skills } = state.data;
 
   return (
     <div className="relative">
@@ -149,11 +146,11 @@ export default function HomePage() {
         </SectionTitle>
         <div className="grid md:grid-cols-2 gap-8">
           <GlassCard>
-            <h3 className="text-2xl font-bold gradient-text mb-4">Mission Statement</h3>
+            <h3 className="text-2xl font-bold gradient-text mb-4">Mission</h3>
             <p className="text-slate-300 leading-relaxed">{about?.mission_statement}</p>
           </GlassCard>
           <GlassCard>
-            <h3 className="text-2xl font-bold gradient-text mb-4">Vision 2030</h3>
+            <h3 className="text-2xl font-bold gradient-text mb-4">Vision</h3>
             <p className="text-slate-300 leading-relaxed">{about?.vision_2030}</p>
           </GlassCard>
         </div>
@@ -219,64 +216,6 @@ export default function HomePage() {
                 </div>
                 <h4 className="font-semibold text-lg mb-1">{skill.name}</h4>
                 <p className="text-sm text-slate-400">{skill.category}</p>
-              </GlassCard>
-            </motion.div>
-          ))}
-        </div>
-      </AnimatedSection>
-
-      {/* Featured Projects */}
-      <AnimatedSection className="section-padding max-w-7xl mx-auto" id="projects">
-        <SectionTitle subtitle="Innovative solutions in AI, robotics, and autonomous systems">
-          Featured Projects
-        </SectionTitle>
-        <div className="grid md:grid-cols-2 gap-8">
-          {projects?.map((project, index) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-            >
-              <GlassCard className="overflow-hidden group">
-                <div className="relative h-48 mb-4 -mx-6 -mt-6 overflow-hidden">
-                  {project.thumbnail || project.featured_image || (project.images && project.images[0]?.image) ? (
-                    <motion.img
-                      src={project.thumbnail || project.featured_image || project.images[0].image}
-                      alt={project.title}
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 0.4 }}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <>
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary-cyan/20 to-primary-emerald/20" />
-                      <motion.div
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ duration: 0.4 }}
-                        className="w-full h-full bg-gradient-to-br from-dark-elevated to-dark-surface flex items-center justify-center"
-                      >
-                        <span className="text-5xl gradient-text font-bold">
-                          {project.title.charAt(0)}
-                        </span>
-                      </motion.div>
-                    </>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-dark-base/80 to-transparent" />
-                </div>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {project.tech_stack?.slice(0, 3).map((tech) => (
-                    <GradientBadge key={tech.id}>{tech.name}</GradientBadge>
-                  ))}
-                </div>
-                <h3 className="text-2xl font-bold gradient-text mb-3">{project.title}</h3>
-                <p className="text-slate-300 leading-relaxed mb-4">{project.short_description}</p>
-                <div className="flex gap-3">
-                  <GlowButton href={`/projects#${project.slug}`} className="text-sm px-4 py-2">
-                    Learn More
-                  </GlowButton>
-                </div>
               </GlassCard>
             </motion.div>
           ))}

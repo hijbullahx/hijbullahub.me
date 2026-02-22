@@ -81,6 +81,7 @@ export default function DashboardHome() {
     { title: "Manage Skills", icon: "⚡", link: "/dashboard/skills" },
     { title: "Update Experience", icon: "💼", link: "/dashboard/experience" },
     { title: "Add Achievement", icon: "🏆", link: "/dashboard/achievements" },
+    { title: "AI/ML Lab Projects", icon: "🤖", link: "/dashboard/ai-lab" },
     { title: "Site Settings", icon: "⚙️", link: "/dashboard/settings" },
   ];
 
