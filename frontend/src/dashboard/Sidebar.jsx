@@ -23,13 +23,6 @@ const menuSections = [
     ],
   },
   {
-    title: "Publishing",
-    icon: "📰",
-    items: [
-      { path: "/dashboard/blog", label: "Blog", icon: "✍️" },
-    ],
-  },
-  {
     title: "Communication",
     icon: "💬",
     items: [

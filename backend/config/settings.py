@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     "apps.skills",
     "apps.projects",
     "apps.research",
-    "apps.blog",
     "apps.experience",
     "apps.achievements",
     "apps.ai_lab",
@@ -168,7 +167,7 @@ JAZZMIN_SETTINGS = {
     "copyright": "HijbullahHub 2026",
     
     # Search model
-    "search_model": ["auth.User", "projects.Project", "blog.Blog", "ai_lab.AILab", "research.Research"],
+    "search_model": ["auth.User", "projects.Project", "ai_lab.AILab", "research.Research"],
     
     # User menu
     "user_avatar": None,
@@ -211,11 +210,6 @@ JAZZMIN_SETTINGS = {
                 ]
             },
             {
-                "name": "📝 Blog Page",
-                "url": "admin:blog_blog_changelist",
-                "icon": "fas fa-blog",
-            },
-            {
                 "name": "🔬 Research Page",
                 "url": "admin:research_research_changelist",
                 "icon": "fas fa-flask",
@@ -245,7 +239,6 @@ JAZZMIN_SETTINGS = {
         "achievements",
         "ai_lab",
         "projects",
-        "blog",
         "research",
         "contact",
     ],
@@ -273,8 +266,6 @@ JAZZMIN_SETTINGS = {
         "projects.Project": "fas fa-project-diagram",
         "projects.Tag": "fas fa-tags",
         "projects.ProjectImage": "fas fa-images",
-        "blog": "fas fa-pen",
-        "blog.Blog": "fas fa-blog",
         "research": "fas fa-microscope",
         "research.Research": "fas fa-flask",
         "contact": "fas fa-inbox",

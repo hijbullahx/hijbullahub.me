@@ -4,7 +4,6 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CustomCursor from "./components/CustomCursor";
 import ProtectedRoute from "./components/ProtectedRoute";
-import BlogPage from "./pages/BlogPage";
 import ContactPage from "./pages/ContactPage";
 import HomePage from "./pages/HomePage";
 import ProjectsPage from "./pages/ProjectsPage";
@@ -18,7 +17,6 @@ import DashboardLayout from "./dashboard/DashboardLayout";
 import LoginPage from "./dashboard/LoginPage";
 import DashboardHome from "./dashboard/pages/DashboardHome";
 import ProjectsAdmin from "./dashboard/pages/ProjectsAdmin";
-import BlogAdmin from "./dashboard/pages/BlogAdmin";
 import ContactAdmin from "./dashboard/pages/ContactAdmin";
 import HeroAdmin from "./dashboard/pages/HeroAdmin";
 import AboutAdmin from "./dashboard/pages/AboutAdmin";
@@ -59,15 +57,6 @@ export default function App() {
                   <Footer />
                 </>
               } />
-              <Route path="/blog" element={
-                <>
-                  <Navbar />
-                  <main className="mx-auto max-w-6xl px-4 py-8">
-                    <BlogPage />
-                  </main>
-                  <Footer />
-                </>
-              } />
               <Route path="/research" element={
                 <>
                   <Navbar />
@@ -98,7 +87,6 @@ export default function App() {
               }>
                 <Route index element={<DashboardHome />} />
                 <Route path="projects" element={<ProjectsAdmin />} />
-                <Route path="blog" element={<BlogAdmin />} />
                 <Route path="contact" element={<ContactAdmin />} />
                 <Route path="hero" element={<HeroAdmin />} />
                 <Route path="about" element={<AboutAdmin />} />

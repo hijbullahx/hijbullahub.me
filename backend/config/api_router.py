@@ -3,7 +3,6 @@ from rest_framework.routers import DefaultRouter
 from apps.about.views import AboutViewSet
 from apps.achievements.views import AchievementViewSet
 from apps.ai_lab.views import AILabViewSet
-from apps.blog.views import BlogViewSet
 from apps.contact.views import ContactViewSet
 from apps.experience.views import ExperienceViewSet
 from apps.hero.views import HeroViewSet
@@ -23,7 +22,6 @@ router.register(r"project-images", ProjectImageViewSet, basename="project-images
 router.register(r"project-acquisitions", ProjectAcquisitionViewSet, basename="project-acquisitions")
 router.register(r"research", ResearchViewSet, basename="research")
 router.register(r"research-contributions", ResearchContributionViewSet, basename="research-contributions")
-router.register(r"blog", BlogViewSet, basename="blog")
 router.register(r"experience", ExperienceViewSet, basename="experience")
 router.register(r"achievements", AchievementViewSet, basename="achievements")
 router.register(r"ai-lab", AILabViewSet, basename="ai-lab")

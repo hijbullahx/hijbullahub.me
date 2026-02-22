@@ -6,7 +6,6 @@ import api from "../../api/client";
 export default function DashboardHome() {
   const [stats, setStats] = useState({
     projects: 0,
-    blog: 0,
     messages: 0,
     research: 0,
     contributions: 0,
@@ -19,9 +18,8 @@ export default function DashboardHome() {
 
   const fetchStats = async () => {
     try {
-      const [projects, blog, contact, research, contributions, acquisitions] = await Promise.all([
+      const [projects, contact, research, contributions, acquisitions] = await Promise.all([
         api.get("/projects/"),
-        api.get("/blog/"),
         api.get("/contact/"),
         api.get("/research/"),
         api.get("/research-contributions/"),
@@ -30,7 +28,6 @@ export default function DashboardHome() {
 
       setStats({
         projects: (projects.data.results || projects.data).length,
-        blog: (blog.data.results || blog.data).length,
         messages: (contact.data.results || contact.data).filter((m) => !m.is_read).length,
         research: (research.data.results || research.data).length,
         contributions: (contributions.data.results || contributions.data).filter((c) => c.status === "pending").length,
@@ -48,13 +45,6 @@ export default function DashboardHome() {
       icon: "🚀",
       color: "from-cyan-500 to-blue-500",
       link: "/dashboard/projects",
-    },
-    {
-      title: "Blog Posts",
-      value: stats.blog,
-      icon: "✍️",
-      color: "from-emerald-500 to-green-500",
-      link: "/dashboard/blog",
     },
     {
       title: "Unread Messages",

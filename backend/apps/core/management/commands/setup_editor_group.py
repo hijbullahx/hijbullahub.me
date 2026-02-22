@@ -11,7 +11,7 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    help = "Creates Editor group with permissions for blog, projects, and ai_lab"
+    help = "Creates Editor group with permissions for projects, ai_lab, and research"
 
     def handle(self, *args, **options):
         # Create or get the Editor group
@@ -30,7 +30,6 @@ class Command(BaseCommand):
             ('projects', 'project'),
             ('projects', 'projectimage'),
             ('projects', 'tag'),
-            ('blog', 'blog'),
             ('ai_lab', 'ailab'),
             ('research', 'research'),
             ('skills', 'skill'),
@@ -70,7 +69,6 @@ class Command(BaseCommand):
             )
         )
         self.stdout.write("  • Projects & Project Images")
-        self.stdout.write("  • Blog Posts")
         self.stdout.write("  • AI Lab Experiments")
         self.stdout.write("  • Research Papers")
         self.stdout.write("  • Skills")
