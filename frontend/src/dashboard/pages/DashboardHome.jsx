@@ -9,6 +9,7 @@ export default function DashboardHome() {
     blog: 0,
     messages: 0,
     research: 0,
+    contributions: 0,
   });
 
   useEffect(() => {
@@ -17,11 +18,12 @@ export default function DashboardHome() {
 
   const fetchStats = async () => {
     try {
-      const [projects, blog, contact, research] = await Promise.all([
+      const [projects, blog, contact, research, contributions] = await Promise.all([
         api.get("/projects/"),
         api.get("/blog/"),
         api.get("/contact/"),
         api.get("/research/"),
+        api.get("/research-contributions/"),
       ]);
 
       setStats({
@@ -29,6 +31,7 @@ export default function DashboardHome() {
         blog: (blog.data.results || blog.data).length,
         messages: (contact.data.results || contact.data).filter((m) => !m.is_read).length,
         research: (research.data.results || research.data).length,
+        contributions: (contributions.data.results || contributions.data).filter((c) => c.status === "pending").length,
       });
     } catch (error) {
       console.error("Failed to fetch stats");
@@ -64,6 +67,13 @@ export default function DashboardHome() {
       color: "from-amber-500 to-orange-500",
       link: "/dashboard/research",
     },
+    {
+      title: "Pending Contributions",
+      value: stats.contributions,
+      icon: "🤝",
+      color: "from-rose-500 to-pink-500",
+      link: "/dashboard/contributions",
+    },
   ];
 
   const quickLinks = [
@@ -88,7 +98,7 @@ export default function DashboardHome() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
         {statCards.map((stat, index) => (
           <Link key={index} to={stat.link}>
             <motion.div

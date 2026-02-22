@@ -26,6 +26,7 @@ import SkillsAdmin from "./dashboard/pages/SkillsAdmin";
 import ExperienceAdmin from "./dashboard/pages/ExperienceAdmin";
 import AchievementsAdmin from "./dashboard/pages/AchievementsAdmin";
 import ResearchAdmin from "./dashboard/pages/ResearchAdmin";
+import ContributionRequestsAdmin from "./dashboard/pages/ContributionRequestsAdmin";
 import AILabAdmin from "./dashboard/pages/AILabAdmin";
 import SettingsAdmin from "./dashboard/pages/SettingsAdmin";
 
@@ -104,6 +105,7 @@ export default function App() {
                 <Route path="experience" element={<ExperienceAdmin />} />
                 <Route path="achievements" element={<AchievementsAdmin />} />
                 <Route path="research" element={<ResearchAdmin />} />
+                <Route path="contributions" element={<ContributionRequestsAdmin />} />
                 <Route path="ai-lab" element={<AILabAdmin />} />
                 <Route path="settings" element={<SettingsAdmin />} />
               </Route>

@@ -8,7 +8,7 @@ from apps.contact.views import ContactViewSet
 from apps.experience.views import ExperienceViewSet
 from apps.hero.views import HeroViewSet
 from apps.projects.views import ProjectImageViewSet, ProjectViewSet, TagViewSet
-from apps.research.views import ResearchViewSet
+from apps.research.views import ResearchViewSet, ResearchContributionViewSet
 from apps.site_settings.views import SiteSettingViewSet
 from apps.skills.views import SkillViewSet
 from apps.users.views import UserProfileViewSet
@@ -21,6 +21,7 @@ router.register(r"tags", TagViewSet, basename="tags")
 router.register(r"projects", ProjectViewSet, basename="projects")
 router.register(r"project-images", ProjectImageViewSet, basename="project-images")
 router.register(r"research", ResearchViewSet, basename="research")
+router.register(r"research-contributions", ResearchContributionViewSet, basename="research-contributions")
 router.register(r"blog", BlogViewSet, basename="blog")
 router.register(r"experience", ExperienceViewSet, basename="experience")
 router.register(r"achievements", AchievementViewSet, basename="achievements")
