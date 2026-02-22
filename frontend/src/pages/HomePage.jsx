@@ -15,6 +15,8 @@ import TypingAnimation from "../components/TypingAnimation";
 
 export default function HomePage() {
   const [state, setState] = useState({ loading: true, error: "", data: {} });
+  const [scrollY, setScrollY] = useState(0);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const load = async () => {
@@ -41,10 +43,35 @@ export default function HomePage() {
     load();
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    const handleMouseMove = (e) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
+
+
   if (state.loading) return <LoadingState />;
   if (state.error) return <ErrorState message={state.error} />;
 
   const { hero, about, skills } = state.data;
+
+  // Calculate angle for mouse icon to follow cursor
+  const iconX = typeof window !== 'undefined' ? window.innerWidth / 2 : 0;
+  const iconY = typeof window !== 'undefined' ? window.innerHeight - 64 : 0;
+  const angle = Math.atan2(mousePos.y - iconY, mousePos.x - iconX) * (180 / Math.PI);
+  const mouseAngle = angle + 90; // Adjust for vertical icon orientation
 
   return (
     <div className="relative">
@@ -127,14 +154,36 @@ export default function HomePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+          style={{
+            position: "fixed",
+            bottom: "2rem",
+            left: "50%",
+            transform: `translateX(-50%)`,
+            zIndex: 50,
+          }}
         >
           <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-            className="w-6 h-10 border-2 border-primary-cyan/50 rounded-full flex justify-center pt-2"
+            animate={{ 
+              y: [0, 10, 0],
+            }}
+            transition={{ 
+              duration: 1.5, 
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="w-6 h-10 border-2 border-primary-cyan/50 rounded-full flex justify-center pt-2 backdrop-blur-sm bg-dark-base/30"
           >
-            <div className="w-1 h-2 bg-primary-cyan rounded-full" />
+            <motion.div 
+              className="w-1 h-2 bg-primary-cyan rounded-full"
+              animate={{
+                rotate: mouseAngle * 0.2,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 50,
+                damping: 15,
+              }}
+            />
           </motion.div>
         </motion.div>
       </section>
