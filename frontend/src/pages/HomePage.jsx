@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 import { fetchList } from "../api/client";
 import AnimatedSection from "../components/AnimatedSection";
@@ -21,12 +20,11 @@ export default function HomePage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [hero, about, skills, projects, aiLab] = await Promise.all([
+        const [hero, about, skills, projects] = await Promise.all([
           fetchList("/hero/"),
           fetchList("/about/"),
           fetchList("/skills/"),
           fetchList("/projects/?featured=true"),
-          fetchList("/ai-lab/"),
         ]);
 
         setState({
@@ -37,7 +35,6 @@ export default function HomePage() {
             about: about[0],
             skills,
             projects,
-            aiLab,
           },
         });
       } catch {
@@ -46,17 +43,6 @@ export default function HomePage() {
     };
     load();
   }, []);
-
-  const chartData = useMemo(() => {
-    const latest = state.data.aiLab?.[0];
-    if (!latest) return [];
-    return [
-      { metric: "Accuracy", value: Number(latest.accuracy ?? 0) * 100 },
-      { metric: "Precision", value: Number(latest.precision ?? 0) * 100 },
-      { metric: "Recall", value: Number(latest.recall ?? 0) * 100 },
-      { metric: "F1", value: Number(latest.f1_score ?? 0) * 100 },
-    ];
-  }, [state.data.aiLab]);
 
   if (state.loading) return <LoadingState />;
   if (state.error) return <ErrorState message={state.error} />;
@@ -295,38 +281,6 @@ export default function HomePage() {
             </motion.div>
           ))}
         </div>
-      </AnimatedSection>
-
-      {/* AI Lab Metrics */}
-      <AnimatedSection className="section-padding max-w-7xl mx-auto">
-        <SectionTitle subtitle="Real-time performance monitoring">
-          AI Lab Dashboard
-        </SectionTitle>
-        <GlassCard className="p-8">
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
-                <defs>
-                  <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#22d3ee" />
-                    <stop offset="100%" stopColor="#10b981" />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                <XAxis dataKey="metric" stroke="#94a3b8" />
-                <YAxis stroke="#94a3b8" />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "rgba(15, 23, 42, 0.9)",
-                    border: "1px solid rgba(34, 211, 238, 0.3)",
-                    borderRadius: "8px",
-                  }}
-                />
-                <Bar dataKey="value" fill="url(#barGradient)" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </GlassCard>
       </AnimatedSection>
     </div>
   );
