@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Project, ProjectImage, Tag
+from .models import Project, ProjectImage, Tag, ProjectAcquisition
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -73,3 +73,12 @@ class ProjectSerializer(serializers.ModelSerializer):
             data['thumbnail'] = data.get('featured_image')
         
         return data
+
+
+class ProjectAcquisitionSerializer(serializers.ModelSerializer):
+    project_title = serializers.CharField(source='project.title', read_only=True)
+
+    class Meta:
+        model = ProjectAcquisition
+        fields = ["id", "project", "project_title", "email", "phone", "message", "status", "is_read", "created_at", "updated_at"]
+        read_only_fields = ["status", "is_read", "created_at", "updated_at"]

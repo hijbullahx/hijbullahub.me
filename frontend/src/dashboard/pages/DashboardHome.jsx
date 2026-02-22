@@ -10,6 +10,7 @@ export default function DashboardHome() {
     messages: 0,
     research: 0,
     contributions: 0,
+    acquisitions: 0,
   });
 
   useEffect(() => {
@@ -18,12 +19,13 @@ export default function DashboardHome() {
 
   const fetchStats = async () => {
     try {
-      const [projects, blog, contact, research, contributions] = await Promise.all([
+      const [projects, blog, contact, research, contributions, acquisitions] = await Promise.all([
         api.get("/projects/"),
         api.get("/blog/"),
         api.get("/contact/"),
         api.get("/research/"),
         api.get("/research-contributions/"),
+        api.get("/project-acquisitions/"),
       ]);
 
       setStats({
@@ -32,6 +34,7 @@ export default function DashboardHome() {
         messages: (contact.data.results || contact.data).filter((m) => !m.is_read).length,
         research: (research.data.results || research.data).length,
         contributions: (contributions.data.results || contributions.data).filter((c) => c.status === "pending").length,
+        acquisitions: (acquisitions.data.results || acquisitions.data).filter((a) => a.status === "pending").length,
       });
     } catch (error) {
       console.error("Failed to fetch stats");
@@ -73,6 +76,13 @@ export default function DashboardHome() {
       icon: "🤝",
       color: "from-rose-500 to-pink-500",
       link: "/dashboard/contributions",
+    },
+    {
+      title: "Pending Acquisitions",
+      value: stats.acquisitions,
+      icon: "🏢",
+      color: "from-indigo-500 to-purple-500",
+      link: "/dashboard/acquisitions",
     },
   ];
 

@@ -65,3 +65,28 @@ class ProjectImage(TimeStampedModel):
 
     def __str__(self):
         return f"{self.project.title} image"
+
+
+class ProjectAcquisition(TimeStampedModel):
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("contacted", "Contacted"),
+        ("in_negotiation", "In Negotiation"),
+        ("accepted", "Accepted"),
+        ("rejected", "Rejected"),
+    ]
+
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="acquisition_requests")
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True)
+    message = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Project Acquisition Request"
+        verbose_name_plural = "Project Acquisition Requests"
+
+    def __str__(self):
+        return f"{self.email} - {self.project.title}"

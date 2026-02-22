@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Project, ProjectImage, Tag
+from .models import Project, ProjectImage, Tag, ProjectAcquisition
 
 
 class ProjectImageInline(admin.TabularInline):
@@ -117,3 +117,62 @@ class ProjectImageAdmin(admin.ModelAdmin):
         if obj.image:
             return format_html('<img src="{}" width="50" height="50" style="object-fit:cover;border-radius:6px;" />', obj.image.url)
         return "-"
+
+
+@admin.register(ProjectAcquisition)
+class ProjectAcquisitionAdmin(admin.ModelAdmin):
+    list_display = ("email", "project", "phone", "status_badge", "is_read", "created_at")
+    list_filter = ("status", "is_read", "created_at")
+    search_fields = ("email", "phone", "project__title", "message")
+    list_per_page = 20
+    readonly_fields = ("created_at", "updated_at")
+    actions = ["mark_as_read", "mark_as_contacted", "mark_as_accepted", "mark_as_rejected"]
+
+    fieldsets = (
+        ("Request Information", {
+            "fields": ("project", "email", "phone", "message")
+        }),
+        ("Status", {
+            "fields": ("status", "is_read")
+        }),
+        ("Metadata", {
+            "fields": ("created_at", "updated_at"),
+            "classes": ("collapse",)
+        }),
+    )
+
+    def mark_as_read(self, request, queryset):
+        updated = queryset.update(is_read=True)
+        self.message_user(request, f"{updated} request(s) marked as read.")
+    mark_as_read.short_description = "✓ Mark as read"
+
+    def mark_as_contacted(self, request, queryset):
+        updated = queryset.update(status="contacted", is_read=True)
+        self.message_user(request, f"{updated} request(s) marked as contacted.")
+    mark_as_contacted.short_description = "📞 Mark as contacted"
+
+    def mark_as_accepted(self, request, queryset):
+        updated = queryset.update(status="accepted", is_read=True)
+        self.message_user(request, f"{updated} request(s) accepted.")
+    mark_as_accepted.short_description = "✅ Accept requests"
+
+    def mark_as_rejected(self, request, queryset):
+        updated = queryset.update(status="rejected", is_read=True)
+        self.message_user(request, f"{updated} request(s) rejected.")
+    mark_as_rejected.short_description = "❌ Reject requests"
+
+    def status_badge(self, obj):
+        colors = {
+            "pending": "#f59e0b",
+            "contacted": "#3b82f6",
+            "in_negotiation": "#8b5cf6",
+            "accepted": "#10b981",
+            "rejected": "#ef4444",
+        }
+        color = colors.get(obj.status, "#64748b")
+        return format_html(
+            '<span style="background:{}; color:white; padding:4px 12px; border-radius:12px; font-size:11px; font-weight:bold;">{}</span>',
+            color, obj.get_status_display()
+        )
+    status_badge.short_description = "Status"
+    status_badge.admin_order_field = "status"

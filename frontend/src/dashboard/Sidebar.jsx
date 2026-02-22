@@ -35,6 +35,7 @@ const menuSections = [
     items: [
       { path: "/dashboard/contact", label: "Contact Messages", icon: "📧" },
       { path: "/dashboard/contributions", label: "Research Contributions", icon: "🤝" },
+      { path: "/dashboard/acquisitions", label: "Project Acquisitions", icon: "🏢" },
     ],
   },
   {
