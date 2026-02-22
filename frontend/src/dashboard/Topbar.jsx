@@ -55,7 +55,7 @@ export default function Topbar({ onMenuClick }) {
             </div>
           </div>
 
-          {/* Home Button */}}
+          {/* Home Button */}
           <button
             onClick={handleGoHome}
             className="px-4 py-2 text-sm font-medium bg-gradient-to-r from-cyan-500 to-emerald-500 text-white rounded-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all flex items-center gap-2"
