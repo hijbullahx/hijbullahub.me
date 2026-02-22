@@ -51,9 +51,12 @@ export function SoundProvider({ children }) {
   };
 
   const playEmpty = () => {
-    if (mutedRef.current || !emptyRef.current) return;
-    emptyRef.current.currentTime = 0;
-    emptyRef.current.play().catch(() => {});
+    if (mutedRef.current) return;
+    // Fall back to button sound if no empty-click sound is configured
+    const audio = emptyRef.current || btnRef.current;
+    if (!audio) return;
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
   };
 
   const toggleMute = () => {
