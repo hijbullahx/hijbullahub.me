@@ -56,7 +56,7 @@ export default function Topbar({ onMenuClick }) {
             </div>
             <div className="hidden sm:block">
               <p className="text-sm font-medium text-white">Admin</p>
-              <p className="text-xs text-gray-400">Superuser</p>
+              <p className="text-xs text-gray-400">Hijbullah</p>
             </div>
           </div>
 

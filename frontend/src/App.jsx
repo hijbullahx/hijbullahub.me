@@ -7,6 +7,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ContactPage from "./pages/ContactPage";
 import HomePage from "./pages/HomePage";
 import ProjectsPage from "./pages/ProjectsPage";
+import AIMLPage from "./pages/AIMLPage";
 import ResearchPage from "./pages/ResearchPage";
 
 // Dashboard imports
@@ -53,6 +54,15 @@ export default function App() {
                   <Navbar />
                   <main className="mx-auto max-w-6xl px-4 py-8">
                     <ProjectsPage />
+                  </main>
+                  <Footer />
+                </>
+              } />
+              <Route path="/ai-ml" element={
+                <>
+                  <Navbar />
+                  <main className="mx-auto max-w-6xl px-4 py-8">
+                    <AIMLPage />
                   </main>
                   <Footer />
                 </>

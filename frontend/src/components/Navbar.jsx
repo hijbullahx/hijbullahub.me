@@ -6,6 +6,7 @@ import { useTheme } from "../contexts/ThemeContext";
 const links = [
   ["/", "Home"],
   ["/projects", "Projects"],
+  ["/ai-ml", "AI/ML"],
   ["/research", "Research"],
   ["/contact", "Contact"],
 ];

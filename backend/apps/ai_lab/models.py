@@ -10,9 +10,17 @@ class AILab(TimeStampedModel):
         ("completed", "Completed"),
     ]
 
-    experiment_title = models.CharField(max_length=220)
-    model_name = models.CharField(max_length=140)
-    dataset_name = models.CharField(max_length=140)
+    # Project Information
+    title = models.CharField(max_length=220, default="Untitled Project", help_text="Project/Experiment Title")
+    link = models.URLField(max_length=500, blank=True, help_text="Link to project/paper/demo")
+    details = models.TextField(blank=True, help_text="Project description and details")
+    
+    # Experiment Details
+    experiment_title = models.CharField(max_length=220, blank=True)
+    model_name = models.CharField(max_length=140, blank=True)
+    dataset_name = models.CharField(max_length=140, blank=True)
+    
+    # Metrics
     accuracy = models.FloatField(blank=True, null=True)
     precision = models.FloatField(blank=True, null=True)
     recall = models.FloatField(blank=True, null=True)
@@ -26,4 +34,4 @@ class AILab(TimeStampedModel):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return self.experiment_title
+        return self.title if self.title else self.experiment_title
