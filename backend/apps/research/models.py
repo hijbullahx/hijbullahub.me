@@ -11,9 +11,10 @@ class Research(TimeStampedModel):
     ]
 
     title = models.CharField(max_length=220)
-    abstract = models.TextField()
-    methodology = models.TextField()
-    technologies = models.TextField()
+    contributors = models.CharField(max_length=500, blank=True, help_text="Comma-separated list of contributors")
+    abstract = models.TextField(blank=True)
+    methodology = models.TextField(blank=True)
+    technologies = models.TextField(blank=True)
     paper_link = models.URLField(blank=True)
     pdf_upload = models.FileField(upload_to="research/papers/", blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="planning")

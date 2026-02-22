@@ -17,6 +17,7 @@ class ResearchAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         form.base_fields['title'].help_text = '🔬 RESEARCH PAGE - Research paper title'
+        form.base_fields['contributors'].help_text = '🔬 RESEARCH PAGE - Contributors (comma-separated)'
         form.base_fields['status'].help_text = '🔬 RESEARCH PAGE - Current status of research'
         return form
     
@@ -27,7 +28,7 @@ class ResearchAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ("Research Information", {
-            "fields": ("title", "status")
+            "fields": ("title", "contributors", "status")
         }),
         ("Abstract", {
             "fields": ("abstract",),
