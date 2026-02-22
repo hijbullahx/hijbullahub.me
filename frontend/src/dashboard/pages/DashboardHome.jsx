@@ -166,19 +166,6 @@ export default function DashboardHome() {
           ))}
         </div>
       </div>
-
-      {/* Recent Activity (Placeholder) */}
-      <div>
-        <h2 className="text-2xl font-bold text-white mb-4">Recent Activity</h2>
-        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-          <div className="text-center text-gray-400 py-8">
-            <svg className="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <p>Activity tracking coming soon</p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

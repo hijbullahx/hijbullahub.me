@@ -37,11 +37,12 @@ export default function HomePage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [hero, about, skills, experience] = await Promise.all([
+        const [hero, about, skills, experience, achievements] = await Promise.all([
           fetchList("/hero/"),
           fetchList("/about/"),
           fetchList("/skills/"),
           fetchList("/experience/"),
+          fetchList("/achievements/"),
         ]);
 
         setState({
@@ -52,6 +53,7 @@ export default function HomePage() {
             about: about[0],
             skills,
             experience,
+            achievements,
           },
         });
       } catch {
@@ -83,7 +85,7 @@ export default function HomePage() {
   if (state.loading) return <LoadingState />;
   if (state.error) return <ErrorState message={state.error} />;
 
-  const { hero, about, skills, experience } = state.data;
+  const { hero, about, skills, experience, achievements } = state.data;
 
   // Calculate angle for mouse icon to follow cursor
   const iconX = typeof window !== 'undefined' ? window.innerWidth / 2 : 0;
@@ -357,6 +359,68 @@ export default function HomePage() {
                 </motion.div>
               ))}
             </div>
+          </div>
+        </AnimatedSection>
+      )}
+
+      {/* Achievements Section */}
+      {achievements?.length > 0 && (
+        <AnimatedSection className="section-padding max-w-7xl mx-auto" id="achievements">
+          <SectionTitle subtitle="Awards, certifications &amp; accolades">
+            Achievements
+          </SectionTitle>
+          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {achievements.map((a, idx) => (
+              <motion.div
+                key={a.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.08 }}
+                className="relative bg-white/[0.03] border border-white/10 rounded-2xl p-5 hover:border-amber-500/30 transition-all group"
+              >
+                <div className="absolute top-0 left-0 w-20 h-20 rounded-full bg-gradient-to-br from-amber-500/10 to-orange-500/10 blur-2xl" />
+
+                <div className="flex items-start gap-4">
+                  {a.badge_image_url ? (
+                    <img
+                      src={a.badge_image_url}
+                      alt={a.title}
+                      className="w-14 h-14 rounded-xl object-cover border border-white/10 flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-white/10 flex items-center justify-center text-3xl flex-shrink-0">
+                      🏆
+                    </div>
+                  )}
+
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-white text-sm leading-snug group-hover:text-amber-400 transition-colors">
+                      {a.title}
+                    </h3>
+                    {a.issuer && (
+                      <p className="text-xs text-slate-400 mt-1">{a.issuer}</p>
+                    )}
+                    {a.date && (
+                      <span className="inline-block mt-1.5 px-2 py-0.5 rounded-full text-xs bg-white/5 border border-white/10 text-slate-500">
+                        📅 {new Date(a.date).toLocaleDateString(undefined, { year: "numeric", month: "short" })}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {a.certificate_link && (
+                  <a
+                    href={a.certificate_link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-4 flex items-center justify-center gap-1.5 w-full py-2 rounded-xl border border-amber-500/20 text-amber-400 text-xs font-medium hover:bg-amber-500/10 transition-all"
+                  >
+                    View Certificate ↗
+                  </a>
+                )}
+              </motion.div>
+            ))}
           </div>
         </AnimatedSection>
       )}
