@@ -93,6 +93,7 @@ export default function DashboardHome() {
     { title: "Update Experience", icon: "💼", link: "/dashboard/experience" },
     { title: "Add Achievement", icon: "🏆", link: "/dashboard/achievements" },
     { title: "AI/ML Lab Projects", icon: "🤖", link: "/dashboard/ai-lab" },
+    { title: "Edit Contact Info", icon: "📡", link: "/dashboard/contact-profiles" },
     { title: "Site Settings", icon: "⚙️", link: "/dashboard/settings" },
   ];
 

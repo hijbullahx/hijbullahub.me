@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Contact
+from .models import Contact, ContactProfile
 
 
 @admin.register(Contact)
@@ -61,3 +61,10 @@ class ContactAdmin(admin.ModelAdmin):
         updated = queryset.update(is_read=False)
         self.message_user(request, f"{updated} message(s) marked as unread.")
     mark_as_unread.short_description = "Mark selected as unread"
+
+
+@admin.register(ContactProfile)
+class ContactProfileAdmin(admin.ModelAdmin):
+    list_display = ["title", "icon_type", "link", "image_opacity", "display_order", "is_active"]
+    list_filter = ["icon_type", "is_active"]
+    ordering = ["display_order"]

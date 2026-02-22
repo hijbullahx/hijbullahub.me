@@ -28,6 +28,7 @@ import ResearchAdmin from "./dashboard/pages/ResearchAdmin";
 import ContributionRequestsAdmin from "./dashboard/pages/ContributionRequestsAdmin";
 import AcquisitionRequestsAdmin from "./dashboard/pages/AcquisitionRequestsAdmin";
 import HireRequestsAdmin from "./dashboard/pages/HireRequestsAdmin";
+import ContactProfileAdmin from "./dashboard/pages/ContactProfileAdmin";
 import AILabAdmin from "./dashboard/pages/AILabAdmin";
 import SettingsAdmin from "./dashboard/pages/SettingsAdmin";
 
@@ -108,6 +109,7 @@ export default function App() {
                 <Route path="contributions" element={<ContributionRequestsAdmin />} />
                 <Route path="acquisitions" element={<AcquisitionRequestsAdmin />} />
                 <Route path="hire-requests" element={<HireRequestsAdmin />} />
+                <Route path="contact-profiles" element={<ContactProfileAdmin />} />
                 <Route path="ai-lab" element={<AILabAdmin />} />
                 <Route path="settings" element={<SettingsAdmin />} />
               </Route>
