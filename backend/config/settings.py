@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "apps.achievements",
     "apps.ai_lab",
     "apps.contact",
+    "apps.hire",
     "apps.site_settings",
     "apps.users",
 ]

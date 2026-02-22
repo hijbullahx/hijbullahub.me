@@ -10,6 +10,7 @@ export default function DashboardHome() {
     research: 0,
     contributions: 0,
     acquisitions: 0,
+    hireRequests: 0,
   });
 
   useEffect(() => {
@@ -18,12 +19,13 @@ export default function DashboardHome() {
 
   const fetchStats = async () => {
     try {
-      const [projects, contact, research, contributions, acquisitions] = await Promise.all([
+      const [projects, contact, research, contributions, acquisitions, hireReqs] = await Promise.all([
         api.get("/projects/"),
         api.get("/contact/"),
         api.get("/research/"),
         api.get("/research-contributions/"),
         api.get("/project-acquisitions/"),
+        api.get("/hire-requests/"),
       ]);
 
       setStats({
@@ -32,6 +34,7 @@ export default function DashboardHome() {
         research: (research.data.results || research.data).length,
         contributions: (contributions.data.results || contributions.data).filter((c) => c.status === "pending").length,
         acquisitions: (acquisitions.data.results || acquisitions.data).filter((a) => a.status === "pending").length,
+        hireRequests: (hireReqs.data.results || hireReqs.data).filter((h) => h.status === "new").length,
       });
     } catch (error) {
       console.error("Failed to fetch stats");
@@ -73,6 +76,13 @@ export default function DashboardHome() {
       icon: "🏢",
       color: "from-indigo-500 to-purple-500",
       link: "/dashboard/acquisitions",
+    },
+    {
+      title: "New Hire Requests",
+      value: stats.hireRequests,
+      icon: "💼",
+      color: "from-cyan-500 to-emerald-500",
+      link: "/dashboard/hire-requests",
     },
   ];
 

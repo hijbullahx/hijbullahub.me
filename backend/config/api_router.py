@@ -4,6 +4,7 @@ from apps.about.views import AboutViewSet
 from apps.achievements.views import AchievementViewSet
 from apps.ai_lab.views import AILabViewSet
 from apps.contact.views import ContactViewSet
+from apps.hire.views import HireRequestViewSet
 from apps.experience.views import ExperienceViewSet
 from apps.hero.views import HeroViewSet
 from apps.projects.views import ProjectImageViewSet, ProjectViewSet, TagViewSet, ProjectAcquisitionViewSet
@@ -26,6 +27,7 @@ router.register(r"experience", ExperienceViewSet, basename="experience")
 router.register(r"achievements", AchievementViewSet, basename="achievements")
 router.register(r"ai-lab", AILabViewSet, basename="ai-lab")
 router.register(r"contact", ContactViewSet, basename="contact")
+router.register(r"hire-requests", HireRequestViewSet, basename="hire-requests")
 router.register(r"site-settings", SiteSettingViewSet, basename="site-settings")
 router.register(r"profiles", UserProfileViewSet, basename="profiles")
 

@@ -7,6 +7,7 @@ import AnimatedSection from "../components/AnimatedSection";
 import ErrorState from "../components/ErrorState";
 import GlassCard from "../components/GlassCard";
 import GlowButton from "../components/GlowButton";
+import HireDrawer from "../components/HireDrawer";
 import HoverTiltCard from "../components/HoverTiltCard";
 import LoadingState from "../components/LoadingState";
 import ParticleBackground from "../components/ParticleBackground";
@@ -17,6 +18,7 @@ export default function HomePage() {
   const [state, setState] = useState({ loading: true, error: "", data: {} });
   const [scrollY, setScrollY] = useState(0);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [hireOpen, setHireOpen] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -108,9 +110,9 @@ export default function HomePage() {
               </p>
               
               <div className="flex flex-wrap gap-4">
-                <Link to="/projects">
-                  <GlowButton>View Projects</GlowButton>
-                </Link>
+                <GlowButton onClick={() => setHireOpen(true)}>
+                  💼 Hire Me
+                </GlowButton>
                 <Link to="/contact">
                   <motion.div
                     whileHover={{ scale: 1.05 }}
@@ -270,6 +272,8 @@ export default function HomePage() {
           ))}
         </div>
       </AnimatedSection>
+
+      <HireDrawer isOpen={hireOpen} onClose={() => setHireOpen(false)} />
     </div>
   );
 }
