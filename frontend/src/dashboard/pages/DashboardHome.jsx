@@ -78,6 +78,7 @@ export default function DashboardHome() {
 
   const quickLinks = [
     { title: "Edit Hero Section", icon: "🌟", link: "/dashboard/hero" },
+    { title: "Edit Mission & Vision", icon: "🎯", link: "/dashboard/about" },
     { title: "Manage Skills", icon: "⚡", link: "/dashboard/skills" },
     { title: "Update Experience", icon: "💼", link: "/dashboard/experience" },
     { title: "Add Achievement", icon: "🏆", link: "/dashboard/achievements" },
