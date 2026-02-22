@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CustomCursor from "./components/CustomCursor";
+import MuteButton from "./components/MuteButton";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ContactPage from "./pages/ContactPage";
 import HomePage from "./pages/HomePage";
@@ -13,6 +14,7 @@ import ResearchPage from "./pages/ResearchPage";
 // Dashboard imports
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { SoundProvider } from "./contexts/SoundContext";
 import { ToastProvider } from "./dashboard/components/ToastContext";
 import DashboardLayout from "./dashboard/DashboardLayout";
 import LoginPage from "./dashboard/LoginPage";
@@ -39,8 +41,10 @@ export default function App() {
       <ThemeProvider>
         <AuthProvider>
           <ToastProvider>
-            <CustomCursor />
-            <div className="min-h-screen">
+            <SoundProvider>
+              <CustomCursor />
+              <MuteButton />
+              <div className="min-h-screen">
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={
@@ -117,8 +121,9 @@ export default function App() {
               </Route>
             </Routes>
           </div>
-        </ToastProvider>
-      </AuthProvider>
+            </SoundProvider>
+          </ToastProvider>
+        </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
   );
