@@ -125,7 +125,7 @@ export default function HireDrawer({ isOpen, onClose }) {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 flex-shrink-0">
               <div>
-                <h2 className="text-2xl font-bold gradient-text">Hire Me</h2>
+                <h2 className="text-2xl font-bold gradient-text">Secure My Expertise Today</h2>
                 <p className="text-gray-400 text-sm mt-0.5">Let's build something great together</p>
               </div>
               <button

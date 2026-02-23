@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion, useMotionValue, useTransform } from "framer-motion";
 import { useEffect, useState } from "react";
 
 import { fetchList } from "../api/client";
@@ -13,6 +13,74 @@ import ParticleBackground from "../components/ParticleBackground";
 import SectionTitle from "../components/SectionTitle";
 import TypingAnimation from "../components/TypingAnimation";
 import FeedbackModal from "../components/FeedbackModal";
+import ReviewsDrawer from "../components/ReviewsDrawer";
+
+// ── Swipeable feedback card (book-page flip) ──────────────────────────────
+function FeedbackCard({ fb, canLeft, canRight, onSwipeLeft, onSwipeRight }) {
+  const x = useMotionValue(0);
+  const rotate = useTransform(x, [-180, 0, 180], [-12, 0, 12]);
+  const opacity = useTransform(x, [-150, -60, 0, 60, 150], [0, 0.85, 1, 0.85, 0]);
+
+  return (
+    <motion.div
+      drag="x"
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.12}
+      dragMomentum={false}
+      style={{ x, rotate, opacity, touchAction: "none" }}
+      onDragEnd={(_, info) => {
+        if (info.offset.x < -80 && canLeft) onSwipeLeft();
+        else if (info.offset.x > 80 && canRight) onSwipeRight();
+      }}
+      className="absolute inset-0 rounded-2xl bg-[#0d1117]/90 border border-white/10
+        backdrop-blur-md p-5 cursor-grab active:cursor-grabbing select-none
+        hover:border-cyan-500/30 transition-[border-color] duration-300 flex flex-col"
+    >
+      {/* Glow */}
+      <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500/10 to-emerald-500/8 blur-2xl pointer-events-none" />
+
+      {/* Stars */}
+      <div className="flex gap-1 mb-3">
+        {[1, 2, 3, 4, 5].map((s) => (
+          <svg key={s} className="w-4 h-4" viewBox="0 0 24 24"
+            fill={s <= fb.rating ? "currentColor" : "none"}
+            stroke="currentColor" strokeWidth={1.5}
+            style={{ color: s <= fb.rating ? "#f59e0b" : "rgba(255,255,255,0.15)" }}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round"
+              d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
+            />
+          </svg>
+        ))}
+        <span className="ml-auto text-xs text-gray-500">{fb.rating}/5</span>
+      </div>
+
+      {/* Comment */}
+      <p className="text-slate-300 text-sm leading-relaxed flex-1 line-clamp-5 mb-4">
+        &ldquo;{fb.comment}&rdquo;
+      </p>
+
+      {/* Author */}
+      <div className="flex items-center gap-2.5 pt-3 border-t border-white/5">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+          {fb.name.charAt(0).toUpperCase()}
+        </div>
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-white truncate">{fb.name}</p>
+          <p className="text-xs text-gray-500">{new Date(fb.created_at).toLocaleDateString()}</p>
+        </div>
+      </div>
+
+      {/* Edge arrows hint */}
+      {canRight && (
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-cyan-500/30 text-lg select-none pointer-events-none">‹</span>
+      )}
+      {canLeft && (
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-500/30 text-lg select-none pointer-events-none">›</span>
+      )}
+    </motion.div>
+  );
+}
 
 export default function HomePage() {
   const [state, setState] = useState({ loading: true, error: "", data: {} });
@@ -21,6 +89,8 @@ export default function HomePage() {
   const [hireOpen, setHireOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [feedbacks, setFeedbacks] = useState([]);
+  const [reviewsOpen, setReviewsOpen] = useState(false);
+  const [cardIdx, setCardIdx] = useState(0);
 
   useEffect(() => {
     const loadFeedbacks = () =>
@@ -129,7 +199,7 @@ export default function HomePage() {
               
               <div className="flex flex-wrap gap-4">
                 <GlowButton onClick={() => setHireOpen(true)}>
-                  💼 Hire Me
+                  💼 Engage My Expertise
                 </GlowButton>
                 <motion.button
                   onClick={() => setFeedbackOpen(true)}
@@ -434,60 +504,101 @@ export default function HomePage() {
         />
       )}
 
-      {/* Feedback Section — always visible */}
+      {/* Feedback Section */}
       <AnimatedSection className="section-padding max-w-7xl mx-auto pb-24">
         <SectionTitle subtitle="What visitors are saying">
           Feedback &amp; Reviews
         </SectionTitle>
 
         {feedbacks.length > 0 ? (
-          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {feedbacks.map((fb, idx) => (
-              <motion.div
-                key={fb.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.07 }}
-                className="relative bg-white/[0.03] border border-white/10 rounded-2xl p-5 hover:border-white/20 transition-all group"
+          <div className="mt-10 flex flex-col items-center">
+            {/* Swipe hint */}
+            <p className="text-xs text-gray-500 mb-6 tracking-wide select-none">
+              ‹ Swipe the card left or right to flip through reviews ›
+            </p>
+
+            {/* Card stack — book pages */}
+            <div className="relative w-full max-w-sm" style={{ height: "300px" }}>
+
+              {/* Back shadow cards (depth effect) */}
+              {[2, 1].map((depth) => {
+                const bgFb = feedbacks[cardIdx + depth];
+                if (!bgFb) return null;
+                return (
+                  <motion.div
+                    key={`depth-${depth}`}
+                    animate={{ scale: 1 - depth * 0.05, y: depth * 14 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 28 }}
+                    className="absolute inset-0 rounded-2xl bg-[#0d1117]/80 border border-white/10 p-5 pointer-events-none overflow-hidden"
+                    style={{ opacity: 0.35 + (2 - depth) * 0.2 }}
+                  >
+                    <div className="flex gap-1 mb-2">
+                      {[1,2,3,4,5].map(s => (
+                        <svg key={s} className="w-3.5 h-3.5" viewBox="0 0 24 24"
+                          fill={s <= bgFb.rating ? "currentColor" : "none"} stroke="currentColor" strokeWidth={1.5}
+                          style={{ color: s <= bgFb.rating ? "#f59e0b" : "rgba(255,255,255,0.1)" }}
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-slate-400 text-xs line-clamp-3">&ldquo;{bgFb.comment}&rdquo;</p>
+                  </motion.div>
+                );
+              })}
+
+              {/* Front card — draggable */}
+              <AnimatePresence mode="wait">
+                {feedbacks[cardIdx] && (
+                  <FeedbackCard
+                    key={cardIdx}
+                    fb={feedbacks[cardIdx]}
+                    canLeft={cardIdx < feedbacks.length - 1}
+                    canRight={cardIdx > 0}
+                    onSwipeLeft={() => setCardIdx((i) => i + 1)}
+                    onSwipeRight={() => setCardIdx((i) => i - 1)}
+                  />
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Navigation */}
+            <div className="flex items-center gap-4 mt-6">
+              <button
+                onClick={() => setCardIdx((i) => Math.max(0, i - 1))}
+                disabled={cardIdx === 0}
+                className="w-8 h-8 flex items-center justify-center rounded-full border border-white/10 text-gray-400 hover:border-cyan-500/50 hover:text-cyan-400 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
               >
-                {/* Gradient accent top-left */}
-                <div className="absolute top-0 left-0 w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500/10 to-emerald-500/10 blur-2xl" />
+                ‹
+              </button>
 
-                {/* Stars */}
-                <div className="flex gap-1 mb-3">
-                  {[1,2,3,4,5].map((s) => (
-                    <svg key={s} className="w-4 h-4" viewBox="0 0 24 24"
-                      fill={s <= fb.rating ? "currentColor" : "none"}
-                      stroke="currentColor" strokeWidth={1.5}
-                      style={{ color: s <= fb.rating ? "#f59e0b" : "rgba(255,255,255,0.15)" }}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round"
-                        d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
-                      />
-                    </svg>
-                  ))}
-                </div>
+              {/* Dot indicators */}
+              <div className="flex gap-1.5">
+                {feedbacks.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCardIdx(i)}
+                    className={`rounded-full transition-all duration-300 ${
+                      i === cardIdx
+                        ? "w-5 h-1.5 bg-cyan-400"
+                        : "w-1.5 h-1.5 bg-white/20 hover:bg-white/40"
+                    }`}
+                  />
+                ))}
+              </div>
 
-                {/* Comment */}
-                <p className="text-slate-300 text-sm leading-relaxed mb-4 line-clamp-4">
-                  &ldquo;{fb.comment}&rdquo;
-                </p>
+              <button
+                onClick={() => setCardIdx((i) => Math.min(feedbacks.length - 1, i + 1))}
+                disabled={cardIdx === feedbacks.length - 1}
+                className="w-8 h-8 flex items-center justify-center rounded-full border border-white/10 text-gray-400 hover:border-cyan-500/50 hover:text-cyan-400 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
+              >
+                ›
+              </button>
+            </div>
 
-                {/* Author */}
-                <div className="flex items-center gap-2 mt-auto">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center text-white text-xs font-bold">
-                    {fb.name.charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-white">{fb.name}</p>
-                    <p className="text-xs text-gray-500">
-                      {new Date(fb.created_at).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+            <p className="text-xs text-gray-600 mt-2">
+              {cardIdx + 1} of {feedbacks.length}
+            </p>
           </div>
         ) : (
           <div className="mt-10 text-center py-16 bg-white/[0.02] border border-white/10 rounded-2xl">
@@ -497,17 +608,32 @@ export default function HomePage() {
           </div>
         )}
 
-          {/* CTA to leave feedback */}
-          <div className="text-center mt-10">
-            <motion.button
-              onClick={() => setFeedbackOpen(true)}
-              whileHover={{ scale: 1.05 }}
-              className="px-8 py-3 rounded-full border-2 border-primary-cyan/30 text-primary-cyan font-semibold hover:bg-primary-cyan/10 transition-all duration-300"
-            >
-              ⭐ Leave Your Feedback
-            </motion.button>
-          </div>
+        {/* CTAs */}
+        <div className="flex flex-wrap justify-center gap-4 mt-10">
+          <motion.button
+            onClick={() => setReviewsOpen(true)}
+            whileHover={{ scale: 1.05 }}
+            className="px-7 py-3 rounded-full bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 hover:border-white/20 transition-all duration-300"
+          >
+            📋 View All Reviews
+          </motion.button>
+          <motion.button
+            onClick={() => setFeedbackOpen(true)}
+            whileHover={{ scale: 1.05 }}
+            className="px-7 py-3 rounded-full border-2 border-primary-cyan/30 text-primary-cyan font-semibold hover:bg-primary-cyan/10 transition-all duration-300"
+          >
+            ⭐ Leave Your Feedback
+          </motion.button>
+        </div>
       </AnimatedSection>
+
+      {/* Reviews sidebar drawer */}
+      <ReviewsDrawer
+        isOpen={reviewsOpen}
+        onClose={() => setReviewsOpen(false)}
+        feedbacks={feedbacks}
+        onLeaveFeedback={() => setFeedbackOpen(true)}
+      />
     </div>
   );
 }
