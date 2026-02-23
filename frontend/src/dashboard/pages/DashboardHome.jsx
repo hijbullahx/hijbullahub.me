@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import api from "../../api/client";
 
 export default function DashboardHome() {
@@ -12,9 +13,15 @@ export default function DashboardHome() {
     acquisitions: 0,
     hireRequests: 0,
   });
+  const [visits, setVisits] = useState(null);
+  const [visitsError, setVisitsError] = useState(false);
+  const [visitsLoading, setVisitsLoading] = useState(true);
 
   useEffect(() => {
     fetchStats();
+    api.get("/analytics/summary/")
+      .then(({ data }) => { setVisits(data); setVisitsLoading(false); })
+      .catch((err) => { console.error("Analytics fetch failed:", err?.response?.status, err?.message); setVisitsError(true); setVisitsLoading(false); });
   }, []);
 
   const fetchStats = async () => {
@@ -165,6 +172,87 @@ export default function DashboardHome() {
             </Link>
           ))}
         </div>
+      </div>
+
+      {/* Visitor Statistics */}
+      <div>
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <h2 className="text-2xl font-bold text-white">Visitor Statistics</h2>
+          <Link
+            to="/dashboard/analytics"
+            className="text-xs text-cyan-400 hover:text-cyan-300 border border-cyan-500/30 hover:border-cyan-400/50 px-3 py-1.5 rounded-full transition-all"
+          >
+            Full Analytics →
+          </Link>
+        </div>
+
+        {visitsLoading && (
+          <div className="flex items-center justify-center py-12 bg-white/5 border border-white/10 rounded-xl">
+            <div className="w-7 h-7 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+          </div>
+        )}
+
+        {visitsError && !visitsLoading && (
+          <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center text-gray-500">
+            <p className="text-3xl mb-2">📊</p>
+            <p className="text-sm">Could not load analytics. Check console for details.</p>
+          </div>
+        )}
+
+        {visits && !visitsLoading && (
+          <>
+            {/* Mini stat cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              {[
+                { label: "Total Visits",  value: visits.total,        icon: "👁️",  grad: "from-cyan-500 to-blue-500" },
+                { label: "Today",         value: visits.today,        icon: "📅",  grad: "from-emerald-500 to-teal-500" },
+                { label: "Last 7 Days",   value: visits.last_7_days,  icon: "📆",  grad: "from-purple-500 to-pink-500" },
+                { label: "Last 30 Days",  value: visits.last_30_days, icon: "🗓️", grad: "from-amber-500 to-orange-500" },
+              ].map((s, i) => (
+                <motion.div
+                  key={s.label}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.06 }}
+                  className="bg-white/5 border border-white/10 rounded-xl p-4"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-gray-400 text-xs">{s.label}</span>
+                    <span className="text-xl">{s.icon}</span>
+                  </div>
+                  <p className={`text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r ${s.grad}`}>
+                    {s.value.toLocaleString()}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* 7-day bar chart */}
+            <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+              <p className="text-sm text-gray-400 mb-4">Last 7 Days — Daily Visits</p>
+              <ResponsiveContainer width="100%" height={140}>
+                <BarChart data={visits.daily_30.slice(-7)} margin={{ top: 0, right: 0, left: -28, bottom: 0 }}>
+                  <XAxis
+                    dataKey="date"
+                    tickFormatter={(d) => { const dt = new Date(d); return `${dt.getMonth()+1}/${dt.getDate()}`; }}
+                    tick={{ fill: "#6b7280", fontSize: 11 }}
+                  />
+                  <YAxis tick={{ fill: "#6b7280", fontSize: 11 }} allowDecimals={false} />
+                  <Tooltip
+                    contentStyle={{ background: "#0B0F19", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, fontSize: 12 }}
+                    labelStyle={{ color: "#9ca3af" }}
+                    itemStyle={{ color: "#06b6d4" }}
+                  />
+                  <Bar dataKey="visits" radius={[4, 4, 0, 0]}>
+                    {visits.daily_30.slice(-7).map((_, i, arr) => (
+                      <Cell key={i} fill={i === arr.length - 1 ? "#06b6d4" : "rgba(6,182,212,0.4)"} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

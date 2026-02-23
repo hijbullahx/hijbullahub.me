@@ -35,6 +35,13 @@ const menuSections = [
     ],
   },
   {
+    title: "Analytics",
+    icon: "📊",
+    items: [
+      { path: "/dashboard/analytics", label: "Visitor Analytics", icon: "📈" },
+    ],
+  },
+  {
     title: "Settings",
     icon: "⚙️",
     items: [

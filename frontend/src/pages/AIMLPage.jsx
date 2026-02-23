@@ -29,6 +29,73 @@ export default function AIMLPage() {
           AI/ML Lab
         </SectionTitle>
 
+        {/* ── Live ML Portfolio CTA ───────────────────────────────────────── */}
+        <AnimatedSection className="mt-10 mb-14">
+          <div className="relative rounded-2xl overflow-hidden border border-white/10">
+            {/* ambient glow background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-emerald-500/10 pointer-events-none" />
+            <div className="absolute -top-32 -left-32 w-80 h-80 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-32 -right-32 w-80 h-80 rounded-full bg-purple-500/10 blur-3xl pointer-events-none" />
+
+            <div className="relative z-10 flex flex-col lg:flex-row items-center gap-10 px-8 py-14 sm:px-14">
+
+              {/* Icon cluster */}
+              <div className="shrink-0 flex items-center justify-center w-28 h-28 rounded-2xl bg-white/5 border border-white/10 text-6xl select-none shadow-inner">
+                🚀
+              </div>
+
+              {/* Text */}
+              <div className="flex-1 text-center lg:text-left">
+                <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-cyan-400 mb-3">
+                  <span className="w-6 h-px bg-cyan-500/60" />
+                  Live ML Portfolio
+                  <span className="w-6 h-px bg-cyan-500/60" />
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-bold gradient-text mb-4 leading-tight">
+                  See My ML Models in Action
+                </h2>
+                <p className="text-gray-400 text-base sm:text-lg leading-relaxed max-w-2xl">
+                  I maintain a dedicated <span className="text-white font-medium">interactive ML portfolio</span> built
+                  with Streamlit,  where every model is deployed live. You can run predictions and stress-test the models in real time directly in your browser — no setup or coding required.
+                </p>
+
+                {/* Feature pills */}
+                <div className="flex flex-wrap gap-2 mt-5 justify-center lg:justify-start">
+                  {[
+                    { icon: "🧠", label: "Live Inference" },
+                    { icon: "📊", label: "Interactive Charts" },
+                    { icon: "🗂️", label: "Dataset Explorer" },
+                    { icon: "⚡", label: "Real-time Results" },
+                    { icon: "🔓", label: "No Login Required" },
+                  ].map(({ icon, label }) => (
+                    <span
+                      key={label}
+                      className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-gray-300"
+                    >
+                      <span>{icon}</span>
+                      {label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* CTA */}
+              <div className="shrink-0 flex flex-col items-center gap-3">
+                <GlowButton
+                  href="https://hijbullahml.streamlit.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-8 py-3 text-base font-semibold whitespace-nowrap"
+                >
+                  Explore Live Portfolio →
+                </GlowButton>
+                <span className="text-xs text-gray-500">Opens in a new tab</span>
+              </div>
+
+            </div>
+          </div>
+        </AnimatedSection>
+
         {state.projects.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-6xl mb-4">🤖</div>
@@ -161,7 +228,9 @@ export default function AIMLPage() {
             ))}
           </div>
         )}
+
       </div>
     </div>
   );
 }
+

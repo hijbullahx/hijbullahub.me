@@ -34,6 +34,24 @@ import ContactProfileAdmin from "./dashboard/pages/ContactProfileAdmin";
 import FeedbackAdmin from "./dashboard/pages/FeedbackAdmin";
 import AILabAdmin from "./dashboard/pages/AILabAdmin";
 import SettingsAdmin from "./dashboard/pages/SettingsAdmin";
+import AnalyticsAdmin from "./dashboard/pages/AnalyticsAdmin";
+import { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
+import api from "./api/client";
+
+// Fires a silent POST to record each public page view
+function VisitTracker() {
+  const location = useLocation();
+  const lastPath = useRef(null);
+  useEffect(() => {
+    if (location.pathname.startsWith("/dashboard")) return;
+    if (location.pathname === lastPath.current) return;
+    lastPath.current = location.pathname;
+    const page = location.pathname === "/" ? "home" : location.pathname.slice(1);
+    api.post("/analytics/visit/", { page, referrer: document.referrer }).catch(() => {});
+  }, [location.pathname]);
+  return null;
+}
 
 export default function App() {
   return (
@@ -44,6 +62,7 @@ export default function App() {
             <SoundProvider>
               <CustomCursor />
               <MuteButton />
+              <VisitTracker />
               <div className="min-h-screen">
             <Routes>
               {/* Public Routes */}
@@ -118,6 +137,7 @@ export default function App() {
                 <Route path="feedback" element={<FeedbackAdmin />} />
                 <Route path="ai-lab" element={<AILabAdmin />} />
                 <Route path="settings" element={<SettingsAdmin />} />
+                <Route path="analytics" element={<AnalyticsAdmin />} />
               </Route>
             </Routes>
           </div>
