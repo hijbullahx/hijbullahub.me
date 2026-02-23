@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useMotionValue, useTransform } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { fetchList } from "../api/client";
 import AnimatedSection from "../components/AnimatedSection";
@@ -16,10 +16,11 @@ import FeedbackModal from "../components/FeedbackModal";
 import ReviewsDrawer from "../components/ReviewsDrawer";
 
 // ── Swipeable feedback card (book-page flip) ──────────────────────────────
-function FeedbackCard({ fb, canLeft, canRight, onSwipeLeft, onSwipeRight }) {
+function FeedbackCard({ fb, canLeft, canRight, onSwipeLeft, onSwipeRight, onClick }) {
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-180, 0, 180], [-12, 0, 12]);
   const opacity = useTransform(x, [-150, -60, 0, 60, 150], [0, 0.85, 1, 0.85, 0]);
+  const didDrag = useRef(false);
 
   return (
     <motion.div
@@ -28,13 +29,16 @@ function FeedbackCard({ fb, canLeft, canRight, onSwipeLeft, onSwipeRight }) {
       dragElastic={0.12}
       dragMomentum={false}
       style={{ x, rotate, opacity, touchAction: "none" }}
+      onDragStart={() => { didDrag.current = false; }}
+      onDrag={(_, info) => { if (Math.abs(info.offset.x) > 5) didDrag.current = true; }}
       onDragEnd={(_, info) => {
         if (info.offset.x < -80 && canLeft) onSwipeLeft();
         else if (info.offset.x > 80 && canRight) onSwipeRight();
       }}
+      onPointerUp={() => { if (!didDrag.current) onClick?.(); }}
       className="absolute inset-0 rounded-2xl bg-[#0d1117]/90 border border-white/10
-        backdrop-blur-md p-5 cursor-grab active:cursor-grabbing select-none
-        hover:border-cyan-500/30 transition-[border-color] duration-300 flex flex-col"
+        backdrop-blur-md p-5 cursor-pointer select-none
+        hover:border-cyan-500/40 transition-[border-color] duration-300 flex flex-col"
     >
       {/* Glow */}
       <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500/10 to-emerald-500/8 blur-2xl pointer-events-none" />
@@ -78,6 +82,10 @@ function FeedbackCard({ fb, canLeft, canRight, onSwipeLeft, onSwipeRight }) {
       {canLeft && (
         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-500/30 text-lg select-none pointer-events-none">›</span>
       )}
+      {/* Tap hint */}
+      <span className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] text-gray-600 select-none pointer-events-none tracking-wide">
+        tap to view all
+      </span>
     </motion.div>
   );
 }
@@ -91,6 +99,7 @@ export default function HomePage() {
   const [feedbacks, setFeedbacks] = useState([]);
   const [reviewsOpen, setReviewsOpen] = useState(false);
   const [cardIdx, setCardIdx] = useState(0);
+  const wheelCooldown = useRef(false);
 
   useEffect(() => {
     const loadFeedbacks = () =>
@@ -514,11 +523,21 @@ export default function HomePage() {
           <div className="mt-10 flex flex-col items-center">
             {/* Swipe hint */}
             <p className="text-xs text-gray-500 mb-6 tracking-wide select-none">
-              ‹ Swipe the card left or right to flip through reviews ›
+              ‹ Swipe or scroll over the card to flip through reviews ›
             </p>
 
             {/* Card stack — book pages */}
-            <div className="relative w-full max-w-sm" style={{ height: "300px" }}>
+            <div
+              className="relative w-full max-w-sm"
+              style={{ height: "300px" }}
+              onWheel={(e) => {
+                if (wheelCooldown.current) return;
+                wheelCooldown.current = true;
+                setTimeout(() => { wheelCooldown.current = false; }, 500);
+                if (e.deltaY > 0) setCardIdx((i) => Math.min(feedbacks.length - 1, i + 1));
+                else setCardIdx((i) => Math.max(0, i - 1));
+              }}
+            >
 
               {/* Back shadow cards (depth effect) */}
               {[2, 1].map((depth) => {
@@ -557,6 +576,7 @@ export default function HomePage() {
                     canRight={cardIdx > 0}
                     onSwipeLeft={() => setCardIdx((i) => i + 1)}
                     onSwipeRight={() => setCardIdx((i) => i - 1)}
+                    onClick={() => setReviewsOpen(true)}
                   />
                 )}
               </AnimatePresence>
