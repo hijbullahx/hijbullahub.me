@@ -97,7 +97,6 @@ export default function AIMLPage() {
         {state.projects.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-6xl mb-4">🤖</div>
-            <p className="text-gray-400 text-lg">No AI/ML projects yet. Check back soon!</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
