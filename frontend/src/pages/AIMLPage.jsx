@@ -63,8 +63,6 @@ export default function AIMLPage() {
                 <div className="flex flex-wrap gap-2 mt-5 justify-center lg:justify-start">
                   {[
                     { icon: "🧠", label: "Live Inference" },
-                    { icon: "📊", label: "Interactive Charts" },
-                    { icon: "🗂️", label: "Dataset Explorer" },
                     { icon: "⚡", label: "Real-time Results" },
                     { icon: "🔓", label: "No Login Required" },
                   ].map(({ icon, label }) => (
