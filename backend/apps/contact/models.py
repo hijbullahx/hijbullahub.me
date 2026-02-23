@@ -58,9 +58,10 @@ class Feedback(TimeStampedModel):
     rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES, default=5)
     comment = models.TextField(blank=True, default="")
     is_visible = models.BooleanField(default=True, help_text="Show publicly on site")
+    display_order = models.PositiveIntegerField(default=0, help_text="Lower = shown first in public card deck")
 
     class Meta:
-        ordering = ["-created_at"]
+        ordering = ["display_order", "-created_at"]
         verbose_name = "Feedback"
         verbose_name_plural = "Feedbacks"
 

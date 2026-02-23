@@ -1,3 +1,4 @@
+from django.db import models
 from rest_framework import permissions, viewsets
 
 from .models import Contact, ContactProfile, Feedback
@@ -37,3 +38,8 @@ class FeedbackViewSet(viewsets.ModelViewSet):
         if self.action in ["create", "list", "retrieve"]:
             return [permissions.AllowAny()]
         return [permissions.IsAdminUser()]
+
+    def perform_create(self, serializer):
+        # Auto-assign display_order: new submissions go to the end
+        max_order = Feedback.objects.aggregate(m=models.Max("display_order"))["m"] or 0
+        serializer.save(display_order=max_order + 1)

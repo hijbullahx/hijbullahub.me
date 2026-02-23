@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import api from "../../api/client";
 import { useToast } from "../components/ToastContext";
 
@@ -29,10 +29,41 @@ function StarDisplay({ rating }) {
   );
 }
 
+function ChevronUp({ disabled, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      title="Move up — show earlier on homepage"
+      className="p-1.5 rounded-lg border border-white/10 text-gray-400 hover:border-cyan-500/40 hover:text-cyan-400 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
+    >
+      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+      </svg>
+    </button>
+  );
+}
+
+function ChevronDown({ disabled, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      title="Move down — show later on homepage"
+      className="p-1.5 rounded-lg border border-white/10 text-gray-400 hover:border-cyan-500/40 hover:text-cyan-400 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
+    >
+      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
+  );
+}
+
 export default function FeedbackAdmin() {
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("all"); // all | visible | hidden
+  const [filter, setFilter] = useState("all");
+  const [reordering, setReordering] = useState(null);
   const { showToast } = useToast();
 
   useEffect(() => { load(); }, []);
@@ -41,7 +72,8 @@ export default function FeedbackAdmin() {
     setLoading(true);
     try {
       const { data } = await api.get("/feedback/");
-      setFeedbacks(data.results ?? data);
+      const items = (data.results ?? data).slice().sort((a, b) => a.display_order - b.display_order);
+      setFeedbacks(items);
     } catch {
       showToast("Failed to load feedback.", "error");
     } finally {
@@ -52,7 +84,7 @@ export default function FeedbackAdmin() {
   const toggleVisibility = async (fb) => {
     try {
       const { data } = await api.patch(`/feedback/${fb.id}/`, { is_visible: !fb.is_visible });
-      setFeedbacks((prev) => prev.map((f) => (f.id === fb.id ? data : f)));
+      setFeedbacks((prev) => prev.map((f) => (f.id === fb.id ? { ...f, ...data } : f)));
       showToast(`Feedback ${data.is_visible ? "shown" : "hidden"}.`, "success");
     } catch {
       showToast("Failed to update.", "error");
@@ -67,6 +99,38 @@ export default function FeedbackAdmin() {
       showToast("Deleted.", "success");
     } catch {
       showToast("Failed to delete.", "error");
+    }
+  };
+
+  const moveItem = async (fbId, direction) => {
+    // feedbacks is already kept sorted; use index positions directly
+    // so this works even when all display_order values are 0 (fresh data)
+    const list = [...feedbacks];
+    const idx = list.findIndex((f) => f.id === fbId);
+    const swapIdx = direction === "up" ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= list.length) return;
+
+    // Swap the two entries in the array
+    const newList = [...list];
+    [newList[idx], newList[swapIdx]] = [newList[swapIdx], newList[idx]];
+
+    // Re-assign clean 1-based sequential display_order to every item so the
+    // backend always stores distinct values regardless of previous state
+    const normalized = newList.map((f, i) => ({ ...f, display_order: i + 1 }));
+
+    // Optimistic UI — instant visual reorder
+    setFeedbacks(normalized);
+    setReordering(fbId);
+
+    try {
+      // Patch only the two items that actually changed positions
+      await api.patch(`/feedback/${list[idx].id}/`, { display_order: swapIdx + 1 });
+      await api.patch(`/feedback/${list[swapIdx].id}/`, { display_order: idx + 1 });
+    } catch {
+      showToast("Failed to reorder. Refreshing...", "error");
+      load();
+    } finally {
+      setReordering(null);
     }
   };
 
@@ -93,7 +157,9 @@ export default function FeedbackAdmin() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-white">Feedback Manager</h1>
-        <p className="text-gray-400 mt-1">Review, show or hide public feedback from visitors.</p>
+        <p className="text-gray-400 mt-1">
+          Show/hide feedback and use the ↑ ↓ arrows to set the order they appear in the homepage card deck.
+        </p>
       </div>
 
       {/* Stats */}
@@ -112,7 +178,7 @@ export default function FeedbackAdmin() {
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap items-center">
         {["all", "visible", "hidden"].map((tab) => (
           <button
             key={tab}
@@ -126,6 +192,9 @@ export default function FeedbackAdmin() {
             {tab}
           </button>
         ))}
+        <span className="ml-auto text-xs text-gray-600 select-none">
+          ↑ ↓ arrows = homepage card order
+        </span>
       </div>
 
       {/* Feedback list */}
@@ -140,64 +209,84 @@ export default function FeedbackAdmin() {
         </div>
       ) : (
         <div className="space-y-3">
-          {filtered.map((fb, idx) => (
-            <motion.div
-              key={fb.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.04 }}
-              className={`bg-white/5 border rounded-xl p-5 transition-all ${
-                fb.is_visible ? "border-white/10" : "border-white/5 opacity-60"
-              }`}
-            >
-              <div className="flex items-start justify-between gap-4">
-                {/* Left */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-3 mb-2">
-                    <span className="font-semibold text-white">{fb.name}</span>
-                    {fb.email && (
-                      <span className="text-xs text-gray-500 truncate">{fb.email}</span>
-                    )}
-                    <StarDisplay rating={fb.rating} />
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded-full ${
-                        fb.is_visible
-                          ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                          : "bg-rose-500/20 text-rose-400 border border-rose-500/30"
-                      }`}
-                    >
-                      {fb.is_visible ? "Visible" : "Hidden"}
-                    </span>
-                    <span className="text-xs text-gray-500 ml-auto">
-                      {new Date(fb.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <p className="text-gray-300 text-sm leading-relaxed">{fb.comment}</p>
-                </div>
+          <AnimatePresence>
+            {filtered.map((fb) => {
+              const fullIdx = feedbacks.findIndex((f) => f.id === fb.id);
+              const isFirst = fullIdx === 0;
+              const isLast = fullIdx === feedbacks.length - 1;
+              const isSaving = reordering === fb.id;
 
-                {/* Actions */}
-                <div className="flex flex-col gap-2 shrink-0">
-                  <button
-                    onClick={() => toggleVisibility(fb)}
-                    title={fb.is_visible ? "Hide" : "Show"}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${
-                      fb.is_visible
-                        ? "border-rose-500/30 text-rose-400 hover:bg-rose-500/10"
-                        : "border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
-                    }`}
-                  >
-                    {fb.is_visible ? "Hide" : "Show"}
-                  </button>
-                  <button
-                    onClick={() => deleteFeedback(fb.id)}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-all"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+              return (
+                <motion.div
+                  key={fb.id}
+                  layout
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: isSaving ? 0.55 : 1, y: 0 }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ layout: { duration: 0.2 }, default: { duration: 0.15 } }}
+                  className={`bg-white/5 border rounded-xl p-5 transition-colors ${
+                    fb.is_visible ? "border-white/10" : "border-white/5 opacity-60"
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+
+                    {/* Order controls */}
+                    <div className="flex flex-col items-center gap-1 shrink-0 pt-0.5">
+                      <ChevronUp disabled={isFirst || !!reordering} onClick={() => moveItem(fb.id, "up")} />
+                      <span className="text-[10px] font-bold text-gray-600 tabular-nums w-5 text-center select-none">
+                        #{fullIdx + 1}
+                      </span>
+                      <ChevronDown disabled={isLast || !!reordering} onClick={() => moveItem(fb.id, "down")} />
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-3 mb-2">
+                        <span className="font-semibold text-white">{fb.name}</span>
+                        {fb.email && (
+                          <span className="text-xs text-gray-500 truncate">{fb.email}</span>
+                        )}
+                        <StarDisplay rating={fb.rating} />
+                        <span
+                          className={`text-xs px-2 py-0.5 rounded-full ${
+                            fb.is_visible
+                              ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                              : "bg-rose-500/20 text-rose-400 border border-rose-500/30"
+                          }`}
+                        >
+                          {fb.is_visible ? "Visible" : "Hidden"}
+                        </span>
+                        <span className="text-xs text-gray-500 ml-auto">
+                          {new Date(fb.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-gray-300 text-sm leading-relaxed">{fb.comment}</p>
+                    </div>
+
+                    {/* Visibility + Delete */}
+                    <div className="flex flex-col gap-2 shrink-0">
+                      <button
+                        onClick={() => toggleVisibility(fb)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${
+                          fb.is_visible
+                            ? "border-rose-500/30 text-rose-400 hover:bg-rose-500/10"
+                            : "border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
+                        }`}
+                      >
+                        {fb.is_visible ? "Hide" : "Show"}
+                      </button>
+                      <button
+                        onClick={() => deleteFeedback(fb.id)}
+                        className="px-3 py-1.5 rounded-lg text-xs font-medium border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-all"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
         </div>
       )}
     </div>
