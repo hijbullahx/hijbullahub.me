@@ -13,6 +13,7 @@ class SiteSetting(TimeStampedModel):
     social_links = models.JSONField(default=dict, blank=True)
 
     # Sound settings — use RawMediaCloudinaryStorage so audio isn't validated as an image
+    sounds_enabled = models.BooleanField(default=True)
     click_sound = models.FileField(upload_to="sounds/", blank=True, null=True, storage=RawMediaCloudinaryStorage())
     click_sound_volume = models.FloatField(default=0.5)
     empty_click_sound = models.FileField(upload_to="sounds/", blank=True, null=True, storage=RawMediaCloudinaryStorage())

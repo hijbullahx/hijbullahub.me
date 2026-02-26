@@ -102,6 +102,7 @@ export default function SettingsAdmin() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
+    sounds_enabled: true,
     click_sound_volume: 0.5,
     empty_click_sound_volume: 0.3,
   });
@@ -119,6 +120,7 @@ export default function SettingsAdmin() {
       if (s) {
         setSettings(s);
         setForm({
+          sounds_enabled: s.sounds_enabled !== false,
           click_sound_volume: s.click_sound_volume ?? 0.5,
           empty_click_sound_volume: s.empty_click_sound_volume ?? 0.3,
         });
@@ -187,6 +189,42 @@ export default function SettingsAdmin() {
             <p className="text-xs text-gray-500 mt-1">
               Sounds play site-wide on every click. Visitors can mute anytime with the&nbsp;🔇 button (bottom-right corner).
             </p>
+          </div>
+
+          {/* ── Global Mute Master Toggle ── */}
+          <div className={`flex items-center justify-between gap-4 px-5 py-4 rounded-2xl border transition-all ${
+            form.sounds_enabled
+              ? "bg-emerald-500/5 border-emerald-500/20"
+              : "bg-rose-500/5 border-rose-500/20"
+          }`}>
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">{form.sounds_enabled ? "🔊" : "🔇"}</span>
+              <div>
+                <p className="text-white font-semibold text-sm">
+                  {form.sounds_enabled ? "Sounds Enabled" : "All Sounds Muted"}
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {form.sounds_enabled
+                    ? "All visitors will hear click sounds on the site."
+                    : "No visitor will hear any sound, globally. Overrides individual volume settings."}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => set("sounds_enabled", !form.sounds_enabled)}
+              className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 transition-colors duration-200 focus:outline-none ${
+                form.sounds_enabled
+                  ? "bg-emerald-500 border-emerald-500"
+                  : "bg-white/10 border-white/20"
+              }`}
+            >
+              <span
+                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg transition-transform duration-200 mt-0.5 ${
+                  form.sounds_enabled ? "translate-x-5" : "translate-x-0.5"
+                }`}
+              />
+            </button>
           </div>
 
           <div className="grid md:grid-cols-2 gap-5">
