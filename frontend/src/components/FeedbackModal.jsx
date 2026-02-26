@@ -38,7 +38,7 @@ function StarRating({ value, onChange }) {
 }
 
 export default function FeedbackModal({ onClose, onSubmitted }) {
-  const [form, setForm] = useState({ name: "", email: "", rating: 0, comment: "" });
+  const [form, setForm] = useState({ name: "", email: "", profession: "", rating: 0, comment: "" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -55,6 +55,7 @@ export default function FeedbackModal({ onClose, onSubmitted }) {
       const { data } = await api.post("/feedback/", {
         name: form.name.trim(),
         email: form.email.trim(),
+        profession: form.profession.trim(),
         rating: form.rating,
         comment: form.comment.trim(),
       });
@@ -141,6 +142,20 @@ export default function FeedbackModal({ onClose, onSubmitted }) {
                   value={form.email}
                   onChange={(e) => set("email", e.target.value)}
                   placeholder="your@email.com"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/50 transition"
+                />
+              </div>
+
+              {/* Profession */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">
+                  Profession <span className="text-gray-500 text-xs">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={form.profession}
+                  onChange={(e) => set("profession", e.target.value)}
+                  placeholder="e.g. Software Engineer at Institution"
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/50 transition"
                 />
               </div>

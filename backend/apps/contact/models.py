@@ -55,6 +55,7 @@ class Feedback(TimeStampedModel):
 
     name = models.CharField(max_length=120)
     email = models.EmailField(blank=True, default="")
+    profession = models.CharField(max_length=120, blank=True, default="")
     rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES, default=5)
     comment = models.TextField(blank=True, default="")
     is_visible = models.BooleanField(default=True, help_text="Show publicly on site")

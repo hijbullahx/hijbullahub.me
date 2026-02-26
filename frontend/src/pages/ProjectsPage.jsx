@@ -397,7 +397,7 @@ export default function ProjectsPage() {
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                           className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent"
-                          placeholder="+1 (555) 000-0000"
+                          placeholder="+880 XXXX-XXXXXX"
                         />
                       </div>
 

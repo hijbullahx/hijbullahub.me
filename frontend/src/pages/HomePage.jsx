@@ -16,7 +16,7 @@ import FeedbackModal from "../components/FeedbackModal";
 import ReviewsDrawer from "../components/ReviewsDrawer";
 
 // ── Swipeable feedback card (book-page flip) ──────────────────────────────
-function FeedbackCard({ fb, canLeft, canRight, onSwipeLeft, onSwipeRight, onClick }) {
+function FeedbackCard({ fb, canLeft, canRight, onSwipeLeft, onSwipeRight, onClick, totalCount, index }) {
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-180, 0, 180], [-12, 0, 12]);
   const opacity = useTransform(x, [-150, -60, 0, 60, 150], [0, 0.85, 1, 0.85, 0]);
@@ -56,7 +56,12 @@ function FeedbackCard({ fb, canLeft, canRight, onSwipeLeft, onSwipeRight, onClic
             />
           </svg>
         ))}
-        <span className="ml-auto text-xs text-gray-500">{fb.rating}/5</span>
+        {/* Only show '1/Count' if there is more than 1 feedback */}
+        {totalCount > 1 && (
+          <span className="ml-auto text-xs text-gray-500">
+            {index + 1}/{totalCount}
+          </span>
+        )}
       </div>
 
       {/* Comment */}
@@ -71,7 +76,12 @@ function FeedbackCard({ fb, canLeft, canRight, onSwipeLeft, onSwipeRight, onClic
         </div>
         <div className="min-w-0">
           <p className="text-sm font-semibold text-white truncate">{fb.name}</p>
-          <p className="text-xs text-gray-500">{new Date(fb.created_at).toLocaleDateString()}</p>
+          <div className="flex flex-col">
+            {fb.profession && (
+              <p className="text-[10px] text-cyan-400 font-medium truncate mb-0.5">{fb.profession}</p>
+            )}
+            <p className="text-[10px] text-gray-500 hidden sm:block">{new Date(fb.created_at).toLocaleDateString()}</p>
+          </div>
         </div>
       </div>
 
@@ -580,6 +590,8 @@ export default function HomePage() {
                   <FeedbackCard
                     key={cardIdx}
                     fb={feedbacks[cardIdx]}
+                    totalCount={feedbacks.length}
+                    index={cardIdx}
                     canLeft={cardIdx < feedbacks.length - 1}
                     canRight={cardIdx > 0}
                     onSwipeLeft={() => setCardIdx((i) => i + 1)}

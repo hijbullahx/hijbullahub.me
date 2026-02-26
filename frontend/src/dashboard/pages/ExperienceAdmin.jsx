@@ -191,7 +191,7 @@ export default function ExperienceAdmin() {
                 type="text"
                 value={formData.role}
                 onChange={(e) => set("role", e.target.value)}
-                placeholder="e.g. Software Engineer"
+                placeholder="e.g. Software Engineer at Institution"
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/50 transition"
               />
             </div>
