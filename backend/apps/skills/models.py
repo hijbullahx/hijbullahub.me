@@ -4,16 +4,17 @@ from apps.core.models import TimeStampedModel
 
 
 class Skill(TimeStampedModel):
-    CATEGORY_CHOICES = [
-        ("Programming", "Programming"),
-        ("Framework", "Framework"),
-        ("AI/ML", "AI/ML"),
-        ("Web", "Web"),
-        ("IoT", "IoT"),
-        ("Tools", "Tools"),
+    # Standard categories for suggestions, but users can add custom ones
+    DEFAULT_CATEGORIES = [
+        "Programming",
+        "Framework",
+        "AI/ML",
+        "Web",
+        "IoT",
+        "Tools",
     ]
 
-    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+    category = models.CharField(max_length=50)  # No choices restriction to allow custom input
     name = models.CharField(max_length=100)
     level = models.PositiveIntegerField(default=50)
     icon = models.CharField(max_length=120, blank=True)

@@ -17,7 +17,10 @@ export default function SkillsAdmin() {
     icon: "",
     display_order: 0,
   });
+  const [isCustomCategory, setIsCustomCategory] = useState(false);
   const toast = useToast();
+
+  const CATEGORIES = ["Programming", "Framework", "AI/ML", "Web", "IoT", "Tools"];
 
   useEffect(() => {
     fetchSkills();
@@ -43,11 +46,13 @@ export default function SkillsAdmin() {
       icon: "",
       display_order: 0,
     });
+    setIsCustomCategory(false);
     setModalOpen(true);
   };
 
   const handleEdit = (skill) => {
     setEditingSkill(skill);
+    const standard = CATEGORIES.includes(skill.category);
     setFormData({
       name: skill.name || "",
       category: skill.category || "Programming",
@@ -55,6 +60,7 @@ export default function SkillsAdmin() {
       icon: skill.icon || "",
       display_order: skill.display_order || 0,
     });
+    setIsCustomCategory(!standard);
     setModalOpen(true);
   };
 
@@ -162,18 +168,38 @@ export default function SkillsAdmin() {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Category</label>
-              <select
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              <div className="space-y-2">
+                <select
+                value={isCustomCategory || !CATEGORIES.includes(formData.category) ? "Other" : formData.category}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === "Other") {
+                    setIsCustomCategory(true);
+                    setFormData({ ...formData, category: "" });
+                  } else {
+                    setIsCustomCategory(false);
+                    setFormData({ ...formData, category: val });
+                  }
+                }}
                 className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent"
               >
-                <option value="Programming">Programming</option>
-                <option value="Framework">Framework</option>
-                <option value="AI/ML">AI/ML</option>
-                <option value="Web">Web</option>
-                <option value="IoT">IoT</option>
-                <option value="Tools">Tools</option>
-              </select>
+                  {CATEGORIES.map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                  <option value="Other">Other (Custom)</option>
+                </select>
+
+                {isCustomCategory && (
+                  <input
+                    type="text"
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    placeholder="Enter custom category"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent animate-in fade-in slide-in-from-top-2 duration-200"
+                    required
+                  />
+                )}
+              </div>
             </div>
 
             <div>
