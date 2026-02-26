@@ -169,8 +169,10 @@ export default function SkillsAdmin() {
               >
                 <option value="Programming">Programming</option>
                 <option value="Framework">Framework</option>
-                <option value="Tools">Tools</option>
                 <option value="AI/ML">AI/ML</option>
+                <option value="Web">Web</option>
+                <option value="IoT">IoT</option>
+                <option value="Tools">Tools</option>
               </select>
             </div>
 

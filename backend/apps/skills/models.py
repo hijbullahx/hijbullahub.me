@@ -6,7 +6,8 @@ from apps.core.models import TimeStampedModel
 class Skill(TimeStampedModel):
     CATEGORY_CHOICES = [
         ("Programming", "Programming"),
-        ("AI", "AI"),
+        ("Framework", "Framework"),
+        ("AI/ML", "AI/ML"),
         ("Web", "Web"),
         ("IoT", "IoT"),
         ("Tools", "Tools"),
