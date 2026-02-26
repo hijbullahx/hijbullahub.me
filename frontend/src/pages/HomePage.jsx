@@ -357,8 +357,16 @@ export default function HomePage() {
                       </linearGradient>
                     </defs>
                   </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-2xl font-bold gradient-text">{skill.level}</span>
+                  <div className="absolute inset-0 flex items-center justify-center p-3">
+                    {skill.icon ? (
+                      <img
+                        src={skill.icon}
+                        alt={skill.name}
+                        className="w-full h-full object-cover rounded-full drop-shadow-[0_0_10px_rgba(34,211,238,0.3)]"
+                      />
+                    ) : (
+                      <span className="text-2xl font-bold gradient-text">{skill.level}</span>
+                    )}
                   </div>
                 </div>
                 <h4 className="font-semibold text-lg mb-1">{skill.name}</h4>

@@ -14,9 +14,10 @@ export default function SkillsAdmin() {
     name: "",
     category: "Programming",
     level: 80,
-    icon: "",
+    icon: null, // this will hold the file object when uploading
     display_order: 0,
   });
+  const [currentIconUrl, setCurrentIconUrl] = useState(""); // to show preview of existing image
   const [isCustomCategory, setIsCustomCategory] = useState(false);
   const toast = useToast();
 
@@ -43,9 +44,10 @@ export default function SkillsAdmin() {
       name: "",
       category: "Programming",
       level: 80,
-      icon: "",
+      icon: null,
       display_order: 0,
     });
+    setCurrentIconUrl("");
     setIsCustomCategory(false);
     setModalOpen(true);
   };
@@ -57,9 +59,11 @@ export default function SkillsAdmin() {
       name: skill.name || "",
       category: skill.category || "Programming",
       level: skill.level || 80,
-      icon: skill.icon || "",
+      icon: null, // Don't carry over the string URL to file input
       display_order: skill.display_order || 0,
     });
+    // If backend returns icon URL, store it separately for preview
+    setCurrentIconUrl(skill.icon || "");
     setIsCustomCategory(!standard);
     setModalOpen(true);
   };
@@ -78,19 +82,30 @@ export default function SkillsAdmin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
+      const form = new FormData();
+      form.append("name", formData.name);
+      form.append("category", formData.category);
+      form.append("level", formData.level);
+      form.append("display_order", formData.display_order);
+      if (formData.icon) {
+        form.append("icon", formData.icon);
+      }
+
       if (editingSkill) {
-        await api.patch(`/skills/${editingSkill.id}/`, formData);
+        await api.patch(`/skills/${editingSkill.id}/`, form);
         toast.success("Skill updated successfully");
       } else {
-        await api.post("/skills/", formData);
+        await api.post("/skills/", form);
         toast.success("Skill created successfully");
       }
       setModalOpen(false);
       fetchSkills();
     } catch (error) {
       toast.error(editingSkill ? "Failed to update skill" : "Failed to create skill");
+      setLoading(false);
     }
   };
 
@@ -212,19 +227,41 @@ export default function SkillsAdmin() {
                 max="100"
                 value={formData.level}
                 onChange={(e) => setFormData({ ...formData, level: parseInt(e.target.value) })}
-                className="w-full"
+                className="w-full accent-cyan-500"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Icon (Optional)</label>
-              <input
-                type="text"
-                value={formData.icon}
-                onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent"
-                placeholder="fa-python, devicon-react-original, etc."
-              />
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-gray-300">Skill Icon / Logo</label>
+              <div className="flex items-start gap-4">
+                {(currentIconUrl || formData.icon) && (
+                  <div className="w-16 h-16 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center p-2 shrink-0">
+                    <img
+                      src={formData.icon ? URL.createObjectURL(formData.icon) : currentIconUrl}
+                      alt="Preview"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                )}
+                <label className="flex-1">
+                  <div className="w-full px-4 py-3 bg-white/5 border border-dashed border-white/20 rounded-lg text-center cursor-pointer hover:bg-white/10 hover:border-cyan-500/50 transition-colors">
+                    <span className="text-gray-400 text-sm">
+                      {formData.icon ? formData.icon.name : "Click to upload image"}
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        if (e.target.files?.[0]) {
+                          setFormData({ ...formData, icon: e.target.files[0] });
+                        }
+                      }}
+                      className="hidden"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1.5">Ideally a transparent PNG or SVG logo.</p>
+                </label>
+              </div>
             </div>
 
             <div>
