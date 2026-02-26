@@ -338,7 +338,7 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <GlassCard className="text-center">
-                <div className="relative w-24 h-24 mx-auto mb-4">
+                <div className="relative w-24 h-24 mx-auto mb-4 flex-shrink-0">
                   <svg className="transform -rotate-90 w-24 h-24">
                     <circle
                       cx="48"
