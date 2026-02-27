@@ -80,6 +80,11 @@ function FeedbackCard({ fb, canLeft, canRight, onSwipeLeft, onSwipeRight, onClic
             {fb.profession && (
               <p className="text-[10px] text-cyan-400 font-medium truncate mb-0.5">{fb.profession}</p>
             )}
+            {fb.email && (
+              <p className="text-[10px] text-gray-400 truncate max-w-[140px] leading-tight mb-0.5" title={fb.email}>
+                {fb.email}
+              </p>
+            )}
             <p className="text-[10px] text-gray-500 hidden sm:block">{new Date(fb.created_at).toLocaleDateString()}</p>
           </div>
         </div>
