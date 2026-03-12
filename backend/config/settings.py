@@ -133,6 +133,11 @@ else:
 # Backwards compatibility for django-cloudinary-storage
 STATICFILES_STORAGE = "whitenoise.storage.StaticFilesStorage"
 
+# Ensure STATICFILES_DIRS is not empty so collectstatic creates the dir
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
