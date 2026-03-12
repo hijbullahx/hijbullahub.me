@@ -10,8 +10,15 @@ const SoundCtx = createContext({
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
 
 export function SoundProvider({ children }) {
+  // Default to muted (true) for new sessions.
+  // Persist within the session so refresh doesn't reset it if the user explicitly changed it.
   const [isMuted, setIsMuted] = useState(() => {
-    try { return localStorage.getItem("sound_muted") === "true"; } catch { return false; }
+    try {
+      const stored = sessionStorage.getItem("sound_muted");
+      return stored !== null ? stored === "true" : true;
+    } catch {
+      return true;
+    }
   });
 
   const mutedRef       = useRef(isMuted);
@@ -88,7 +95,7 @@ export function SoundProvider({ children }) {
     setIsMuted((prev) => {
       const next = !prev;
       mutedRef.current = next;
-      try { localStorage.setItem("sound_muted", String(next)); } catch {}
+      try { sessionStorage.setItem("sound_muted", String(next)); } catch {}
       return next;
     });
   };

@@ -14,6 +14,7 @@ class Education(TimeStampedModel):
 
     degree_name = models.CharField(max_length=255)
     institution_name = models.CharField(max_length=255)
+    location = models.CharField(max_length=255, blank=True, null=True, help_text="e.g. Dhaka, Bangladesh")
     institution_type = models.CharField(max_length=20, choices=INSTITUTION_TYPES, default='university')
     
     start_date = models.DateField(default=timezone.now)

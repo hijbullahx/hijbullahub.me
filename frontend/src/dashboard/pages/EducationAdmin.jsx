@@ -10,6 +10,7 @@ import FileUploader from "../components/FileUploader";
 const EMPTY_FORM = {
   degree_name: "",
   institution_name: "",
+  location: "",
   institution_type: "university",
   start_date: "",
   end_date: "",
@@ -70,6 +71,7 @@ export default function EducationAdmin() {
     setFormData({
       degree_name: item.degree_name,
       institution_name: item.institution_name,
+      location: item.location || "",
       institution_type: item.institution_type,
       start_date: item.start_date || "",
       end_date: item.end_date || "",
@@ -255,6 +257,16 @@ export default function EducationAdmin() {
               required
               value={formData.institution_name}
               onChange={(e) => set("institution_name", e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 focus:ring-1 ring-cyan-500 outline-none text-white placeholder-slate-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1 text-slate-300">Location <span className="text-xs text-slate-500">(Optional)</span></label>
+            <input
+              type="text"
+              value={formData.location}
+              placeholder="e.g. Dhaka, Bangladesh"
+              onChange={(e) => set("location", e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 focus:ring-1 ring-cyan-500 outline-none text-white placeholder-slate-500"
             />
           </div>

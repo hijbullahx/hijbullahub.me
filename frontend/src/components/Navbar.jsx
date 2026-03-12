@@ -172,7 +172,7 @@ export default function Navbar() {
               <motion.span 
                 className="relative bg-clip-text text-transparent font-extrabold"
                 style={{
-                  backgroundImage: 'linear-gradient(90deg, #a855f7, #ec4899, #a855f7)',
+                  backgroundImage: 'linear-gradient(90deg, #22d3ee, #ee6d32, #22d3ee)',
                   backgroundSize: '200% 100%',
                 }}
                 animate={{

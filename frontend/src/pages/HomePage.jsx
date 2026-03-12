@@ -284,13 +284,25 @@ export default function HomePage() {
                           <h3 className="text-lg font-bold text-white group-hover:text-primary-cyan transition-colors truncate">
                             {edu.degree_name}
                           </h3>
-                          <div className="flex items-center justify-between mt-1">
-                             <p className="text-slate-400 text-sm font-medium truncate">
-                               {edu.institution_name}
-                             </p>
-                             <span className="text-xs text-primary-cyan font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap hidden sm:block">
-                               Click for Details ↗
-                             </span>
+                          <div className="mt-1">
+                             <div className="flex items-start justify-between">
+                                <p className="text-slate-400 text-sm font-medium truncate">
+                                  {edu.institution_name}
+                                </p>
+                                <span className="text-[10px] text-primary-cyan font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap hidden sm:block ml-2">
+                                  Click for Details ↗
+                                </span>
+                             </div>
+                             
+                             <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-300 ease-out w-full">
+                                <div className="overflow-hidden">
+                                   {edu.location && (
+                                      <p className="text-xs text-slate-500 mt-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75">
+                                         📍 {edu.location}
+                                      </p>
+                                   )}
+                                </div>
+                             </div>
                           </div>
                       </div>
                       
@@ -569,7 +581,13 @@ export default function HomePage() {
                     </motion.div>
 
                     <h2 className="text-2xl font-bold text-white mb-2">{selectedEducation.degree_name}</h2>
-                    <p className="text-lg text-cyan-400 font-medium mb-6">{selectedEducation.institution_name}</p>
+                    <p className="text-lg text-cyan-400 font-medium mb-1">{selectedEducation.institution_name}</p>
+                    {selectedEducation.location && (
+                       <p className="text-sm text-slate-400 mb-6 flex items-center justify-center gap-1">
+                          📍 {selectedEducation.location}
+                       </p>
+                    )}
+                    {!selectedEducation.location && <div className="mb-6" />}
                     
                     {/* Meta Grid */}
                     <div className="grid grid-cols-2 gap-4 w-full max-w-lg mb-8">
@@ -581,7 +599,7 @@ export default function HomePage() {
                        </div>
                        {selectedEducation.result && (
                          <div className="bg-emerald-500/10 rounded-xl p-3 border border-emerald-500/20">
-                            <p className="text-xs text-emerald-400/70 uppercase tracking-wider mb-1">Result / GPA</p>
+                            <p className="text-xs text-emerald-400/70 uppercase tracking-wider mb-1">GPA / CGPA</p>
                             <p className="font-semibold text-emerald-400 text-sm">
                                {selectedEducation.result}
                             </p>
