@@ -9,6 +9,7 @@ const menuSections = [
       { path: "/dashboard/hero", label: "Hero", icon: "🌟" },
       { path: "/dashboard/about", label: "About", icon: "👤" },
       { path: "/dashboard/skills", label: "Skills", icon: "⚡" },
+      { path: "/dashboard/education", label: "Education", icon: "🎓" },
       { path: "/dashboard/experience", label: "Experience", icon: "💼" },
       { path: "/dashboard/achievements", label: "Achievements", icon: "🏆" },
     ],

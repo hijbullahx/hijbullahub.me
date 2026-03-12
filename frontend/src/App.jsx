@@ -25,6 +25,7 @@ import HeroAdmin from "./dashboard/pages/HeroAdmin";
 import AboutAdmin from "./dashboard/pages/AboutAdmin";
 import SkillsAdmin from "./dashboard/pages/SkillsAdmin";
 import ExperienceAdmin from "./dashboard/pages/ExperienceAdmin";
+import EducationAdmin from "./dashboard/pages/EducationAdmin";
 import AchievementsAdmin from "./dashboard/pages/AchievementsAdmin";
 import ResearchAdmin from "./dashboard/pages/ResearchAdmin";
 import ContributionRequestsAdmin from "./dashboard/pages/ContributionRequestsAdmin";
@@ -127,6 +128,7 @@ export default function App() {
                 <Route path="hero" element={<HeroAdmin />} />
                 <Route path="about" element={<AboutAdmin />} />
                 <Route path="skills" element={<SkillsAdmin />} />
+                <Route path="education" element={<EducationAdmin />} />
                 <Route path="experience" element={<ExperienceAdmin />} />
                 <Route path="achievements" element={<AchievementsAdmin />} />
                 <Route path="research" element={<ResearchAdmin />} />

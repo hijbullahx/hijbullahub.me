@@ -6,6 +6,7 @@ from apps.ai_lab.views import AILabViewSet
 from apps.contact.views import ContactViewSet, ContactProfileViewSet, FeedbackViewSet
 from apps.hire.views import HireRequestViewSet
 from apps.experience.views import ExperienceViewSet
+from apps.education.views import EducationViewSet
 from apps.hero.views import HeroViewSet
 from apps.projects.views import ProjectImageViewSet, ProjectViewSet, TagViewSet, ProjectAcquisitionViewSet
 from apps.research.views import ResearchViewSet, ResearchContributionViewSet
@@ -23,6 +24,7 @@ router.register(r"project-images", ProjectImageViewSet, basename="project-images
 router.register(r"project-acquisitions", ProjectAcquisitionViewSet, basename="project-acquisitions")
 router.register(r"research", ResearchViewSet, basename="research")
 router.register(r"research-contributions", ResearchContributionViewSet, basename="research-contributions")
+router.register(r"education", EducationViewSet, basename="education")
 router.register(r"experience", ExperienceViewSet, basename="experience")
 router.register(r"achievements", AchievementViewSet, basename="achievements")
 router.register(r"ai-lab", AILabViewSet, basename="ai-lab")

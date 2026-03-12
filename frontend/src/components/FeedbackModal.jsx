@@ -37,7 +37,7 @@ function StarRating({ value, onChange }) {
   );
 }
 
-export default function FeedbackModal({ onClose, onSubmitted }) {
+export default function FeedbackModal({ isOpen, onClose, onSubmitted }) {
   const [form, setForm] = useState({ name: "", email: "", profession: "", rating: 0, comment: "" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -59,9 +59,13 @@ export default function FeedbackModal({ onClose, onSubmitted }) {
         rating: form.rating,
         comment: form.comment.trim(),
       });
-      onSubmitted(data);
+      if (onSubmitted) {
+        onSubmitted(data);
+      }
+      setForm({ name: "", email: "", profession: "", rating: 0, comment: "" });
       onClose();
-    } catch {
+    } catch (err) {
+      console.error(err);
       setError("Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
@@ -70,12 +74,13 @@ export default function FeedbackModal({ onClose, onSubmitted }) {
 
   return (
     <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
         {/* Backdrop */}
         <motion.div
           className="absolute inset-0 bg-black/70 backdrop-blur-sm"
@@ -198,6 +203,7 @@ export default function FeedbackModal({ onClose, onSubmitted }) {
           </div>
         </motion.div>
       </motion.div>
+      )}
     </AnimatePresence>
   );
 }

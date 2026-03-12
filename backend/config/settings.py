@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "apps.about",
     "apps.skills",
     "apps.projects",
+    "apps.education",
     "apps.research",
     "apps.experience",
     "apps.achievements",
@@ -51,7 +52,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # "django.middleware.clickjacking.XFrameOptionsMiddleware",  # Allow iframes for PDF viewing
 ]
 
 ROOT_URLCONF = "config.urls"
