@@ -15,36 +15,20 @@ import TypingAnimation from "../components/TypingAnimation";
 import FeedbackModal from "../components/FeedbackModal";
 import ReviewsDrawer from "../components/ReviewsDrawer";
 
-// ── Swipeable feedback card (book-page flip) ──────────────────────────────
-function FeedbackCard({ fb, canLeft, canRight, onSwipeLeft, onSwipeRight, onClick, totalCount, index }) {
-  const x = useMotionValue(0);
-  const rotate = useTransform(x, [-180, 0, 180], [-12, 0, 12]);
-  const opacity = useTransform(x, [-150, -60, 0, 60, 150], [0, 0.85, 1, 0.85, 0]);
-  const didDrag = useRef(false);
-
+// ── Gallery style feedback card ──────────────────────────────
+function FeedbackCard({ fb, onClick }) {
   return (
-    <motion.div
-      drag="x"
-      dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.12}
-      dragMomentum={false}
-      style={{ x, rotate, opacity, touchAction: "none" }}
-      onDragStart={() => { didDrag.current = false; }}
-      onDrag={(_, info) => { if (Math.abs(info.offset.x) > 5) didDrag.current = true; }}
-      onDragEnd={(_, info) => {
-        if (info.offset.x < -80 && canLeft) onSwipeLeft();
-        else if (info.offset.x > 80 && canRight) onSwipeRight();
-      }}
-      onPointerUp={() => { if (!didDrag.current) onClick?.(); }}
-      className="absolute inset-0 rounded-2xl bg-[#0d1117]/90 border border-white/10
-        backdrop-blur-md p-5 cursor-pointer select-none
-        hover:border-cyan-500/40 transition-[border-color] duration-300 flex flex-col"
+    <div
+      onClick={onClick}
+      className="h-full bg-[#0d1117]/90 border border-white/10
+        backdrop-blur-md p-6 rounded-2xl cursor-pointer select-none
+        hover:border-cyan-500/40 hover:-translate-y-1 transition-all duration-300 flex flex-col relative overflow-hidden group shadow-lg"
     >
       {/* Glow */}
-      <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500/10 to-emerald-500/8 blur-2xl pointer-events-none" />
+      <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-cyan-500/10 to-emerald-500/5 blur-2xl pointer-events-none group-hover:opacity-100 transition-opacity" />
 
       {/* Stars */}
-      <div className="flex gap-1 mb-3">
+      <div className="flex gap-1 mb-4 relative z-10">
         {[1, 2, 3, 4, 5].map((s) => (
           <svg key={s} className="w-4 h-4" viewBox="0 0 24 24"
             fill={s <= fb.rating ? "currentColor" : "none"}
@@ -56,43 +40,27 @@ function FeedbackCard({ fb, canLeft, canRight, onSwipeLeft, onSwipeRight, onClic
             />
           </svg>
         ))}
-        {totalCount > 1 && (
-          <span className="ml-auto text-xs text-gray-500">
-            {index + 1}/{totalCount}
-          </span>
-        )}
       </div>
 
-      <p className="text-slate-300 text-sm leading-relaxed flex-1 line-clamp-5 mb-4">
+      <p className="text-slate-300 text-sm leading-relaxed flex-1 line-clamp-4 mb-6 relative z-10">
         &ldquo;{fb.comment}&rdquo;
       </p>
 
-      <div className="flex items-center gap-2.5 pt-3 border-t border-white/5">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+      <div className="flex items-center gap-3 pt-4 border-t border-white/5 mt-auto relative z-10">
+        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-lg shadow-cyan-500/20">
           {fb.name.charAt(0).toUpperCase()}
         </div>
-        <div className="min-w-0">
-          <p className="text-sm font-semibold text-white truncate">{fb.name}</p>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold text-white truncate group-hover:text-cyan-400 transition-colors">{fb.name}</p>
           <div className="flex flex-col">
             {fb.profession && (
-              <p className="text-[10px] text-cyan-400 font-medium truncate mb-0.5">{fb.profession}</p>
+              <p className="text-xs text-gray-400 font-medium truncate">{fb.profession}</p>
             )}
-            {fb.email && (
-              <p className="text-[10px] text-gray-400 truncate max-w-[140px] leading-tight mb-0.5" title={fb.email}>
-                {fb.email}
-              </p>
-            )}
-            <p className="text-[10px] text-gray-500 hidden sm:block">{new Date(fb.created_at).toLocaleDateString()}</p>
+            <p className="text-[10px] text-gray-500">{new Date(fb.created_at).toLocaleDateString()}</p>
           </div>
         </div>
       </div>
-      
-      {canRight && <span className="absolute left-3 top-1/2 -translate-y-1/2 text-cyan-500/30 text-lg select-none pointer-events-none">‹</span>}
-      {canLeft && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-500/30 text-lg select-none pointer-events-none">›</span>}
-      <span className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] text-gray-600 select-none pointer-events-none tracking-wide">
-        tap to view all
-      </span>
-    </motion.div>
+    </div>
   );
 }
 
@@ -119,9 +87,16 @@ export default function HomePage() {
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [feedbacks, setFeedbacks] = useState([]);
   const [reviewsOpen, setReviewsOpen] = useState(false);
-  const [cardIdx, setCardIdx] = useState(0);
   const [selectedEducation, setSelectedEducation] = useState(null);
-  const wheelCooldown = useRef(false);
+  const scrollRef = useRef(null);
+
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+        const { current } = scrollRef;
+        const scrollAmount = current.clientWidth > 768 ? current.clientWidth / 2 : current.clientWidth;
+        current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     const loadFeedbacks = () =>
@@ -472,6 +447,70 @@ export default function HomePage() {
         </AnimatedSection>
       )}
 
+      {/* Feedback & Reviews Section */}
+      {feedbacks?.length > 0 && (
+        <AnimatedSection className="section-padding max-w-7xl mx-auto overflow-hidden">
+          <SectionTitle subtitle="What visitors are saying">
+             Feedback & Reviews
+          </SectionTitle>
+
+          <div className="relative mt-12 group/carousel">
+             {/* Left Arrow */}
+             <button 
+                onClick={() => scroll('left')}
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-black/50 border border-white/10 text-white backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-cyan-500 hover:border-cyan-500 disabled:opacity-0 hidden md:block translate-x-1/2"
+             >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+             </button>
+
+             {/* Scroll Container */}
+             <div 
+                ref={scrollRef}
+                className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory px-4"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+             >
+                {feedbacks.map((fb, index) => (
+                   <motion.div 
+                      key={fb.id}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5, delay: index * 0.05 }}
+                      viewport={{ once: true }}
+                      className="min-w-[300px] md:min-w-[350px] snap-center h-[320px]"
+                   >
+                      <FeedbackCard 
+                         fb={fb} 
+                         onClick={() => setReviewsOpen(true)}
+                      />
+                   </motion.div>
+                ))}
+             </div>
+
+             {/* Right Arrow */}
+             <button 
+                onClick={() => scroll('right')}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-black/50 border border-white/10 text-white backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-cyan-500 hover:border-cyan-500 hidden md:block -translate-x-1/2"
+             >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+             </button>
+          </div>
+
+          <div className="flex flex-wrap justify-center mt-8 gap-4">
+             <GlowButton onClick={() => setReviewsOpen(true)}>
+                View All {feedbacks.length} Reviews
+             </GlowButton>
+             
+             <button 
+                onClick={() => setFeedbackOpen(true)}
+                className="px-8 py-3 rounded-xl border border-white/10 bg-white/5 text-white font-semibold hover:bg-white/10 hover:border-cyan-500/50 transition-all duration-300 backdrop-blur-md flex items-center gap-2 group"
+             >
+                <span className="group-hover:scale-110 transition-transform">✍️</span> 
+                <span>Leave a Review</span>
+             </button>
+          </div>
+        </AnimatedSection>
+      )}
+
       {/* Education Detail Modal */}
       <AnimatePresence>
         {selectedEducation && (
@@ -601,6 +640,16 @@ export default function HomePage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <ReviewsDrawer 
+        isOpen={reviewsOpen} 
+        onClose={() => setReviewsOpen(false)} 
+        feedbacks={feedbacks} 
+        onLeaveFeedback={() => {
+           setReviewsOpen(false);
+           setFeedbackOpen(true);
+        }}
+      />
 
       <FeedbackModal 
         isOpen={feedbackOpen} 
