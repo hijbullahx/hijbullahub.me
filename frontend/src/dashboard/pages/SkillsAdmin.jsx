@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
+import { Reorder, motion } from "framer-motion";
 import api from "../../api/client";
-import DataTable from "../components/DataTable";
 import FormModal from "../components/FormModal";
 import { useToast } from "../components/ToastContext";
 import GlowButton from "../../components/GlowButton";
@@ -30,11 +30,31 @@ export default function SkillsAdmin() {
   const fetchSkills = async () => {
     try {
       const response = await api.get("/skills/");
-      setSkills(response.data.results || response.data);
+      // Ensure skills are sorted by display_order initially
+      const fetchedSkills = response.data.results || response.data;
+      const sortedSkills = [...fetchedSkills].sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+      setSkills(sortedSkills);
     } catch (error) {
       toast.error("Failed to fetch skills");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleReorder = (newOrder) => {
+    setSkills(newOrder);
+  };
+
+  const saveOrder = async () => {
+    try {
+      // Create updates with new indices
+      const updates = skills.map((skill, index) => 
+        api.patch(`/skills/${skill.id}/`, { display_order: index })
+      );
+      await Promise.all(updates);
+      // toast.success("Order updated"); // Optional: showing too many toasts might be annoying
+    } catch (error) {
+      toast.error("Failed to update order");
     }
   };
 
@@ -109,37 +129,6 @@ export default function SkillsAdmin() {
     }
   };
 
-  const columns = [
-    {
-      label: "Name",
-      field: "name",
-      render: (row) => <span className="font-medium text-white">{row.name}</span>,
-    },
-    {
-      label: "Category",
-      field: "category",
-    },
-    {
-      label: "Level",
-      field: "level",
-      render: (row) => (
-        <div className="flex items-center gap-2">
-          <div className="w-24 h-2 bg-white/10 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-cyan-500 to-emerald-500"
-              style={{ width: `${row.level}%` }}
-            />
-          </div>
-          <span className="text-sm text-gray-400">{row.level}%</span>
-        </div>
-      ),
-    },
-    {
-      label: "Order",
-      field: "display_order",
-    },
-  ];
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -155,13 +144,91 @@ export default function SkillsAdmin() {
         </GlowButton>
       </div>
 
-      <DataTable
-        columns={columns}
-        data={skills}
-        loading={loading}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      <div className="text-sm text-slate-400 italic">
+        Drag items to reorder them on the homepage.
+      </div>
+
+      {loading ? (
+         <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-8">
+           <div className="flex items-center justify-center">
+             <div className="w-8 h-8 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin" />
+           </div>
+         </div>
+      ) : skills.length === 0 ? (
+         <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-12 text-center">
+           <p className="text-gray-400 text-lg">No skills added yet.</p>
+         </div>
+      ) : (
+        <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-white/5 border-b border-white/10">
+                <tr>
+                  <th className="w-10 px-4 py-4"></th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Name</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Category</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Level</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Order</th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <Reorder.Group as="tbody" axis="y" values={skills} onReorder={handleReorder} className="divide-y divide-white/5">
+                {skills.map((skill) => (
+                  <Reorder.Item 
+                    key={skill.id} 
+                    value={skill} 
+                    as="tr" 
+                    onDragEnd={saveOrder}
+                    className="hover:bg-white/5 transition-colors"
+                  >
+                     <td className="px-4 py-4 text-gray-500 cursor-grab active:cursor-grabbing text-center" title="Drag to reorder">
+                        <svg className="w-5 h-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+                        </svg>
+                     </td>
+                     <td className="px-6 py-4 text-sm font-medium text-white">{skill.name}</td>
+                     <td className="px-6 py-4 text-sm text-gray-300">{skill.category}</td>
+                     <td className="px-6 py-4 text-sm text-gray-300">
+                        <div className="flex items-center gap-2">
+                          <div className="w-24 h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-cyan-500 to-emerald-500"
+                              style={{ width: `${skill.level}%` }}
+                            />
+                          </div>
+                          <span className="text-sm text-gray-400">{skill.level}%</span>
+                        </div>
+                     </td>
+                     <td className="px-6 py-4 text-sm text-gray-300">{skill.display_order}</td>
+                     <td className="px-6 py-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => handleEdit(skill)}
+                                className="p-2 text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors"
+                                title="Edit"
+                              >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                              </button>
+                              <button
+                                onClick={() => handleDelete(skill)}
+                                className="p-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                                title="Delete"
+                              >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                          </div>
+                     </td>
+                  </Reorder.Item>
+                ))}
+              </Reorder.Group>
+            </table>
+          </div>
+        </div>
+      )}
 
       <FormModal
         isOpen={modalOpen}
