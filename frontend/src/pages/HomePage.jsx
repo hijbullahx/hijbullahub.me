@@ -21,12 +21,12 @@ function FeedbackCard({ fb, onClick }) {
   return (
     <div
       onClick={onClick}
-      className="h-full bg-[#0d1117]/90 border border-white/10
+      className="h-full bg-white/80 dark:bg-[#0d1117]/90 border border-slate-200 dark:border-white/10
         backdrop-blur-md p-6 rounded-2xl cursor-pointer select-none
-        hover:border-cyan-500/40 hover:-translate-y-1 transition-all duration-300 flex flex-col relative overflow-hidden group shadow-lg"
+        hover:border-primary-cyan/40 dark:hover:border-cyan-500/40 hover:-translate-y-1 transition-all duration-300 flex flex-col relative overflow-hidden group shadow-lg"
     >
       {/* Glow */}
-      <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-cyan-500/10 to-emerald-500/5 blur-2xl pointer-events-none group-hover:opacity-100 transition-opacity" />
+      <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-primary-cyan/10 to-primary-emerald/5 blur-2xl pointer-events-none group-hover:opacity-100 transition-opacity" />
 
       {/* Stars */}
       <div className="flex gap-1 mb-4 relative z-10">
@@ -34,7 +34,8 @@ function FeedbackCard({ fb, onClick }) {
           <svg key={s} className="w-4 h-4" viewBox="0 0 24 24"
             fill={s <= fb.rating ? "currentColor" : "none"}
             stroke="currentColor" strokeWidth={1.5}
-            style={{ color: s <= fb.rating ? "#f59e0b" : "rgba(255,255,255,0.15)" }}
+            style={{ color: s <= fb.rating ? "#f59e0b" : "var(--star-inactive, rgba(255,255,255,0.15))" }}
+            className={`transition-colors ${s > fb.rating ? "text-slate-300 dark:text-white/15" : ""}`}
           >
             <path strokeLinecap="round" strokeLinejoin="round"
               d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
@@ -43,34 +44,34 @@ function FeedbackCard({ fb, onClick }) {
         ))}
       </div>
 
-      <p className="text-slate-300 text-sm leading-relaxed flex-1 line-clamp-4 mb-6 relative z-10">
+      <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed flex-1 line-clamp-4 mb-6 relative z-10">
         &ldquo;{fb.comment}&rdquo;
       </p>
 
       {/* Admin Reply */}
       {fb.admin_reply && (
-        <div className="mb-4 bg-cyan-950/30 border-l-2 border-cyan-500 pl-3 py-2 rounded-r-lg relative z-10 group/reply">
-          <p className="text-xs text-cyan-400 font-bold mb-1 flex items-center gap-1">
-            <span className="w-1 h-1 rounded-full bg-cyan-400"></span>
+        <div className="mb-4 bg-primary-cyan/10 dark:bg-cyan-950/30 border-l-2 border-primary-cyan pl-3 py-2 rounded-r-lg relative z-10 group/reply">
+          <p className="text-xs text-primary-cyan font-bold mb-1 flex items-center gap-1">
+            <span className="w-1 h-1 rounded-full bg-primary-cyan"></span>
             Reply
           </p>
-          <p className="text-xs text-cyan-100/80 italic line-clamp-3 group-hover/reply:line-clamp-none transition-all">
+          <p className="text-xs text-slate-600 dark:text-cyan-100/80 italic line-clamp-3 group-hover/reply:line-clamp-none transition-all">
             {fb.admin_reply}
           </p>
         </div>
       )}
 
-      <div className="flex items-center gap-3 pt-4 border-t border-white/5 mt-auto relative z-10">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-lg shadow-cyan-500/20">
+      <div className="flex items-center gap-3 pt-4 border-t border-slate-200 dark:border-white/5 mt-auto relative z-10">
+        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-cyan to-primary-emerald flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-lg shadow-cyan-500/20">
           {fb.name.charAt(0).toUpperCase()}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-white truncate group-hover:text-cyan-400 transition-colors">{fb.name}</p>
+          <p className="text-sm font-semibold text-slate-900 dark:text-white truncate group-hover:text-primary-cyan transition-colors">{fb.name}</p>
           <div className="flex flex-col">
             {fb.profession && (
-              <p className="text-xs text-gray-400 font-medium truncate">{fb.profession}</p>
+              <p className="text-xs text-slate-500 dark:text-gray-400 font-medium truncate">{fb.profession}</p>
             )}
-            <p className="text-[10px] text-gray-500">{new Date(fb.created_at).toLocaleDateString()}</p>
+            <p className="text-[10px] text-slate-400 dark:text-gray-500">{new Date(fb.created_at).toLocaleDateString()}</p>
           </div>
         </div>
       </div>
@@ -190,7 +191,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <ParticleBackground />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-dark-base/50 to-dark-base" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-light-surface/50 to-light-base dark:via-dark-base/50 dark:to-dark-base" />
         
         <div className="relative z-10 max-w-7xl mx-auto px-6 py-32">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -202,10 +203,10 @@ export default function HomePage() {
               <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
                 <span className="gradient-text">{hero?.name}</span>
               </h1>
-              <div className="text-2xl md:text-3xl text-slate-300 mb-8 h-12">
+              <div className="text-2xl md:text-3xl text-slate-600 dark:text-slate-300 mb-8 h-12">
                 <TypingAnimation text={hero?.tagline || "Building the future with AI"} speed={80} />
               </div>
-              <p className="text-lg text-slate-400 mb-10 leading-relaxed max-w-xl">
+              <p className="text-lg text-slate-600 dark:text-slate-400 mb-10 leading-relaxed max-w-xl">
                 {hero?.short_bio}
               </p>
               <div className="flex flex-wrap gap-4">
@@ -277,11 +278,11 @@ export default function HomePage() {
                 onClick={() => setSelectedEducation(edu)}
                 className="cursor-pointer group relative"
               >
-                  <div className={`p-4 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-all flex items-center gap-5 ${edu.is_current ? 'border-l-4 border-l-primary-cyan shadow-[inset_0_0_20px_rgba(34,211,238,0.05)]' : ''}`}>
+                  <div className={`p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-white/[0.03] hover:bg-white/80 dark:hover:bg-white/[0.06] transition-all flex items-center gap-5 ${edu.is_current ? 'border-l-4 border-l-primary-cyan shadow-sm dark:shadow-[inset_0_0_20px_rgba(34,211,238,0.05)]' : 'shadow-sm dark:shadow-none'}`}>
                       {/* Logo */}
                       <div className="flex-shrink-0">
                         {(edu.institution_logo_url || edu.institution_logo) ? (
-                          <div className="w-16 h-16 rounded-xl bg-white/5 border border-white/10 overflow-hidden">
+                          <div className="w-16 h-16 rounded-xl bg-white border border-slate-200 dark:bg-white/5 dark:border-white/10 overflow-hidden">
                             <img 
                               src={edu.institution_logo_url || edu.institution_logo} 
                               alt={edu.institution_name} 
@@ -289,7 +290,7 @@ export default function HomePage() {
                             />
                           </div>
                         ) : (
-                          <div className="w-16 h-16 rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/10 flex items-center justify-center text-3xl shadow-inner">
+                          <div className="w-16 h-16 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-gradient-to-br dark:from-white/5 dark:to-white/10 flex items-center justify-center text-3xl shadow-inner">
                             🎓
                           </div>
                         )}
@@ -297,12 +298,12 @@ export default function HomePage() {
 
                       {/* Content */}
                       <div className="flex-1 min-w-0 pr-4">
-                          <h3 className="text-lg font-bold text-white group-hover:text-primary-cyan transition-colors truncate">
+                          <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary-cyan transition-colors truncate">
                             {edu.degree_name}
                           </h3>
                           <div className="mt-1">
                              <div className="flex items-start justify-between">
-                                <p className="text-slate-400 text-sm font-medium truncate">
+                                <p className="text-slate-600 dark:text-slate-400 text-sm font-medium truncate">
                                   {edu.institution_name}
                                 </p>
                                 <span className="text-[10px] text-primary-cyan font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap hidden sm:block ml-2">
@@ -341,11 +342,11 @@ export default function HomePage() {
         <div className="grid md:grid-cols-2 gap-8">
           <GlassCard>
             <h3 className="text-2xl font-bold gradient-text mb-4">Mission</h3>
-            <p className="text-slate-300 leading-relaxed">{about?.mission_statement}</p>
+            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">{about?.mission_statement}</p>
           </GlassCard>
           <GlassCard>
             <h3 className="text-2xl font-bold gradient-text mb-4">Vision</h3>
-            <p className="text-slate-300 leading-relaxed">{about?.vision_2030}</p>
+            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">{about?.vision_2030}</p>
           </GlassCard>
         </div>
         {about?.quote && (
@@ -377,7 +378,7 @@ export default function HomePage() {
               <GlassCard className="text-center">
                 <div className="relative w-24 h-24 mx-auto mb-4 flex-shrink-0">
                   <svg className="transform -rotate-90 w-24 h-24">
-                    <circle cx="48" cy="48" r="40" stroke="rgba(255,255,255,0.1)" strokeWidth="8" fill="none" />
+                    <circle cx="48" cy="48" r="40" className="stroke-slate-200 dark:stroke-white/10 text-transparent" strokeWidth="8" fill="none" />
                     <circle cx="48" cy="48" r="40" stroke="url(#gradient)" strokeWidth="8" fill="none"
                       strokeDasharray={`${2 * Math.PI * 40}`} strokeDashoffset={`${2 * Math.PI * 40 * (1 - skill.level / 100)}`}
                       strokeLinecap="round" className="transition-all duration-1000"
@@ -397,8 +398,8 @@ export default function HomePage() {
                     )}
                   </div>
                 </div>
-                <h4 className="font-semibold text-lg mb-1">{skill.name}</h4>
-                <p className="text-sm text-slate-400">{skill.category}</p>
+                <h4 className="font-semibold text-lg mb-1 text-slate-800 dark:text-white">{skill.name}</h4>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{skill.category}</p>
               </GlassCard>
             </motion.div>
           ))}
@@ -417,20 +418,20 @@ export default function HomePage() {
                   key={exp.id} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: idx * 0.08 }}
                   className="md:pl-16 relative"
                 >
-                  <div className="absolute left-4 top-5 w-4 h-4 rounded-full bg-gradient-to-br from-cyan-500 to-emerald-500 border-2 border-dark-base z-10 hidden md:block" />
-                  <div className={`relative bg-white/[0.03] border rounded-2xl p-5 hover:border-white/20 transition-all group ${exp.highlight ? "border-amber-500/30 hover:border-amber-500/50" : "border-white/10"}`}>
-                    {exp.highlight && <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/15 text-amber-400 border border-amber-500/30">⭐ Highlight</span>}
+                  <div className="absolute left-4 top-5 w-4 h-4 rounded-full bg-gradient-to-br from-cyan-500 to-emerald-500 border-2 border-white dark:border-dark-base z-10 hidden md:block" />
+                  <div className={`relative bg-white/50 dark:bg-white/[0.03] border rounded-2xl p-5 hover:border-slate-300 dark:hover:border-white/20 transition-all group ${exp.highlight ? "border-amber-500/30 hover:border-amber-500/50" : "border-slate-200 dark:border-white/10"}`}>
+                    {exp.highlight && <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/15 text-amber-500 dark:text-amber-400 border border-amber-500/30">⭐ Highlight</span>}
                     <div className="flex items-start gap-4">
                       {exp.logo_url ? (
-                        <img src={exp.logo_url} alt={exp.organization || exp.role} className="w-12 h-12 rounded-xl object-cover border border-white/10 flex-shrink-0 mt-0.5" />
+                        <img src={exp.logo_url} alt={exp.organization || exp.role} className="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-white/10 flex-shrink-0 mt-0.5" />
                       ) : (
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-emerald-500/20 border border-white/10 flex items-center justify-center text-2xl flex-shrink-0 mt-0.5">💼</div>
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-emerald-500/20 border border-slate-200 dark:border-white/10 flex items-center justify-center text-2xl flex-shrink-0 mt-0.5">💼</div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-lg font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:to-emerald-400 transition-all">{exp.role}</h3>
-                        {exp.organization && <p className="text-sm text-slate-400 mt-0.5">{exp.organization}</p>}
-                        {exp.duration && <span className="inline-block mt-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-slate-400">🕐 {exp.duration}</span>}
-                        {exp.description && <p className="mt-3 text-sm text-slate-400 leading-relaxed line-clamp-3">{exp.description}</p>}
+                        <h3 className="text-lg font-bold text-slate-800 dark:text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyan-500 group-hover:to-emerald-500 transition-all">{exp.role}</h3>
+                        {exp.organization && <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{exp.organization}</p>}
+                        {exp.duration && <span className="inline-block mt-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400">🕐 {exp.duration}</span>}
+                        {exp.description && <p className="mt-3 text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3">{exp.description}</p>}
                       </div>
                     </div>
                   </div>
@@ -449,23 +450,23 @@ export default function HomePage() {
             {achievements.map((a, idx) => (
               <motion.div
                 key={a.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: idx * 0.08 }}
-                className="relative bg-white/[0.03] border border-white/10 rounded-2xl p-5 hover:border-amber-500/30 transition-all group"
+                className="relative bg-white/50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 rounded-2xl p-5 hover:border-amber-500/30 transition-all group"
               >
                 <div className="absolute top-0 left-0 w-20 h-20 rounded-full bg-gradient-to-br from-amber-500/10 to-orange-500/10 blur-2xl" />
                 <div className="flex items-start gap-4">
                   {a.badge_image_url ? (
-                    <img src={a.badge_image_url} alt={a.title} className="w-14 h-14 rounded-xl object-cover border border-white/10 flex-shrink-0" />
+                    <img src={a.badge_image_url} alt={a.title} className="w-14 h-14 rounded-xl object-cover border border-slate-200 dark:border-white/10 flex-shrink-0" />
                   ) : (
-                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-white/10 flex items-center justify-center text-3xl flex-shrink-0">🏆</div>
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-slate-200 dark:border-white/10 flex items-center justify-center text-3xl flex-shrink-0">🏆</div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-white text-sm leading-snug group-hover:text-amber-400 transition-colors">{a.title}</h3>
-                    {a.issuer && <p className="text-xs text-slate-400 mt-1">{a.issuer}</p>}
-                    {a.date && <span className="inline-block mt-1.5 px-2 py-0.5 rounded-full text-xs bg-white/5 border border-white/10 text-slate-500">📅 {new Date(a.date).toLocaleDateString(undefined, { year: "numeric", month: "short" })}</span>}
+                    <h3 className="font-bold text-slate-800 dark:text-white text-sm leading-snug group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">{a.title}</h3>
+                    {a.issuer && <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{a.issuer}</p>}
+                    {a.date && <span className="inline-block mt-1.5 px-2 py-0.5 rounded-full text-xs bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-500">📅 {new Date(a.date).toLocaleDateString(undefined, { year: "numeric", month: "short" })}</span>}
                   </div>
                 </div>
                 {a.certificate_link && (
-                  <a href={a.certificate_link} target="_blank" rel="noreferrer" className="mt-4 flex items-center justify-center gap-1.5 w-full py-2 rounded-xl border border-amber-500/20 text-amber-400 text-xs font-medium hover:bg-amber-500/10 transition-all">
+                  <a href={a.certificate_link} target="_blank" rel="noreferrer" className="mt-4 flex items-center justify-center gap-1.5 w-full py-2 rounded-xl border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-medium hover:bg-amber-500/10 transition-all">
                     View Certificate ↗
                   </a>
                 )}
@@ -478,7 +479,7 @@ export default function HomePage() {
       {/* Feedback & Reviews Section */}
       {feedbacks?.length > 0 && (
         <AnimatedSection className="section-padding max-w-7xl mx-auto overflow-hidden">
-          <SectionTitle subtitle="What visitors are saying">
+          <SectionTitle subtitle="Voices of My Well‑Wishers">
              Feedback & Reviews
           </SectionTitle>
 
@@ -524,17 +525,17 @@ export default function HomePage() {
           </div>
 
           <div className="flex flex-wrap justify-center mt-8 gap-4">
-             <GlowButton onClick={() => setReviewsOpen(true)}>
-                View All {feedbacks.length} Reviews
-             </GlowButton>
-             
              <button 
-                onClick={() => setFeedbackOpen(true)}
-                className="px-8 py-3 rounded-xl border border-white/10 bg-white/5 text-white font-semibold hover:bg-white/10 hover:border-cyan-500/50 transition-all duration-300 backdrop-blur-md flex items-center gap-2 group"
+                onClick={() => setReviewsOpen(true)}
+                className="px-8 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-white/5 text-slate-900 dark:text-white font-semibold hover:bg-white/80 dark:hover:bg-white/10 hover:border-primary-cyan/50 dark:hover:border-cyan-500/50 transition-all duration-300 backdrop-blur-md flex items-center gap-2 group"
              >
-                <span className="group-hover:scale-110 transition-transform">✍️</span> 
-                <span>Leave a Review</span>
+                View All {feedbacks.length} Reviews
              </button>
+             
+             <GlowButton onClick={() => setFeedbackOpen(true)}>
+                <span className="group-hover:scale-110 transition-transform mr-2">✍️</span> 
+                Leave a Review
+             </GlowButton>
           </div>
         </AnimatedSection>
       )}
@@ -555,7 +556,7 @@ export default function HomePage() {
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               transition={{ type: "spring", duration: 0.5 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-2xl bg-[#0f172a] border border-cyan-500/30 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+              className="relative w-full max-w-2xl bg-white dark:bg-[#0f172a] border border-cyan-500/30 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
             >
               {/* Header Image/Pattern */}
               <div className="h-32 bg-gradient-to-r from-cyan-900/40 to-emerald-900/40 relative overflow-hidden shrink-0">
@@ -578,7 +579,7 @@ export default function HomePage() {
                     <motion.div 
                       initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
-                      className="w-24 h-24 rounded-2xl bg-[#1e293b] border-2 border-cyan-500/30 shadow-xl mb-6 relative group overflow-hidden"
+                      className="w-24 h-24 rounded-2xl bg-white dark:bg-[#1e293b] border-2 border-cyan-500/30 shadow-xl mb-6 relative group overflow-hidden"
                     >
                        {(selectedEducation.institution_logo_url || selectedEducation.institution_logo) ? (
                           <img 
@@ -596,10 +597,10 @@ export default function HomePage() {
                        )}
                     </motion.div>
 
-                    <h2 className="text-2xl font-bold text-white mb-2">{selectedEducation.degree_name}</h2>
-                    <p className="text-lg text-cyan-400 font-medium mb-1">{selectedEducation.institution_name}</p>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{selectedEducation.degree_name}</h2>
+                    <p className="text-lg text-cyan-600 dark:text-cyan-400 font-medium mb-1">{selectedEducation.institution_name}</p>
                     {selectedEducation.location && (
-                       <p className="text-sm text-slate-400 mb-6 flex items-center justify-center gap-1">
+                       <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 flex items-center justify-center gap-1">
                           📍 {selectedEducation.location}
                        </p>
                     )}
@@ -607,16 +608,16 @@ export default function HomePage() {
                     
                     {/* Meta Grid */}
                     <div className="grid grid-cols-2 gap-4 w-full max-w-lg mb-8">
-                       <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-                          <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Timeline</p>
-                          <p className="font-semibold text-white text-sm">
+                       <div className="bg-slate-50 dark:bg-white/5 rounded-xl p-3 border border-slate-200 dark:border-white/10">
+                          <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Timeline</p>
+                          <p className="font-semibold text-slate-900 dark:text-white text-sm">
                              {selectedEducation.start_date ? formatDate(selectedEducation.start_date) : ''} — {selectedEducation.is_current ? (selectedEducation.end_date ? formatDate(selectedEducation.end_date) : "Present") : (selectedEducation.end_date ? formatDate(selectedEducation.end_date) : '')}
                           </p>
                        </div>
                        {selectedEducation.result && (
                          <div className="bg-emerald-500/10 rounded-xl p-3 border border-emerald-500/20">
-                            <p className="text-xs text-emerald-400/70 uppercase tracking-wider mb-1">GPA / CGPA</p>
-                            <p className="font-semibold text-emerald-400 text-sm">
+                            <p className="text-xs text-emerald-600/70 dark:text-emerald-400/70 uppercase tracking-wider mb-1">GPA / CGPA</p>
+                            <p className="font-semibold text-emerald-600 dark:text-emerald-400 text-sm">
                                {selectedEducation.result}
                             </p>
                          </div>
@@ -626,11 +627,11 @@ export default function HomePage() {
 
                  {/* Description */}
                  {selectedEducation.description && (
-                   <div className="mb-8 bg-white/[0.02] p-6 rounded-2xl border border-white/5">
-                      <h4 className="text-sm font-bold text-slate-300 uppercase tracking-widest mb-4 flex items-center gap-2">
+                   <div className="mb-8 bg-slate-50/50 dark:bg-white/[0.02] p-6 rounded-2xl border border-slate-200 dark:border-white/5">
+                      <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-4 flex items-center gap-2">
                         <span className="w-1 h-4 bg-cyan-500 rounded-full"/> Overview
                       </h4>
-                      <div className="prose prose-invert prose-sm max-w-none text-slate-300 leading-relaxed whitespace-pre-line">
+                      <div className="prose prose-invert prose-sm max-w-none text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
                         {selectedEducation.description}
                       </div>
                    </div>
@@ -639,11 +640,11 @@ export default function HomePage() {
                  {/* Certificate Section */}
                  {selectedEducation.certificate && (
                    <div className="mb-6">
-                      <h4 className="text-sm font-bold text-slate-300 uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-4 flex items-center gap-2">
                          <span className="w-1 h-4 bg-amber-500 rounded-full"/> Credentials
                       </h4>
                       
-                      <div className="bg-white/5 rounded-xl overflow-hidden border border-white/10 group relative mt-4">
+                      <div className="bg-slate-100 dark:bg-white/5 rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 group relative mt-4">
                         {/* Download Button (Overlay) - Always visible on mobile, hover on desktop */}
                         <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto">
                              <a 

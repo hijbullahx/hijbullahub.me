@@ -129,7 +129,7 @@ export default function ProjectsPage() {
                       </div>
                     )}
                   </motion.div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-dark-base/80 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white/80 dark:from-dark-base/80 to-transparent" />
                   <div className="absolute top-3 right-3">
                     {project.featured && (
                       <GradientBadge className="bg-primary-cyan/30">Featured</GradientBadge>
@@ -149,7 +149,7 @@ export default function ProjectsPage() {
                 <h3 className="text-lg sm:text-xl font-bold gradient-text mb-2 group-hover:text-glow transition-all">
                   {project.title}
                 </h3>
-                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4 flex-grow line-clamp-2 sm:line-clamp-3">
+                <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4 flex-grow line-clamp-2 sm:line-clamp-3">
                   {project.short_description}
                 </p>
 
@@ -181,7 +181,7 @@ export default function ProjectsPage() {
                   <span className="text-8xl gradient-text font-bold">{selectedProject.title.charAt(0)}</span>
                 </div>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-dark-base to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-dark-base to-transparent" />
             </div>
 
             <div className="space-y-4 sm:space-y-6">
@@ -199,26 +199,26 @@ export default function ProjectsPage() {
 
               {selectedProject.problem_statement && (
                 <div>
-                  <h3 className="text-lg sm:text-xl font-semibold text-primary-cyan mb-2">Problem Statement</h3>
-                  <p className="text-slate-300 text-sm sm:text-base leading-relaxed">{selectedProject.problem_statement}</p>
+                  <h3 className="text-lg sm:text-xl font-semibold text-cyan-600 dark:text-primary-cyan mb-2">Problem Statement</h3>
+                  <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">{selectedProject.problem_statement}</p>
                 </div>
               )}
 
               <div>
-                <h3 className="text-lg sm:text-xl font-semibold text-primary-cyan mb-2">Description</h3>
-                <p className="text-slate-300 text-sm sm:text-base leading-relaxed">{selectedProject.full_description}</p>
+                <h3 className="text-lg sm:text-xl font-semibold text-cyan-600 dark:text-primary-cyan mb-2">Description</h3>
+                <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">{selectedProject.full_description}</p>
               </div>
 
               {selectedProject.architecture_overview && (
                 <div>
-                  <h3 className="text-lg sm:text-xl font-semibold text-primary-cyan mb-2">Architecture</h3>
-                  <p className="text-slate-300 text-sm sm:text-base leading-relaxed">{selectedProject.architecture_overview}</p>
+                  <h3 className="text-lg sm:text-xl font-semibold text-cyan-600 dark:text-primary-cyan mb-2">Architecture</h3>
+                  <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">{selectedProject.architecture_overview}</p>
                 </div>
               )}
 {/* Gallery Section */}
               {selectedProject.images && selectedProject.images.length > 0 && (
                 <div>
-                  <h3 className="text-lg sm:text-xl font-semibold text-primary-cyan mb-3 sm:mb-4">Gallery</h3>
+                  <h3 className="text-lg sm:text-xl font-semibold text-cyan-600 dark:text-primary-cyan mb-3 sm:mb-4">Gallery</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                     {selectedProject.images.map((img) => (
                       <motion.div

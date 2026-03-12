@@ -31,7 +31,7 @@ export default function AIMLPage() {
 
         {/* ── Live ML Portfolio CTA ───────────────────────────────────────── */}
         <AnimatedSection className="mt-10 mb-14">
-          <div className="relative rounded-2xl overflow-hidden border border-white/10">
+          <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-transparent shadow-sm dark:shadow-none">
             {/* ambient glow background */}
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-emerald-500/10 pointer-events-none" />
             <div className="absolute -top-32 -left-32 w-80 h-80 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
@@ -40,13 +40,13 @@ export default function AIMLPage() {
             <div className="relative z-10 flex flex-col lg:flex-row items-center gap-10 px-8 py-14 sm:px-14">
 
               {/* Icon cluster */}
-              <div className="shrink-0 flex items-center justify-center w-28 h-28 rounded-2xl bg-white/5 border border-white/10 text-6xl select-none shadow-inner">
+              <div className="shrink-0 flex items-center justify-center w-28 h-28 rounded-2xl bg-white/80 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-6xl select-none shadow-sm dark:shadow-inner">
                 🚀
               </div>
 
               {/* Text */}
               <div className="flex-1 text-center lg:text-left">
-                <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-cyan-400 mb-3">
+                <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-cyan-600 dark:text-cyan-400 mb-3">
                   <span className="w-6 h-px bg-cyan-500/60" />
                   Live ML Portfolio
                   <span className="w-6 h-px bg-cyan-500/60" />
@@ -54,8 +54,8 @@ export default function AIMLPage() {
                 <h2 className="text-3xl sm:text-4xl font-bold gradient-text mb-4 leading-tight">
                   See My ML Models in Action
                 </h2>
-                <p className="text-gray-400 text-base sm:text-lg leading-relaxed max-w-2xl">
-                  I maintain a dedicated <span className="text-white font-medium">interactive ML portfolio</span> built
+                <p className="text-slate-600 dark:text-gray-400 text-base sm:text-lg leading-relaxed max-w-2xl">
+                  I maintain a dedicated <span className="text-slate-900 dark:text-white font-medium">interactive ML portfolio</span> built
                   with Streamlit,  where every model is deployed live. You can run predictions and stress-test the models in real time directly in your browser — no setup or coding required.
                 </p>
 
@@ -68,7 +68,7 @@ export default function AIMLPage() {
                   ].map(({ icon, label }) => (
                     <span
                       key={label}
-                      className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-gray-300"
+                      className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-gray-300"
                     >
                       <span>{icon}</span>
                       {label}
@@ -133,7 +133,7 @@ export default function AIMLPage() {
 
                   {/* Details */}
                   {project.details && (
-                    <p className="text-gray-400 text-sm mb-4 line-clamp-3">
+                    <p className="text-slate-600 dark:text-gray-400 text-sm mb-4 line-clamp-3">
                       {project.details}
                     </p>
                   )}
@@ -143,14 +143,14 @@ export default function AIMLPage() {
                     <div className="mb-4 space-y-2">
                       {project.model_name && (
                         <div className="flex items-center gap-2 text-sm">
-                          <span className="text-gray-500">Model:</span>
-                          <span className="text-cyan-400 font-medium">{project.model_name}</span>
+                          <span className="text-slate-500 dark:text-gray-500">Model:</span>
+                          <span className="text-cyan-600 dark:text-cyan-400 font-medium">{project.model_name}</span>
                         </div>
                       )}
                       {project.dataset_name && (
                         <div className="flex items-center gap-2 text-sm">
-                          <span className="text-gray-500">Dataset:</span>
-                          <span className="text-emerald-400 font-medium">{project.dataset_name}</span>
+                          <span className="text-slate-500 dark:text-gray-500">Dataset:</span>
+                          <span className="text-emerald-600 dark:text-emerald-400 font-medium">{project.dataset_name}</span>
                         </div>
                       )}
                     </div>
@@ -160,37 +160,37 @@ export default function AIMLPage() {
                   {(project.accuracy || project.precision || project.recall || project.f1_score) && (
                     <div className="grid grid-cols-2 gap-3 mb-4">
                       {project.accuracy && (
-                        <div className="bg-white/5 rounded-lg p-3">
-                          <p className="text-xs text-gray-400 mb-1">Accuracy</p>
+                        <div className="bg-slate-100 dark:bg-white/5 rounded-lg p-3">
+                          <p className="text-xs text-slate-500 dark:text-gray-400 mb-1">Accuracy</p>
                           <p className={`text-lg font-bold ${
-                            project.accuracy >= 0.9 ? "text-emerald-400" :
-                            project.accuracy >= 0.7 ? "text-cyan-400" :
-                            "text-amber-400"
+                            project.accuracy >= 0.9 ? "text-emerald-500 dark:text-emerald-400" :
+                            project.accuracy >= 0.7 ? "text-cyan-500 dark:text-cyan-400" :
+                            "text-amber-500 dark:text-amber-400"
                           }`}>
                             {(project.accuracy * 100).toFixed(1)}%
                           </p>
                         </div>
                       )}
                       {project.precision && (
-                        <div className="bg-white/5 rounded-lg p-3">
-                          <p className="text-xs text-gray-400 mb-1">Precision</p>
-                          <p className="text-lg font-bold text-purple-400">
+                        <div className="bg-slate-100 dark:bg-white/5 rounded-lg p-3">
+                          <p className="text-xs text-slate-500 dark:text-gray-400 mb-1">Precision</p>
+                          <p className="text-lg font-bold text-purple-500 dark:text-purple-400">
                             {(project.precision * 100).toFixed(1)}%
                           </p>
                         </div>
                       )}
                       {project.recall && (
-                        <div className="bg-white/5 rounded-lg p-3">
-                          <p className="text-xs text-gray-400 mb-1">Recall</p>
-                          <p className="text-lg font-bold text-blue-400">
+                        <div className="bg-slate-100 dark:bg-white/5 rounded-lg p-3">
+                          <p className="text-xs text-slate-500 dark:text-gray-400 mb-1">Recall</p>
+                          <p className="text-lg font-bold text-blue-500 dark:text-blue-400">
                             {(project.recall * 100).toFixed(1)}%
                           </p>
                         </div>
                       )}
                       {project.f1_score && (
-                        <div className="bg-white/5 rounded-lg p-3">
-                          <p className="text-xs text-gray-400 mb-1">F1 Score</p>
-                          <p className="text-lg font-bold text-pink-400">
+                        <div className="bg-slate-100 dark:bg-white/5 rounded-lg p-3">
+                          <p className="text-xs text-slate-500 dark:text-gray-400 mb-1">F1 Score</p>
+                          <p className="text-lg font-bold text-pink-500 dark:text-pink-400">
                             {(project.f1_score * 100).toFixed(1)}%
                           </p>
                         </div>

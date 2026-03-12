@@ -62,7 +62,7 @@ export default function BlogPage() {
                     <div>
                       <div className="flex items-center gap-3 mb-3">
                         <GradientBadge>{post.category}</GradientBadge>
-                        <span className="text-sm text-slate-400">{post.read_time} min read</span>
+                        <span className="text-sm text-slate-500 dark:text-slate-400">{post.read_time} min read</span>
                         {post.featured && (
                           <GradientBadge className="bg-primary-emerald/30 border-primary-emerald/30 text-primary-emerald">
                             Featured
@@ -72,12 +72,12 @@ export default function BlogPage() {
                       <h3 className="text-2xl font-bold gradient-text mb-3 group-hover:text-glow transition-all">
                         {post.title}
                       </h3>
-                      <p className="text-slate-300 leading-relaxed mb-4">{post.seo_description}</p>
+                      <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">{post.seo_description}</p>
                       <div className="flex flex-wrap gap-2">
                         {post.tags?.map((tag) => (
                           <span
                             key={tag.id}
-                            className="text-xs px-2 py-1 rounded bg-white/5 text-slate-400"
+                            className="text-xs px-2 py-1 rounded bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400"
                           >
                             #{tag.name}
                           </span>

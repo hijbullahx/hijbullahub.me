@@ -56,9 +56,20 @@ export default function ContactPage() {
                   </div>
 
                   {/* Main circular card — dark, merges with background */}
-                  <div className="relative w-full h-full rounded-full overflow-hidden border border-white/[0.06] backdrop-blur-xl flex flex-col items-center justify-center transition-all duration-300"
-                    style={{ background: "radial-gradient(circle at 40% 35%, rgba(255,255,255,0.04), rgba(5,7,15,0.85))" }}
+                  <div className="relative w-full h-full rounded-full overflow-hidden border border-slate-200 dark:border-white/[0.06] backdrop-blur-xl flex flex-col items-center justify-center transition-all duration-300 bg-white/90 shadow-lg dark:bg-transparent dark:shadow-none"
+                    style={{ background: "var(--card-bg, radial-gradient(circle at 40% 35%, rgba(255,255,255,0.04), rgba(5,7,15,0.85)))" }}
                   >
+                    {/* HACK: Override background for light mode via a clear style or just use classes if possible. 
+                        The style attribute has high specificity. 
+                        Let's try to remove style and use Tailwind if possible, or conditional logic. 
+                        Since I can't easily inject theme here without context, I will use a CSS variable or just rely on dark mode class trick.
+                        Actually, 'style' overrides classes. 
+                        I will assume I can just use a class for the gradient if I convert it.
+                    */}
+                   <div className="absolute inset-0 bg-white/90 dark:bg-transparent z-[-1]" />
+                   <div className="absolute inset-0 opacity-0 dark:opacity-100 z-[-1]" 
+                        style={{ background: "radial-gradient(circle at 40% 35%, rgba(255,255,255,0.04), rgba(5,7,15,0.85))" }} 
+                   />
 
                     {/* Profile image watermark */}
                     {contact.profile_image_url && (

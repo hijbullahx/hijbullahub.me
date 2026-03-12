@@ -84,12 +84,12 @@ export default function ResearchPage() {
 
                 <div className="mb-4">
                   <h4 className="text-sm font-semibold text-primary-cyan mb-2">Abstract</h4>
-                  <p className="text-slate-300 leading-relaxed text-sm">{item.abstract}</p>
+                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-sm">{item.abstract}</p>
                 </div>
 
                 <div className="mb-4">
                   <h4 className="text-sm font-semibold text-primary-cyan mb-2">Methodology</h4>
-                  <p className="text-slate-300 leading-relaxed text-sm">{item.methodology}</p>
+                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-sm">{item.methodology}</p>
                 </div>
 
                 <div className="mb-4">
@@ -104,7 +104,7 @@ export default function ResearchPage() {
                 {item.future_scope && (
                   <div className="mb-4">
                     <h4 className="text-sm font-semibold text-primary-emerald mb-2">Future Scope</h4>
-                    <p className="text-slate-300 leading-relaxed text-sm">{item.future_scope}</p>
+                    <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-sm">{item.future_scope}</p>
                   </div>
                 )}
 
@@ -155,14 +155,14 @@ export default function ResearchPage() {
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="bg-dark-card border border-white/10 rounded-2xl p-8 max-w-md w-full shadow-2xl"
+                className="bg-white dark:bg-dark-card border border-slate-200 dark:border-white/10 rounded-2xl p-8 max-w-md w-full shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
               >
                 {submitSuccess ? (
                   <div className="text-center">
                     <div className="text-6xl mb-4">✅</div>
-                    <h3 className="text-2xl font-bold text-white mb-2">Request Submitted!</h3>
-                    <p className="text-gray-400">We'll get back to you soon.</p>
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Request Submitted!</h3>
+                    <p className="text-slate-500 dark:text-gray-400">We'll get back to you soon.</p>
                   </div>
                 ) : (
                   <>
@@ -170,7 +170,7 @@ export default function ResearchPage() {
                       <h3 className="text-2xl font-bold gradient-text">Interested to Contribute</h3>
                       <button
                         onClick={() => setModalOpen(false)}
-                        className="text-gray-400 hover:text-white transition-colors"
+                        className="text-slate-400 hover:text-slate-600 dark:text-gray-400 dark:hover:text-white transition-colors"
                       >
                         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -179,13 +179,13 @@ export default function ResearchPage() {
                     </div>
 
                     <div className="mb-4">
-                      <p className="text-sm text-gray-400 mb-2">Research Paper:</p>
-                      <p className="text-white font-semibold">{selectedResearch?.title}</p>
+                      <p className="text-sm text-slate-500 dark:text-gray-400 mb-2">Research Paper:</p>
+                      <p className="text-slate-900 dark:text-white font-semibold">{selectedResearch?.title}</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">
                           Email Address *
                         </label>
                         <input
@@ -193,7 +193,7 @@ export default function ResearchPage() {
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           required
-                          className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent"
+                          className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border border-slate-300 dark:border-white/10 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent"
                           placeholder="your.email@example.com"
                         />
                       </div>
