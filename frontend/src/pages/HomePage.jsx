@@ -260,79 +260,7 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* Education Section */}
-      {education?.length > 0 && (
-        <AnimatedSection className="section-padding max-w-7xl mx-auto" id="education">
-          <SectionTitle subtitle="Academic Background & Qualifications">
-            Education
-          </SectionTitle>
-          <div className="flex flex-col gap-4 mt-10 max-w-4xl mx-auto">
-            {education.map((edu, index) => (
-              <motion.div
-                key={edu.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                whileHover={{ scale: 1.01 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                onClick={() => setSelectedEducation(edu)}
-                className="cursor-pointer group relative"
-              >
-                  <div className={`p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-white/[0.03] hover:bg-white/80 dark:hover:bg-white/[0.06] transition-all flex items-center gap-5 ${edu.is_current ? 'border-l-4 border-l-primary-cyan shadow-sm dark:shadow-[inset_0_0_20px_rgba(34,211,238,0.05)]' : 'shadow-sm dark:shadow-none'}`}>
-                      {/* Logo */}
-                      <div className="flex-shrink-0">
-                        {(edu.institution_logo_url || edu.institution_logo) ? (
-                          <div className="w-16 h-16 rounded-xl bg-white border border-slate-200 dark:bg-white/5 dark:border-white/10 overflow-hidden">
-                            <img 
-                              src={edu.institution_logo_url || edu.institution_logo} 
-                              alt={edu.institution_name} 
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-16 h-16 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-gradient-to-br dark:from-white/5 dark:to-white/10 flex items-center justify-center text-3xl shadow-inner">
-                            🎓
-                          </div>
-                        )}
-                      </div>
 
-                      {/* Content */}
-                      <div className="flex-1 min-w-0 pr-4">
-                          <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary-cyan transition-colors truncate">
-                            {edu.degree_name}
-                          </h3>
-                          <div className="mt-1">
-                             <div className="flex items-start justify-between">
-                                <p className="text-slate-600 dark:text-slate-400 text-sm font-medium truncate">
-                                  {edu.institution_name}
-                                </p>
-                                <span className="text-[10px] text-primary-cyan font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap hidden sm:block ml-2">
-                                  Click for Details ↗
-                                </span>
-                             </div>
-                             
-                             <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-300 ease-out w-full">
-                                <div className="overflow-hidden">
-                                   {edu.location && (
-                                      <p className="text-xs text-slate-500 mt-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75">
-                                         📍 {edu.location}
-                                      </p>
-                                   )}
-                                </div>
-                             </div>
-                          </div>
-                      </div>
-                      
-                      {/* Mobile Arrow */}
-                      <div className="text-primary-cyan opacity-0 group-hover:opacity-100 transition-opacity sm:hidden">
-                        →
-                      </div>
-                  </div>
-              </motion.div>
-            ))}
-          </div>
-        </AnimatedSection>
-      )}
 
       {/* About Section */}
       <AnimatedSection className="section-padding max-w-7xl mx-auto">
@@ -405,6 +333,101 @@ export default function HomePage() {
           ))}
         </div>
       </AnimatedSection>
+
+      {/* Education Section */}
+      {education?.length > 0 && (
+        <AnimatedSection className="section-padding max-w-7xl mx-auto" id="education">
+          <SectionTitle subtitle="Academic Background & Qualifications">
+            Education
+          </SectionTitle>
+          <div className="flex flex-col gap-4 mt-10 max-w-4xl mx-auto">
+            {education.map((edu, index) => (
+
+              <motion.div
+                key={edu.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.01 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                onClick={() => setSelectedEducation(edu)}
+                className="cursor-pointer group relative"
+              >
+                  {/* Highlight Glow for Current Education */}
+                  {edu.is_current && (
+                    <div className="absolute -inset-[1px] rounded-xl bg-gradient-to-r from-primary-cyan/50 via-primary-emerald/30 to-primary-cyan/50 opacity-20 blur-sm pointer-events-none" />
+                  )}
+
+                  <div className={`
+                    p-4 rounded-xl border transition-all flex items-center gap-5 relative overflow-hidden
+                    ${edu.is_current 
+                      ? 'border-l-4 border-l-primary-cyan border-y-primary-cyan/20 border-r-primary-cyan/20 bg-gradient-to-r from-primary-cyan/5 to-transparent dark:from-primary-cyan/10 dark:to-transparent shadow-[0_0_20px_rgba(34,211,238,0.15)]' 
+                      : 'border-slate-200 dark:border-white/10 bg-white/50 dark:bg-white/[0.03] hover:bg-white/80 dark:hover:bg-white/[0.06] shadow-sm dark:shadow-none'
+                    }
+                  `}>
+                      {/* Current Status Badge for Current Education */}
+                      {edu.is_current && (
+                        <div className="absolute top-0 right-0">
+                          <div className="bg-primary-cyan text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg shadow-sm">
+                            CURRENT
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Logo */}
+                      <div className="flex-shrink-0">
+                        {(edu.institution_logo_url || edu.institution_logo) ? (
+                          <div className="w-16 h-16 rounded-xl bg-white border border-slate-200 dark:bg-white/5 dark:border-white/10 overflow-hidden">
+                            <img 
+                              src={edu.institution_logo_url || edu.institution_logo} 
+                              alt={edu.institution_name} 
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-16 h-16 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-gradient-to-br dark:from-white/5 dark:to-white/10 flex items-center justify-center text-3xl shadow-inner">
+                            🎓
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1 min-w-0 pr-4">
+                          <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary-cyan transition-colors truncate">
+                            {edu.degree_name}
+                          </h3>
+                          <div className="mt-1">
+                             <div className="flex items-start justify-between">
+                                <p className="text-slate-600 dark:text-slate-400 text-sm font-medium truncate">
+                                  {edu.institution_name}
+                                </p>
+                                <span className="text-[10px] text-primary-cyan font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap hidden sm:block ml-2">
+                                  Click for Details ↗
+                                </span>
+                             </div>
+                             
+                             <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-300 ease-out w-full">
+                                <div className="overflow-hidden">
+                                   {edu.location && (
+                                      <p className="text-xs text-slate-500 mt-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75">
+                                         📍 {edu.location}
+                                      </p>
+                                   )}
+                                </div>
+                             </div>
+                          </div>
+                      </div>
+                      
+                      {/* Mobile Arrow */}
+                      <div className="text-primary-cyan opacity-0 group-hover:opacity-100 transition-opacity sm:hidden">
+                        →
+                      </div>
+                  </div>
+              </motion.div>
+            ))}
+          </div>
+        </AnimatedSection>
+      )}
 
       {/* Experience Section */}
       {experience?.length > 0 && (
