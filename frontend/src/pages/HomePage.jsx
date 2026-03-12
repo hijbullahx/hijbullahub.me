@@ -14,6 +14,7 @@ import SectionTitle from "../components/SectionTitle";
 import TypingAnimation from "../components/TypingAnimation";
 import FeedbackModal from "../components/FeedbackModal";
 import ReviewsDrawer from "../components/ReviewsDrawer";
+import { useToast } from "../dashboard/components/ToastContext";
 
 // ── Gallery style feedback card ──────────────────────────────
 function FeedbackCard({ fb, onClick }) {
@@ -46,6 +47,19 @@ function FeedbackCard({ fb, onClick }) {
         &ldquo;{fb.comment}&rdquo;
       </p>
 
+      {/* Admin Reply */}
+      {fb.admin_reply && (
+        <div className="mb-4 bg-cyan-950/30 border-l-2 border-cyan-500 pl-3 py-2 rounded-r-lg relative z-10 group/reply">
+          <p className="text-xs text-cyan-400 font-bold mb-1 flex items-center gap-1">
+            <span className="w-1 h-1 rounded-full bg-cyan-400"></span>
+            Reply
+          </p>
+          <p className="text-xs text-cyan-100/80 italic line-clamp-3 group-hover/reply:line-clamp-none transition-all">
+            {fb.admin_reply}
+          </p>
+        </div>
+      )}
+
       <div className="flex items-center gap-3 pt-4 border-t border-white/5 mt-auto relative z-10">
         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-lg shadow-cyan-500/20">
           {fb.name.charAt(0).toUpperCase()}
@@ -76,10 +90,19 @@ const getMediaUrl = (url) => {
     const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
     // Remove '/api' from base URL if present to get root
     const rootUrl = baseUrl.replace(/\/api\/?$/, '');
-    return `${rootUrl}${url.startsWith('/') ? '' : '/'}${url}`;
+    
+    // Common issue: path stored as 'hero/resume.pdf' but served at '/media/hero/resume.pdf'
+    // If it doesn't start with /media/ and is not absolute, prepend /media
+    let cleanPath = url.startsWith('/') ? url : `/${url}`;
+    if (!cleanPath.startsWith('/media/')) {
+        cleanPath = `/media${cleanPath}`;
+    }
+    
+    return `${rootUrl}${cleanPath}`;
 };
 
 export default function HomePage() {
+  const { success } = useToast();
   const [state, setState] = useState({ loading: true, error: "", data: {} });
   const [scrollY, setScrollY] = useState(0);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -189,13 +212,17 @@ export default function HomePage() {
                 <GlowButton onClick={() => setHireOpen(true)}>
                   💼 Engage My Expertise
                 </GlowButton>
-                <motion.button
-                  onClick={() => setFeedbackOpen(true)}
-                  whileHover={{ scale: 1.05 }}
-                  className="px-6 py-3 rounded-full border-2 border-primary-cyan/30 text-primary-cyan font-semibold hover:bg-primary-cyan/10 transition-all duration-300"
-                >
-                  ⭐ Feedback
-                </motion.button>
+                {hero?.resume_file && (
+                  <motion.a
+                    href={getMediaUrl(hero.resume_file)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05 }}
+                    className="px-6 py-3 rounded-full border-2 border-primary-cyan/30 text-primary-cyan font-semibold hover:bg-primary-cyan/10 transition-all duration-300 flex items-center gap-2"
+                  >
+                    📄 Resume
+                  </motion.a>
+                )}
               </div>
             </motion.div>
 
@@ -672,6 +699,15 @@ export default function HomePage() {
       <FeedbackModal 
         isOpen={feedbackOpen} 
         onClose={() => setFeedbackOpen(false)} 
+        onSubmitted={(newFb) => {
+           setFeedbacks((prev) => [...prev, newFb]);
+           success("Thank you for your feedback!");
+        }}
+      />
+
+      <HireDrawer 
+        isOpen={hireOpen} 
+        onClose={() => setHireOpen(false)} 
       />
     </div>
   );

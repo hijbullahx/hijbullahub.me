@@ -1,5 +1,6 @@
 from django.db import models
-from rest_framework import permissions, viewsets
+from rest_framework import permissions, viewsets, status
+from rest_framework.response import Response
 
 from .models import Contact, ContactProfile, Feedback
 from .serializers import ContactSerializer, ContactProfileSerializer, FeedbackSerializer
@@ -27,6 +28,7 @@ class ContactProfileViewSet(viewsets.ModelViewSet):
 
 class FeedbackViewSet(viewsets.ModelViewSet):
     serializer_class = FeedbackSerializer
+    pagination_class = None
 
     def get_queryset(self):
         # Public list shows only visible; admin sees all
@@ -43,3 +45,18 @@ class FeedbackViewSet(viewsets.ModelViewSet):
         # Auto-assign display_order: new submissions go to the end
         max_order = Feedback.objects.aggregate(m=models.Max("display_order"))["m"] or 0
         serializer.save(display_order=max_order + 1)
+
+    def destroy(self, request, *args, **kwargs):
+        print("Destroy called for ID:", kwargs.get('pk'))
+        try:
+            instance = self.get_object()
+            print("Deleting feedback instance:", instance)
+            self.perform_destroy(instance)
+            return Response(status=204)
+        except Exception as e:
+            print("Error deleting:", e)
+            return Response({"error": str(e)}, status=400)
+            
+    def perform_destroy(self, instance):
+        instance.delete()
+

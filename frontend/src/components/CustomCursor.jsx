@@ -16,43 +16,38 @@ function Explosion({ x, y, onDone }) {
       style={{ top: y, left: x }}
       onAnimationComplete={onDone}
     >
-      {/* Blinding core flash */}
-      <motion.div
-        className="absolute rounded-full"
-        style={{
-          width: 22, height: 22,
-          top: -11, left: -11,
-          background: "radial-gradient(circle, #fff 15%, #22d3ee 45%, #06b6d4 70%, transparent 90%)",
-          boxShadow: "0 0 24px 10px #22d3ee, 0 0 48px 20px #0891b2, 0 0 80px 30px #0e7490",
-        }}
-        initial={{ scale: 0, opacity: 1 }}
-        animate={{ scale: [0, 3.5, 0.5, 0], opacity: [1, 1, 0.6, 0] }}
-        transition={{ duration: 0.55, ease: [0.1, 0.9, 0.3, 1] }}
-      />
+        {/* Blinding core flash (reduced) */}
+        <motion.div
+          className="absolute rounded-full"
+          style={{
+            width: 22, height: 22,
+            top: -11, left: -11,
+            background: "radial-gradient(circle, rgba(255,255,255,0.6) 15%, rgba(34, 211, 238, 0.4) 45%, rgba(6, 182, 212, 0.3) 70%, transparent 90%)",
+            boxShadow: "0 0 24px 10px rgba(34, 211, 238, 0.3), 0 0 48px 20px rgba(8, 145, 178, 0.2), 0 0 80px 30px rgba(14, 116, 144, 0.1)",
+          }}
+          initial={{ scale: 0, opacity: 0.5 }}
+          animate={{ scale: [0, 3.5, 0.5, 0], opacity: [0.5, 0.5, 0.3, 0] }}
+          transition={{ duration: 0.55, ease: [0.1, 0.9, 0.3, 1] }}
+        />
 
-      {/* Secondary hot core — slightly warm tint */}
-      <motion.div
+        {/* Secondary hot core — slightly warm tint (reduced) */}
+        <motion.div
+          className="absolute rounded-full"
+          style={{
+            width: 10, height: 10,
+            top: -5, left: -5,
+            background: "radial-gradient(circle, rgba(255,255,255,0.6) 30%, rgba(165, 243, 252, 0.4) 70%, transparent 100%)",
+            boxShadow: "0 0 16px 8px rgba(255,255,255,0.2), 0 0 32px 12px rgba(34, 211, 238, 0.2)",
+          }}
+          initial={{ scale: 0, opacity: 0.5 }}
+          animate={{ scale: [0, 4, 0], opacity: [0.5, 0.5, 0] }}
         className="absolute rounded-full"
         style={{
-          width: 10, height: 10,
-          top: -5, left: -5,
-          background: "radial-gradient(circle, #fff 30%, #a5f3fc 70%, transparent 100%)",
-          boxShadow: "0 0 16px 8px #fff, 0 0 32px 12px #22d3ee",
-        }}
-        initial={{ scale: 0, opacity: 1 }}
-        animate={{ scale: [0, 4, 0], opacity: [1, 1, 0] }}
-        transition={{ duration: 0.32, ease: "easeOut" }}
-      />
-
-      {/* Shockwave ring 1 — big, fast */}
-      <motion.div
-        className="absolute rounded-full"
-        style={{
-          border: "2px solid #22d3ee",
-          boxShadow: "0 0 8px 2px #06b6d4, inset 0 0 8px 2px #06b6d4",
+          border: "2px solid rgba(34, 211, 238, 0.6)",
+          boxShadow: "0 0 8px 2px rgba(6, 182, 212, 0.4), inset 0 0 8px 2px rgba(6, 182, 212, 0.4)",
           top: 0, left: 0,
         }}
-        initial={{ width: 0, height: 0, top: 0, left: 0, opacity: 1 }}
+        initial={{ width: 0, height: 0, top: 0, left: 0, opacity: 0.6 }}
         animate={{ width: 110, height: 110, top: -55, left: -55, opacity: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       />
@@ -61,20 +56,20 @@ function Explosion({ x, y, onDone }) {
       <motion.div
         className="absolute rounded-full"
         style={{
-          border: "1.5px solid #34d399",
-          boxShadow: "0 0 6px 2px #10b981",
+          border: "1.5px solid rgba(52, 211, 153, 0.6)",
+          boxShadow: "0 0 6px 2px rgba(16, 185, 129, 0.4)",
           top: 0, left: 0,
         }}
-        initial={{ width: 0, height: 0, top: 0, left: 0, opacity: 0.9 }}
+        initial={{ width: 0, height: 0, top: 0, left: 0, opacity: 0.5 }}
         animate={{ width: 80, height: 80, top: -40, left: -40, opacity: 0 }}
         transition={{ duration: 0.42, ease: "easeOut", delay: 0.07 }}
       />
 
       {/* Shockwave ring 3 — white, fast micro-pulse */}
       <motion.div
-        className="absolute rounded-full border border-white/80"
+        className="absolute rounded-full border border-white/40"
         style={{ top: 0, left: 0 }}
-        initial={{ width: 0, height: 0, top: 0, left: 0, opacity: 1 }}
+        initial={{ width: 0, height: 0, top: 0, left: 0, opacity: 0.5 }}
         animate={{ width: 44, height: 44, top: -22, left: -22, opacity: 0 }}
         transition={{ duration: 0.22, ease: "easeOut", delay: 0.02 }}
       />
@@ -93,16 +88,16 @@ function Explosion({ x, y, onDone }) {
             style={{
               width: thick, height: thick,
               top: -thick / 2, left: -thick / 2,
-              background: isCyan ? "#e0f2fe" : "#d1fae5",
+              background: isCyan ? "rgba(224, 242, 254, 0.6)" : "rgba(209, 250, 229, 0.6)",
               boxShadow: isCyan
-                ? `0 0 ${thick * 4}px ${thick * 2}px #06b6d4, 0 0 ${thick * 8}px ${thick * 2}px #0891b2`
-                : `0 0 ${thick * 4}px ${thick * 2}px #10b981, 0 0 ${thick * 8}px ${thick * 2}px #059669`,
+                ? `0 0 ${thick * 4}px ${thick * 2}px rgba(6, 182, 212, 0.3), 0 0 ${thick * 8}px ${thick * 2}px rgba(8, 145, 178, 0.2)`
+                : `0 0 ${thick * 4}px ${thick * 2}px rgba(16, 185, 129, 0.3), 0 0 ${thick * 8}px ${thick * 2}px rgba(5, 150, 105, 0.2)`,
             }}
-            initial={{ x: 0, y: 0, opacity: 1, scale: 1.5 }}
+            initial={{ x: 0, y: 0, opacity: 0.6, scale: 1.5 }}
             animate={{
               x: [0, tx * 0.3, tx * 0.8, tx],
               y: [0, ty * 0.3, ty * 0.8, ty],
-              opacity: [1, 1, 0.8, 0],
+              opacity: [0.6, 0.6, 0.4, 0],
               scale: [1.5, 2, 1, 0],
             }}
             transition={{
@@ -126,16 +121,16 @@ function Explosion({ x, y, onDone }) {
             style={{
               width: 3, height: 3,
               top: -1.5, left: -1.5,
-              background: i % 2 === 0 ? "#67e8f9" : "#6ee7b7",
+              background: i % 2 === 0 ? "rgba(103, 232, 249, 0.6)" : "rgba(110, 231, 183, 0.6)",
               boxShadow: i % 2 === 0
-                ? "0 0 8px 3px #06b6d4"
-                : "0 0 8px 3px #10b981",
+                ? "0 0 8px 3px rgba(6, 182, 212, 0.3)"
+                : "0 0 8px 3px rgba(16, 185, 129, 0.3)",
             }}
-            initial={{ x: 0, y: 0, opacity: 1 }}
+            initial={{ x: 0, y: 0, opacity: 0.6 }}
             animate={{
               x: [0, tx * 0.5, tx],
               y: [0, ty * 0.5, ty],
-              opacity: [1, 0.9, 0],
+              opacity: [0.6, 0.5, 0],
               scale: [1, 1.8, 0],
             }}
             transition={{ duration: 0.6, delay: 0.04 + i * 0.012, ease: "easeOut" }}
@@ -151,14 +146,14 @@ function Explosion({ x, y, onDone }) {
         return (
           <motion.div
             key={`d${i}`}
-            className="absolute rounded-full bg-white"
+            className="absolute rounded-full bg-white/60"
             style={{ width: 2, height: 2, top: -1, left: -1,
-              boxShadow: "0 0 4px 2px #e0f2fe" }}
-            initial={{ x: 0, y: 0, opacity: 1 }}
+              boxShadow: "0 0 4px 2px rgba(224, 242, 254, 0.3)" }}
+            initial={{ x: 0, y: 0, opacity: 0.6 }}
             animate={{
               x: Math.cos(rad) * len,
               y: Math.sin(rad) * len,
-              opacity: [1, 1, 0],
+              opacity: [0.6, 0.6, 0],
             }}
             transition={{ duration: 0.38, delay: 0.03 + i * 0.005, ease: "easeOut" }}
           />
@@ -236,11 +231,11 @@ export default function CustomCursor() {
         />
         
         {/* Center dot */}
-        <div className="absolute top-1/2 left-1/2 w-2 h-2 -ml-1 -mt-1 rounded-full bg-primary-cyan shadow-lg shadow-primary-cyan/50" />
+        <div className="absolute top-1/2 left-1/2 w-2 h-2 -ml-1 -mt-1 rounded-full bg-primary-cyan shadow-md shadow-primary-cyan/30" />
         
         {/* Crosshair lines */}
-        <div className="absolute top-1/2 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary-cyan/60 to-transparent" />
-        <div className="absolute top-0 left-1/2 w-[1px] h-full bg-gradient-to-b from-transparent via-primary-emerald/60 to-transparent" />
+        <div className="absolute top-1/2 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary-cyan/40 to-transparent" />
+        <div className="absolute top-0 left-1/2 w-[1px] h-full bg-gradient-to-b from-transparent via-primary-emerald/40 to-transparent" />
       </motion.div>
     </>
   );

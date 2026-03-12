@@ -58,6 +58,7 @@ class Feedback(TimeStampedModel):
     profession = models.CharField(max_length=120, blank=True, default="")
     rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES, default=5)
     comment = models.TextField(blank=True, default="")
+    admin_reply = models.TextField(blank=True, null=True, help_text="Admin reply to this feedback")
     is_visible = models.BooleanField(default=True, help_text="Show publicly on site")
     display_order = models.PositiveIntegerField(default=0, help_text="Lower = shown first in public card deck")
 

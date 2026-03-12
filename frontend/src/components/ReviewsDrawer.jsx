@@ -109,6 +109,14 @@ export default function ReviewsDrawer({ isOpen, onClose, feedbacks = [], onLeave
                       </p>
                     )}
 
+                    {/* Admin Reply */}
+                    {fb.admin_reply && (
+                      <div className="mb-3 ml-1 pl-3 py-2 border-l-2 border-cyan-500/50 bg-cyan-950/20 text-xs rounded-r-md">
+                        <span className="block text-cyan-400 font-bold mb-0.5">Admin Reply</span>
+                        <p className="text-cyan-100/80 italic">{fb.admin_reply}</p>
+                      </div>
+                    )}
+                    
                     {/* Author */}
                     <div className="flex items-center gap-2">
                       <div className="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">

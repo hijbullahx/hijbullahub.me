@@ -100,23 +100,35 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Cloudinary configuration for media file storage
 import cloudinary
 
+CLOUDINARY_URL = os.getenv('CLOUDINARY_URL', '')
+
 CLOUDINARY_STORAGE = {
-    'CLOUDINARY_URL': os.getenv('CLOUDINARY_URL', ''),
+    'CLOUDINARY_URL': CLOUDINARY_URL,
 }
 
-cloudinary.config(
-    cloudinary_url=os.getenv('CLOUDINARY_URL', ''),
-)
+if CLOUDINARY_URL:
+    cloudinary.config(cloudinary_url=CLOUDINARY_URL)
 
-# Storage backends - Use Cloudinary for media files
-STORAGES = {
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.StaticFilesStorage",
-    },
-}
+# Storage backends - Use Cloudinary for media files ONLY if configured
+if CLOUDINARY_URL:
+    STORAGES = {
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.StaticFilesStorage",
+        },
+    }
+else:
+    # Fallback to local storage for development
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.StaticFilesStorage",
+        },
+    }
 
 # Backwards compatibility for django-cloudinary-storage
 STATICFILES_STORAGE = "whitenoise.storage.StaticFilesStorage"
