@@ -15,7 +15,6 @@ class Hero(TimeStampedModel):
     name = models.CharField(max_length=120)
     tagline = models.CharField(max_length=255)
     short_bio = models.TextField()
-    resume_file = models.FileField(upload_to="hero/resume/", blank=True, null=True)
     profile_image = models.ImageField(upload_to="hero/profile/", blank=True, null=True)
     background_type = models.CharField(max_length=20, choices=BACKGROUND_CHOICES, default="gradient")
     is_active = models.BooleanField(default=True)

@@ -22,7 +22,7 @@ class HeroAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ("Personal Information", {
-            "fields": ("name", "tagline", "short_bio", "profile_image", "resume_file")
+            "fields": ("name", "tagline", "short_bio", "profile_image")
         }),
         ("Background Settings", {
             "fields": ("background_type",),

@@ -212,17 +212,6 @@ export default function HomePage() {
                 <GlowButton onClick={() => setHireOpen(true)}>
                   💼 Engage My Expertise
                 </GlowButton>
-                {hero?.resume_file && (
-                  <motion.a
-                    href={getMediaUrl(hero.resume_file)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05 }}
-                    className="px-6 py-3 rounded-full border-2 border-primary-cyan/30 text-primary-cyan font-semibold hover:bg-primary-cyan/10 transition-all duration-300 flex items-center gap-2"
-                  >
-                    📄 Resume
-                  </motion.a>
-                )}
               </div>
             </motion.div>
 

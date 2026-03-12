@@ -15,7 +15,6 @@ export default function HeroAdmin() {
     background_type: "gradient",
   });
   const [profileImage, setProfileImage] = useState(null);
-  const [resumeFile, setResumeFile] = useState(null);
   const toast = useToast();
 
   useEffect(() => {
@@ -52,10 +51,6 @@ export default function HeroAdmin() {
 
     if (profileImage) {
       data.append("profile_image", profileImage);
-    }
-
-    if (resumeFile) {
-      data.append("resume_file", resumeFile);
     }
 
     try {
@@ -161,22 +156,6 @@ export default function HeroAdmin() {
               />
             </div>
 
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Resume File (PDF)
-              </label>
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={(e) => setResumeFile(e.target.files[0])}
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-cyan-500 file:text-white file:cursor-pointer hover:file:bg-cyan-600"
-              />
-              {hero?.resume_file && (
-                <p className="mt-2 text-sm text-gray-400">
-                  Current: <a href={hero.resume_file} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">View Resume</a>
-                </p>
-              )}
-            </div>
           </div>
 
           <div className="flex justify-end pt-4 border-t border-white/10">
