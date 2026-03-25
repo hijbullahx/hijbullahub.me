@@ -500,7 +500,7 @@ export default function HomePage() {
       )}
 
       {/* Feedback & Reviews Section */}
-      {feedbacks?.length > 0 && (
+      {feedbacks?.length >= 0 && (
         <AnimatedSection className="section-padding max-w-7xl mx-auto overflow-hidden">
           <SectionTitle subtitle="Voices of My Well‑Wishers">
              Feedback & Reviews
