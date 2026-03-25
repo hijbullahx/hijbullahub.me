@@ -3,6 +3,7 @@ from datetime import timedelta
 from pathlib import Path
 
 import dj_database_url
+from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -173,6 +174,9 @@ if not CORS_ALLOW_ALL_ORIGINS:
         for origin in os.getenv("CORS_ALLOWED_ORIGINS", "").split(",") 
         if origin.strip()
     ]
+
+# Allow browser preflight for clients that include cache-control header.
+CORS_ALLOW_HEADERS = (*default_headers, "cache-control")
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
