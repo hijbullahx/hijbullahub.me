@@ -47,11 +47,16 @@ const AnalyticsAdmin = lazy(() => import("./dashboard/pages/AnalyticsAdmin"));
 function VisitTracker() {
   const location = useLocation();
   const lastPath = useRef(null);
+  const VISIT_THROTTLE_MS = 10 * 60 * 1000;
   useEffect(() => {
     if (location.pathname.startsWith("/dashboard")) return;
     if (location.pathname === lastPath.current) return;
     lastPath.current = location.pathname;
     const page = location.pathname === "/" ? "home" : location.pathname.slice(1);
+    const key = `visit:${page}`;
+    const lastSent = Number(sessionStorage.getItem(key) || "0");
+    if (Date.now() - lastSent < VISIT_THROTTLE_MS) return;
+    sessionStorage.setItem(key, String(Date.now()));
     api.post("/analytics/visit/", { page, referrer: document.referrer }).catch(() => {});
   }, [location.pathname]);
   return null;
