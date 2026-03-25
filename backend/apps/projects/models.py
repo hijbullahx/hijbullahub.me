@@ -38,7 +38,7 @@ class Project(TimeStampedModel):
     live_link = models.URLField(blank=True)
     demo_video_url = models.URLField(blank=True)
     research_direction = models.TextField(blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="ongoing")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="ongoing", db_index=True)
     featured = models.BooleanField(default=False)
     display_order = models.PositiveIntegerField(default=0)
     featured_image = models.ImageField(upload_to="projects/featured/", blank=True, null=True)

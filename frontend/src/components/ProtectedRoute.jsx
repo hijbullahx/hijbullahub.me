@@ -6,7 +6,7 @@ export default function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
-    return <LoadingState />;
+    return <LoadingState statusText="Redirecting" />;
   }
 
   if (!isAuthenticated) {

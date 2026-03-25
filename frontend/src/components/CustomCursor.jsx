@@ -41,6 +41,11 @@ function Explosion({ x, y, onDone }) {
           }}
           initial={{ scale: 0, opacity: 0.5 }}
           animate={{ scale: [0, 4, 0], opacity: [0.5, 0.5, 0] }}
+          transition={{ duration: 0.4, ease: [0.2, 1, 0.3, 1] }}
+        />
+
+      {/* Shockwave ring 1 — cyan */}
+      <motion.div
         className="absolute rounded-full"
         style={{
           border: "2px solid rgba(34, 211, 238, 0.6)",

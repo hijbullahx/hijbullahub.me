@@ -88,4 +88,14 @@ export const fetchList = async (path) => {
   return data.results ?? data;
 };
 
+// Projects fetch with explicit client cache hint.
+export const fetchProjects = async () => {
+  const { data } = await api.get("/projects/", {
+    headers: {
+      "Cache-Control": "public, max-age=300",
+    },
+  });
+  return data.results ?? data;
+};
+
 export default api;

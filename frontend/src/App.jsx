@@ -1,44 +1,47 @@
+import { Suspense, lazy, useEffect, useRef } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CustomCursor from "./components/CustomCursor";
 import MuteButton from "./components/MuteButton";
 import ProtectedRoute from "./components/ProtectedRoute";
-import ContactPage from "./pages/ContactPage";
-import HomePage from "./pages/HomePage";
-import ProjectsPage from "./pages/ProjectsPage";
-import AIMLPage from "./pages/AIMLPage";
-import ResearchPage from "./pages/ResearchPage";
+import LoadingState from "./components/LoadingState";
 
 // Dashboard imports
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { SoundProvider } from "./contexts/SoundContext";
 import { ToastProvider } from "./dashboard/components/ToastContext";
-import DashboardLayout from "./dashboard/DashboardLayout";
-import LoginPage from "./dashboard/LoginPage";
-import DashboardHome from "./dashboard/pages/DashboardHome";
-import ProjectsAdmin from "./dashboard/pages/ProjectsAdmin";
-import ContactAdmin from "./dashboard/pages/ContactAdmin";
-import HeroAdmin from "./dashboard/pages/HeroAdmin";
-import AboutAdmin from "./dashboard/pages/AboutAdmin";
-import SkillsAdmin from "./dashboard/pages/SkillsAdmin";
-import ExperienceAdmin from "./dashboard/pages/ExperienceAdmin";
-import EducationAdmin from "./dashboard/pages/EducationAdmin";
-import AchievementsAdmin from "./dashboard/pages/AchievementsAdmin";
-import ResearchAdmin from "./dashboard/pages/ResearchAdmin";
-import ContributionRequestsAdmin from "./dashboard/pages/ContributionRequestsAdmin";
-import AcquisitionRequestsAdmin from "./dashboard/pages/AcquisitionRequestsAdmin";
-import HireRequestsAdmin from "./dashboard/pages/HireRequestsAdmin";
-import ContactProfileAdmin from "./dashboard/pages/ContactProfileAdmin";
-import FeedbackAdmin from "./dashboard/pages/FeedbackAdmin";
-import AILabAdmin from "./dashboard/pages/AILabAdmin";
-import SettingsAdmin from "./dashboard/pages/SettingsAdmin";
-import AnalyticsAdmin from "./dashboard/pages/AnalyticsAdmin";
-import { useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
 import api from "./api/client";
+
+const ContactPage = lazy(() => import("./pages/ContactPage"));
+const HomePage = lazy(() => import("./pages/HomePage"));
+const ProjectsPage = lazy(() => import("./pages/ProjectsPage"));
+const AIMLPage = lazy(() => import("./pages/AIMLPage"));
+const ResearchPage = lazy(() => import("./pages/ResearchPage"));
+
+const DashboardLayout = lazy(() => import("./dashboard/DashboardLayout"));
+const LoginPage = lazy(() => import("./dashboard/LoginPage"));
+const DashboardHome = lazy(() => import("./dashboard/pages/DashboardHome"));
+const ProjectsAdmin = lazy(() => import("./dashboard/pages/ProjectsAdmin"));
+const ContactAdmin = lazy(() => import("./dashboard/pages/ContactAdmin"));
+const HeroAdmin = lazy(() => import("./dashboard/pages/HeroAdmin"));
+const AboutAdmin = lazy(() => import("./dashboard/pages/AboutAdmin"));
+const SkillsAdmin = lazy(() => import("./dashboard/pages/SkillsAdmin"));
+const ExperienceAdmin = lazy(() => import("./dashboard/pages/ExperienceAdmin"));
+const EducationAdmin = lazy(() => import("./dashboard/pages/EducationAdmin"));
+const AchievementsAdmin = lazy(() => import("./dashboard/pages/AchievementsAdmin"));
+const ResearchAdmin = lazy(() => import("./dashboard/pages/ResearchAdmin"));
+const ContributionRequestsAdmin = lazy(() => import("./dashboard/pages/ContributionRequestsAdmin"));
+const AcquisitionRequestsAdmin = lazy(() => import("./dashboard/pages/AcquisitionRequestsAdmin"));
+const HireRequestsAdmin = lazy(() => import("./dashboard/pages/HireRequestsAdmin"));
+const ContactProfileAdmin = lazy(() => import("./dashboard/pages/ContactProfileAdmin"));
+const FeedbackAdmin = lazy(() => import("./dashboard/pages/FeedbackAdmin"));
+const AILabAdmin = lazy(() => import("./dashboard/pages/AILabAdmin"));
+const SettingsAdmin = lazy(() => import("./dashboard/pages/SettingsAdmin"));
+const AnalyticsAdmin = lazy(() => import("./dashboard/pages/AnalyticsAdmin"));
 
 // Fires a silent POST to record each public page view
 function VisitTracker() {
@@ -65,6 +68,7 @@ export default function App() {
               <MuteButton />
               <VisitTracker />
               <div className="min-h-screen">
+            <Suspense fallback={<LoadingState />}>
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={
@@ -142,6 +146,7 @@ export default function App() {
                 <Route path="analytics" element={<AnalyticsAdmin />} />
               </Route>
             </Routes>
+            </Suspense>
           </div>
             </SoundProvider>
           </ToastProvider>

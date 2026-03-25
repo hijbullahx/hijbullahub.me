@@ -327,7 +327,7 @@ export default function ContactProfileAdmin() {
             />
           </div>
 
-          {/* Profile image watermark upload */}}
+          {/* Profile image watermark upload */}
           <div className="md:col-span-2">
             <ImageUploader
               value={existingImageUrl}

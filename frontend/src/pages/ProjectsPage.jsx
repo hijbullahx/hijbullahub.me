@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
-import { fetchList } from "../api/client";
+import { fetchProjects } from "../api/client";
 import api from "../api/client";
 import AnimatedSection from "../components/AnimatedSection";
 import ErrorState from "../components/ErrorState";
@@ -22,7 +22,7 @@ export default function ProjectsPage() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   useEffect(() => {
-    fetchList("/projects/")
+    fetchProjects()
       .then((projects) => setState({ loading: false, error: "", projects }))
       .catch(() => setState({ loading: false, error: "Unable to load projects.", projects: [] }));
   }, []);
