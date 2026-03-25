@@ -10,7 +10,7 @@ export default function LoadingState({ statusText = "Loading" }) {
   useEffect(() => {
     const typingTimer = setInterval(() => {
       setVisibleCount((prev) => (prev < letters.length ? prev + 1 : prev));
-    }, 130);
+    }, 300);
 
     return () => clearInterval(typingTimer);
   }, [letters.length]);
