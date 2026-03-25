@@ -1,4 +1,6 @@
 from rest_framework.routers import DefaultRouter
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_headers
 
 from apps.about.views import AboutViewSet
 from apps.achievements.views import AchievementViewSet
@@ -36,3 +38,33 @@ router.register(r"site-settings", SiteSettingViewSet, basename="site-settings")
 router.register(r"profiles", UserProfileViewSet, basename="profiles")
 
 urlpatterns = router.urls
+
+# Cache high-traffic public read endpoints for 5 minutes.
+_CACHED_BASENAMES = {
+	"hero",
+	"about",
+	"skills",
+	"tags",
+	"projects",
+	"project-images",
+	"research",
+	"research-contributions",
+	"education",
+	"experience",
+	"achievements",
+	"ai-lab",
+	"contact",
+	"contact-profiles",
+	"feedback",
+	"site-settings",
+}
+
+for pattern in urlpatterns:
+	if not pattern.name:
+		continue
+	if pattern.name.endswith("-list") or pattern.name.endswith("-detail"):
+		basename = pattern.name.rsplit("-", 1)[0]
+		if basename in _CACHED_BASENAMES:
+			pattern.callback = cache_page(60 * 5)(
+				vary_on_headers("Authorization", "Cookie")(pattern.callback)
+			)
