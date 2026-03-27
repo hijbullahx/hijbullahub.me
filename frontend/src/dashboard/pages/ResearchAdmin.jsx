@@ -103,14 +103,10 @@ export default function ResearchAdmin() {
       }
 
       if (editingResearch) {
-        await api.put(`/research/${editingResearch.id}/`, data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.put(`/research/${editingResearch.id}/`, data);
         toast.success("Research paper updated successfully");
       } else {
-        await api.post("/research/", data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.post("/research/", data);
         toast.success("Research paper created successfully");
       }
 

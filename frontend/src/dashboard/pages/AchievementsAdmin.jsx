@@ -96,12 +96,11 @@ export default function AchievementsAdmin() {
       const data = new FormData();
       Object.entries(formData).forEach(([k, v]) => { if (v) data.append(k, v); });
       if (badgeFile) data.append("badge_image", badgeFile);
-      const cfg = { headers: { "Content-Type": "multipart/form-data" } };
       if (editing) {
-        await api.patch(`/achievements/${editing.id}/`, data, cfg);
+        await api.patch(`/achievements/${editing.id}/`, data);
         toast.success("Updated.");
       } else {
-        await api.post("/achievements/", data, cfg);
+        await api.post("/achievements/", data);
         toast.success("Created.");
       }
       setModalOpen(false);

@@ -94,14 +94,10 @@ export default function BlogAdmin() {
 
     try {
       if (editingBlog) {
-        await api.patch(`/blog/${editingBlog.id}/`, data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.patch(`/blog/${editingBlog.id}/`, data);
         toast.success("Blog post updated successfully");
       } else {
-        await api.post("/blog/", data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.post("/blog/", data);
         toast.success("Blog post created successfully");
       }
       setModalOpen(false);

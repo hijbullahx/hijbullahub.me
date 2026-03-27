@@ -98,12 +98,11 @@ export default function ExperienceAdmin() {
       const data = new FormData();
       Object.entries(formData).forEach(([k, v]) => data.append(k, v));
       if (logoFile) data.append("logo", logoFile);
-      const cfg = { headers: { "Content-Type": "multipart/form-data" } };
       if (editing) {
-        await api.patch(`/experience/${editing.id}/`, data, cfg);
+        await api.patch(`/experience/${editing.id}/`, data);
         toast.success("Updated.");
       } else {
-        await api.post("/experience/", data, cfg);
+        await api.post("/experience/", data);
         toast.success("Created.");
       }
       setModalOpen(false);

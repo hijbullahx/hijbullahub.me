@@ -116,15 +116,11 @@ export default function ProjectsAdmin() {
       let projectId;
       
       if (editingProject) {
-        await api.patch(`/projects/${editingProject.id}/`, data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.patch(`/projects/${editingProject.id}/`, data);
         projectId = editingProject.id;
         toast.success("Project updated successfully");
       } else {
-        const response = await api.post("/projects/", data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        const response = await api.post("/projects/", data);
         projectId = response.data.id;
         toast.success("Project created successfully");
       }
@@ -137,9 +133,7 @@ export default function ProjectsAdmin() {
           imgData.append("image", imgFile);
           
           try {
-            await api.post("/project-images/", imgData, {
-              headers: { "Content-Type": "multipart/form-data" },
-            });
+            await api.post("/project-images/", imgData);
           } catch (imgError) {
             console.error("Failed to upload image:", imgError);
           }

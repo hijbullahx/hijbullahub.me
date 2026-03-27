@@ -153,12 +153,11 @@ export default function ContactProfileAdmin() {
       const data = new FormData();
       Object.keys(formData).forEach((key) => data.append(key, formData[key]));
       if (profileImageFile) data.append("profile_image", profileImageFile);
-      const config = { headers: { "Content-Type": "multipart/form-data" } };
       if (editingProfile) {
-        await api.patch(`/contact-profiles/${editingProfile.id}/`, data, config);
+        await api.patch(`/contact-profiles/${editingProfile.id}/`, data);
         toast.success("Contact profile updated");
       } else {
-        await api.post("/contact-profiles/", data, config);
+        await api.post("/contact-profiles/", data);
         toast.success("Contact profile created");
       }
       setModalOpen(false);

@@ -55,14 +55,10 @@ export default function AboutAdmin() {
 
     try {
       if (about) {
-        await api.patch(`/about/${about.id}/`, data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.patch(`/about/${about.id}/`, data);
         toast.success("About section updated successfully");
       } else {
-        await api.post("/about/", data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.post("/about/", data);
         toast.success("About section created successfully");
       }
       fetchAbout();

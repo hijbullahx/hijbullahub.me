@@ -55,14 +55,10 @@ export default function HeroAdmin() {
 
     try {
       if (hero) {
-        await api.patch(`/hero/${hero.id}/`, data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.patch(`/hero/${hero.id}/`, data);
         toast.success("Hero section updated successfully");
       } else {
-        await api.post("/hero/", data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.post("/hero/", data);
         toast.success("Hero section created successfully");
       }
       fetchHero();
