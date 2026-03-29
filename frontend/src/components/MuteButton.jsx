@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSound } from "../contexts/SoundContext";
+import { useTheme } from "../contexts/ThemeContext";
 
 export default function MuteButton() {
   const sound = useSound();
+  const { theme, toggleTheme } = useTheme();
   const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export default function MuteButton() {
   const { isMuted, toggleMute } = sound;
 
   return (
-    <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-center gap-3">
+    <div className="fixed bottom-6 right-6 z-[9999] flex items-center gap-3">
       <AnimatePresence>
         {showTooltip && isMuted && (
           <motion.div
@@ -40,6 +42,30 @@ export default function MuteButton() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <motion.button
+        onClick={toggleTheme}
+        initial={{ opacity: 0, scale: 0.6 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ type: "spring", stiffness: 260, damping: 20 }}
+        whileHover={{ scale: 1.15 }}
+        whileTap={{ scale: 0.88 }}
+        className="w-11 h-11 rounded-full bg-black/60 backdrop-blur-md border border-white/20 shadow-2xl flex items-center justify-center text-lg hover:bg-white/10 hover:border-white/40 transition-colors"
+        title="Toggle theme"
+        aria-label="Toggle theme"
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span
+            key={theme === "dark" ? "dark" : "light"}
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.5, opacity: 0 }}
+            transition={{ duration: 0.15 }}
+          >
+            {theme === "dark" ? "🌙" : "☀️"}
+          </motion.span>
+        </AnimatePresence>
+      </motion.button>
 
       <motion.button
         onClick={toggleMute}

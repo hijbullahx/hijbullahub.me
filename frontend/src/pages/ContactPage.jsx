@@ -24,7 +24,7 @@ export default function ContactPage() {
     <div className="container mx-auto px-4 py-24 min-h-screen flex items-center justify-center">
       <AnimatedSection>
         <SectionTitle
-          title="Connect With Me"
+          title="Connect"
           subtitle="Let's collaborate and build something amazing together!"
         />
 
@@ -42,9 +42,9 @@ export default function ContactPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: idx * 0.2, type: "spring", stiffness: 200, damping: 20 }}
                 whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0], transition: { duration: 0.3 } }}
-                className="block group w-64 flex-shrink-0"
+                className="block group w-56 flex-shrink-0"
               >
-                <div className="relative w-64 h-64">
+                <div className="relative w-56 h-56">
                   {/* Thin ring — invisible at rest, fades in + spins on hover */}
                   <div className="absolute -inset-[3px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-400 overflow-hidden">
                     <motion.div
@@ -88,12 +88,9 @@ export default function ContactPage() {
 
                     {/* Content */}
                     <div className="relative z-10 flex flex-col items-center justify-center">
-                      <div className="mb-4 text-white group-hover:scale-110 transition-transform duration-300">
-                        <ContactIcon iconType={contact.icon_type} size="h-20 w-20" />
+                      <div className="text-white group-hover:scale-110 transition-transform duration-300">
+                        <ContactIcon iconType={contact.icon_type} size="h-16 w-16" />
                       </div>
-                      <h3 className="text-xl font-bold uppercase tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-primary-cyan to-primary-emerald mb-2">
-                        {contact.title}
-                      </h3>
                     </div>
                   </div>
                 </div>

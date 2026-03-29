@@ -14,7 +14,7 @@ const links = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -388,91 +388,6 @@ export default function Navbar() {
             </NavLink>
           ))}
 
-          {/* Theme Toggle Button */}
-          <motion.button
-            onClick={toggleTheme}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ 
-              delay: links.length * 0.1 + 0.05, 
-              duration: 0.5,
-              scale: {
-                type: "spring",
-                stiffness: 400,
-                damping: 10
-              }
-            }}
-            className="relative group px-4 py-2.5 text-2xl"
-            aria-label="Toggle theme"
-          >
-            {/* Robotic frame background with sharp edges */}
-            <motion.div 
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300"
-              style={{
-                background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.15), rgba(16, 185, 129, 0.15))',
-                clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
-                border: '1px solid rgba(34, 211, 238, 0)',
-                boxShadow: '0 0 0 rgba(34, 211, 238, 0)',
-              }}
-              whileHover={{
-                border: '1px solid rgba(34, 211, 238, 0.5)',
-                boxShadow: '0 0 20px rgba(34, 211, 238, 0.4), inset 0 0 20px rgba(16, 185, 129, 0.1)',
-              }}
-            />
-
-            {/* Corner brackets */}
-            <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-cyan-500 opacity-40 group-hover:opacity-100 transition-opacity duration-300" />
-            <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-emerald-500 opacity-40 group-hover:opacity-100 transition-opacity duration-300" />
-            
-            {/* Scan line effect */}
-            <motion.div
-              className="absolute inset-0 opacity-0 group-hover:opacity-30"
-              style={{
-                background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(34, 211, 238, 0.1) 2px, rgba(34, 211, 238, 0.1) 4px)',
-              }}
-              animate={{
-                y: ['-100%', '100%'],
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            />
-            
-            {/* Theme emoji with rotation animation */}
-            <motion.span
-              className="relative block"
-              animate={{ rotate: theme === 'dark' ? 0 : 180 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              style={{
-                filter: 'drop-shadow(0 0 8px rgba(34, 211, 238, 0.6))',
-              }}
-            >
-              {theme === 'dark' ? '🌙' : '☀️'}
-            </motion.span>
-
-            {/* Circular glow pulse on hover */}
-            <motion.div
-              className="absolute inset-0 rounded-full"
-              style={{
-                background: 'radial-gradient(circle, rgba(34, 211, 238, 0.2), transparent 70%)',
-              }}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileHover={{
-                opacity: [0, 1, 0],
-                scale: [0.8, 1.2, 1.5],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-          </motion.button>
-
           {/* Admin Button - Dashboard Link */}
           <Link 
             to="/dashboard"
@@ -670,42 +585,6 @@ export default function Navbar() {
               )}
             </NavLink>
           ))}
-
-          {/* Theme Toggle - Mobile */}
-          <motion.button
-            onClick={toggleTheme}
-            initial={{ opacity: 0, x: -20 }}
-            animate={mobileMenuOpen ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-            transition={{ delay: links.length * 0.05, duration: 0.3 }}
-            className="w-full relative group py-3 px-4"
-            aria-label="Toggle theme"
-          >
-            <motion.div 
-              className="absolute inset-0 transition-all duration-300"
-              style={{
-                background: 'rgba(34, 211, 238, 0.05)',
-                clipPath: 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))',
-                border: '1px solid rgba(34, 211, 238, 0.1)',
-              }}
-            />
-
-            <div className="absolute top-1 left-1 w-2 h-2 border-t-2 border-l-2 border-cyan-500 opacity-40" />
-            <div className="absolute bottom-1 right-1 w-2 h-2 border-b-2 border-r-2 border-emerald-500 opacity-40" />
-            
-            <div className="relative flex items-center justify-between">
-              <span
-                className={`text-base font-bold tracking-widest uppercase ${
-                  theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
-                }`}
-                style={{ fontFamily: 'monospace' }}
-              >
-                THEME
-              </span>
-              <span className="text-2xl" style={{ filter: 'drop-shadow(0 0 8px rgba(34, 211, 238, 0.6))' }}>
-                {theme === 'dark' ? '🌙' : '☀️'}
-              </span>
-            </div>
-          </motion.button>
 
           {/* Admin Link - Mobile */}
           <Link 
