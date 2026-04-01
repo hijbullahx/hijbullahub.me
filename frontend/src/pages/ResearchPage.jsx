@@ -78,7 +78,7 @@ export default function ResearchPage() {
                   </div>
                 </div>
 
-                <h3 className="text-2xl font-bold gradient-text mb-4 leading-tight">
+                <h3 className="text-xl sm:text-2xl font-bold gradient-text mb-4 leading-tight">
                   {item.title}
                 </h3>
 

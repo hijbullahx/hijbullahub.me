@@ -8,7 +8,7 @@ export default function SectionTitle({ children, subtitle, className = "" }) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="text-4xl md:text-5xl lg:text-6xl font-bold gradient-text mb-4"
+        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold gradient-text mb-4"
       >
         {children}
       </motion.h2>
@@ -18,7 +18,7 @@ export default function SectionTitle({ children, subtitle, className = "" }) {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-slate-400 text-lg max-w-2xl mx-auto"
+          className="text-slate-400 text-sm sm:text-base md:text-lg max-w-2xl mx-auto"
         >
           {subtitle}
         </motion.p>

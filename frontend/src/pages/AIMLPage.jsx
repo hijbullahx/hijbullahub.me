@@ -51,10 +51,10 @@ export default function AIMLPage() {
                   Live ML Portfolio
                   <span className="w-6 h-px bg-cyan-500/60" />
                 </div>
-                <h2 className="text-3xl sm:text-4xl font-bold gradient-text mb-4 leading-tight">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold gradient-text mb-4 leading-tight">
                   See My ML Models in Action
                 </h2>
-                <p className="text-slate-600 dark:text-gray-400 text-base sm:text-lg leading-relaxed max-w-2xl">
+                <p className="text-slate-600 dark:text-gray-400 text-sm sm:text-base md:text-lg leading-relaxed max-w-2xl">
                   I maintain a dedicated <span className="text-slate-900 dark:text-white font-medium">interactive ML portfolio</span> built
                   with Streamlit,  where every model is deployed live. You can run predictions and stress-test the models in real time directly in your browser — no setup or coding required.
                 </p>

@@ -44,7 +44,7 @@ function FeedbackCard({ fb, onClick }) {
         ))}
       </div>
 
-      <p className="text-slate-700 dark:text-slate-300 text-lg sm:text-lg md:text-xl font-medium leading-relaxed flex-1 line-clamp-5 mb-6 relative z-10">
+      <p className="text-slate-700 dark:text-slate-300 text-sm sm:text-base md:text-lg font-medium leading-relaxed flex-1 line-clamp-5 mb-6 relative z-10">
         &ldquo;{fb.comment}&rdquo;
       </p>
 
@@ -193,20 +193,20 @@ export default function HomePage() {
         <ParticleBackground />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-light-surface/50 to-light-base dark:via-dark-base/50 dark:to-dark-base" />
         
-        <div className="relative z-10 max-w-7xl mx-auto px-6 py-32">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 md:py-24 lg:py-32">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 md:mb-5 leading-tight">
                 <span className="gradient-text">{hero?.name}</span>
               </h1>
-              <div className="text-2xl md:text-3xl text-slate-600 dark:text-slate-300 mb-8 h-12">
+              <div className="text-base sm:text-lg md:text-xl lg:text-2xl text-slate-600 dark:text-slate-300 mb-3 sm:mb-4 md:mb-6 min-h-8 leading-snug">
                 <TypingAnimation text={hero?.tagline || "Building the future with AI"} speed={80} />
               </div>
-              <p className="text-lg text-slate-600 dark:text-slate-400 mb-10 leading-relaxed max-w-xl">
+              <p className="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-400 mb-6 sm:mb-8 leading-relaxed max-w-xl">
                 {hero?.short_bio}
               </p>
               <div className="flex flex-wrap gap-4">
@@ -223,7 +223,7 @@ export default function HomePage() {
               className="flex justify-center"
             >
               <HoverTiltCard>
-                <div className="relative w-80 h-80 md:w-96 md:h-96">
+                <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96">
                   <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary-cyan/20 to-primary-emerald/20 blur-3xl animate-glow-pulse" />
                   <div className="relative glass rounded-3xl p-2 overflow-hidden">
                     {hero?.profile_image ? (
