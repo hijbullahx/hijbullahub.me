@@ -33,5 +33,10 @@ class AILab(TimeStampedModel):
     class Meta:
         ordering = ["-created_at"]
 
+    def save(self, *args, **kwargs):
+        if self.link and not self.link.startswith(("http://", "https://")):
+            self.link = f"https://{self.link.strip()}"
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.title if self.title else self.experiment_title

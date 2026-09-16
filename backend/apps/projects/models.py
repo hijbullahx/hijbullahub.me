@@ -49,6 +49,10 @@ class Project(TimeStampedModel):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
+        if self.github_link and not self.github_link.startswith(("http://", "https://")):
+            self.github_link = f"https://{self.github_link.strip()}"
+        if self.live_link and not self.live_link.startswith(("http://", "https://")):
+            self.live_link = f"https://{self.live_link.strip()}"
         super().save(*args, **kwargs)
 
     def __str__(self):
