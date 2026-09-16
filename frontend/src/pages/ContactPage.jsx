@@ -10,6 +10,7 @@ import LoadingState from "../components/LoadingState";
 export default function ContactPage() {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [copiedKey, setCopiedKey] = useState(null);
 
   useEffect(() => {
     fetchList("/contact-profiles/")
@@ -18,17 +19,48 @@ export default function ContactPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  const copyToClipboard = (text, key) => {
+    navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 2000);
+  };
+
   if (loading) return <LoadingState />;
 
   return (
-    <div className="container mx-auto px-4 py-24 min-h-screen flex items-center justify-center">
+    <div className="container mx-auto px-4 py-24 min-h-[90vh] flex flex-col justify-center">
       <AnimatedSection>
         <SectionTitle
-          title="Connect"
-          subtitle="Let's collaborate and build something amazing together!"
+          title="Connect &amp; Collaborate"
+          subtitle="Whether for research partnerships, autonomous robotics initiatives, or enterprise AI consulting, I'd love to connect."
         />
 
-        <div className="mx-auto mt-16 flex flex-wrap justify-center gap-10 max-w-5xl">
+        {/* Quick Contact Bar */}
+        <div className="max-w-2xl mx-auto mb-14 p-6 rounded-2xl bg-white/70 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 backdrop-blur-md shadow-sm">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold text-lg">
+                ✉️
+              </div>
+              <div>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Direct Email</p>
+                <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                  hijbullah119445@gmail.com
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => copyToClipboard("hijbullah119445@gmail.com", "email")}
+              className="px-4 py-2 rounded-xl text-xs font-semibold border border-cyan-500/30 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500 hover:text-white transition-all"
+            >
+              {copiedKey === "email" ? "✓ Copied!" : "Copy Address"}
+            </button>
+          </div>
+        </div>
+
+        {/* Dynamic Social Profiles */}
+        <div className="mx-auto flex flex-wrap justify-center gap-8 max-w-5xl">
           {contacts.map((contact, idx) => {
             const [clrA, clrB] = getPlatformColors(contact.icon_type);
 
@@ -38,59 +70,51 @@ export default function ContactPage() {
                 href={contact.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: idx * 0.2, type: "spring", stiffness: 200, damping: 20 }}
-                whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0], transition: { duration: 0.3 } }}
-                className="block group w-56 flex-shrink-0"
+                transition={{ delay: idx * 0.1, duration: 0.4 }}
+                whileHover={{ y: -6, scale: 1.05 }}
+                className="group w-48 sm:w-52 flex-shrink-0 focus:outline-none"
               >
-                <div className="relative w-56 h-56">
-                  {/* Thin ring — invisible at rest, fades in + spins on hover */}
-                  <div className="absolute -inset-[3px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-400 overflow-hidden">
+                <div className="relative w-48 h-48 sm:w-52 sm:h-52 mx-auto">
+                  {/* Rotating Conic Gradient Ring on Hover */}
+                  <div className="absolute -inset-[2px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 overflow-hidden">
                     <motion.div
                       className="w-full h-full rounded-full"
-                      style={{ background: `conic-gradient(from 0deg, ${clrA}, ${clrB}, transparent 60%, ${clrA})` }}
+                      style={{
+                        background: `conic-gradient(from 0deg, ${clrA}, ${clrB}, transparent 60%, ${clrA})`,
+                      }}
                       animate={{ rotate: 360 }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                     />
                   </div>
 
-                  {/* Main circular card — dark, merges with background */}
-                  <div className="relative w-full h-full rounded-full overflow-hidden border border-slate-200 dark:border-white/[0.06] backdrop-blur-xl flex flex-col items-center justify-center transition-all duration-300 bg-white/90 shadow-lg dark:bg-transparent dark:shadow-none"
-                    style={{ background: "var(--card-bg, radial-gradient(circle at 40% 35%, rgba(255,255,255,0.04), rgba(5,7,15,0.85)))" }}
-                  >
-                    {/* HACK: Override background for light mode via a clear style or just use classes if possible. 
-                        The style attribute has high specificity. 
-                        Let's try to remove style and use Tailwind if possible, or conditional logic. 
-                        Since I can't easily inject theme here without context, I will use a CSS variable or just rely on dark mode class trick.
-                        Actually, 'style' overrides classes. 
-                        I will assume I can just use a class for the gradient if I convert it.
-                    */}
-                   <div className="absolute inset-0 bg-white/90 dark:bg-transparent z-[-1]" />
-                   <div className="absolute inset-0 opacity-0 dark:opacity-100 z-[-1]" 
-                        style={{ background: "radial-gradient(circle at 40% 35%, rgba(255,255,255,0.04), rgba(5,7,15,0.85))" }} 
-                   />
-
-                    {/* Profile image watermark */}
+                  {/* Main Avatar Card */}
+                  <div className="relative w-full h-full rounded-full overflow-hidden border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col items-center justify-center transition-all bg-white dark:bg-slate-900 shadow-md dark:shadow-2xl">
+                    {/* Watermark profile image if present */}
                     {contact.profile_image_url && (
                       <img
                         src={contact.profile_image_url}
-                        alt={`${contact.title} profile`}
-                        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
-                        style={{
-                          opacity: contact.image_opacity ?? 0.2,
-                          filter: "grayscale(20%) brightness(0.8)",
+                        alt={`${contact.title} background`}
+                        className="absolute inset-0 w-full h-full object-cover opacity-15 dark:opacity-20 grayscale pointer-events-none"
+                        onError={(e) => {
+                          e.target.style.display = "none";
                         }}
-                        crossOrigin="anonymous"
-                        onError={(e) => { e.target.style.display = "none"; }}
                       />
                     )}
 
-                    {/* Content */}
-                    <div className="relative z-10 flex flex-col items-center justify-center">
-                      <div className="text-white group-hover:scale-110 transition-transform duration-300">
-                        <ContactIcon iconType={contact.icon_type} size="h-16 w-16" />
+                    <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
+                      <div className="group-hover:scale-110 transition-transform duration-300 mb-2">
+                        <ContactIcon iconType={contact.icon_type} size="h-12 w-12" />
                       </div>
+                      <span className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">
+                        {contact.title}
+                      </span>
+                      {contact.subtitle && (
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
+                          {contact.subtitle}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -98,10 +122,6 @@ export default function ContactPage() {
             );
           })}
         </div>
-
-        {contacts.length === 0 && (
-          <p className="text-center text-gray-400 mt-16">No contact profiles found.</p>
-        )}
       </AnimatedSection>
     </div>
   );

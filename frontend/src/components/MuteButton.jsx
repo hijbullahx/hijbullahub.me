@@ -6,89 +6,61 @@ import { useTheme } from "../contexts/ThemeContext";
 export default function MuteButton() {
   const sound = useSound();
   const { theme, toggleTheme } = useTheme();
-  const [showTooltip, setShowTooltip] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    // Show notification only once per session
-    const shown = sessionStorage.getItem("sound_notification_shown");
-    if (!shown) {
-      // Delay slightly so it pops up after page load
-      const t1 = setTimeout(() => setShowTooltip(true), 1000);
-      // Hide after 3 seconds
-      const t2 = setTimeout(() => {
-        setShowTooltip(false);
-        sessionStorage.setItem("sound_notification_shown", "true");
-      }, 5000); // 1s delay + 4s show = 5s total until verify hidden
-
-      return () => { clearTimeout(t1); clearTimeout(t2); };
-    }
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 400);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  if (!sound) return null;
-  const { isMuted, toggleMute } = sound;
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
-    <div className="fixed bottom-3 sm:bottom-4 md:bottom-6 right-3 sm:right-4 md:right-6 z-[9999] flex items-center gap-2 sm:gap-3">
+    <div className="fixed bottom-4 right-4 z-40 flex flex-col items-center gap-2">
+      {/* Scroll to top button */}
       <AnimatePresence>
-        {showTooltip && isMuted && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 5, scale: 0.95 }}
-            className="relative bg-white/10 backdrop-blur-md border border-white/20 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-medium text-white shadow-xl max-w-[140px] sm:max-w-[150px] text-center"
+        {scrolled && (
+          <motion.button
+            onClick={scrollToTop}
+            initial={{ opacity: 0, scale: 0.8, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 10 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="w-10 h-10 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-white/10 shadow-lg flex items-center justify-center text-slate-700 dark:text-slate-200 hover:text-cyan-500 transition-colors focus:outline-none"
+            aria-label="Scroll to top"
+            title="Scroll to top"
           >
-            Want to hear sounds? <span className="text-cyan-400">Unmute</span> below!
-            <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1.5 border-4 border-transparent border-t-white/20" />
-          </motion.div>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            </svg>
+          </motion.button>
         )}
       </AnimatePresence>
 
-      <motion.button
-        onClick={toggleMute}
-        initial={{ opacity: 0, scale: 0.6 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ type: "spring", stiffness: 260, damping: 20 }}
-        whileHover={{ scale: 1.15 }}
-        whileTap={{ scale: 0.88 }}
-        className="w-9 sm:w-10 md:w-11 h-9 sm:h-10 md:h-11 rounded-full bg-black/60 backdrop-blur-md border border-white/20 shadow-2xl flex items-center justify-center text-sm sm:text-base md:text-lg hover:bg-white/10 hover:border-white/40 transition-colors"
-        title={isMuted ? "Unmute sounds" : "Mute sounds"}
-        aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
-      >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.span
-            key={isMuted ? "muted" : "unmuted"}
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.5, opacity: 0 }}
-            transition={{ duration: 0.15 }}
-          >
-            {isMuted ? "🔇" : "🔊"}
-          </motion.span>
-        </AnimatePresence>
-      </motion.button>
-
+      {/* Floating Theme toggle */}
       <motion.button
         onClick={toggleTheme}
-        initial={{ opacity: 0, scale: 0.6 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ type: "spring", stiffness: 260, damping: 20 }}
-        whileHover={{ scale: 1.15 }}
-        whileTap={{ scale: 0.88 }}
-        className="w-9 sm:w-10 md:w-11 h-9 sm:h-10 md:h-11 rounded-full bg-black/60 backdrop-blur-md border border-white/20 shadow-2xl flex items-center justify-center text-sm sm:text-base md:text-lg hover:bg-white/10 hover:border-white/40 transition-colors"
-        title="Toggle theme"
-        aria-label="Toggle theme"
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.92 }}
+        className="w-10 h-10 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-white/10 shadow-lg flex items-center justify-center text-slate-700 dark:text-slate-200 hover:border-cyan-500/40 transition-colors focus:outline-none"
+        aria-label="Toggle Theme"
+        title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
       >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.span
-            key={theme === "dark" ? "dark" : "light"}
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.5, opacity: 0 }}
-            transition={{ duration: 0.15 }}
-          >
-            {theme === "dark" ? "🌙" : "☀️"}
-          </motion.span>
-        </AnimatePresence>
+        {theme === "dark" ? (
+          <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        ) : (
+          <svg className="w-4 h-4 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        )}
       </motion.button>
     </div>
   );
