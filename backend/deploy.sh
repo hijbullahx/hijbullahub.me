@@ -1,11 +1,6 @@
 #!/bin/bash
 set -e
 
-# Change directory to backend if script is executed from repo root
-if [ -d "backend" ]; then
-    cd backend
-fi
-
 # Activate virtual environment if present
 if [ -d "venv" ]; then
     source venv/bin/activate

@@ -1,3 +1,12 @@
+# Core Ignores
+.env
+.env.*
+*.env
+__pycache__/
+*.py[cod]
+staticfiles/
+media/
+
 # Python
 backend/__pycache__/
 backend/**/*.py[cod]

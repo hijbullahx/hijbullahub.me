@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.db.models import Prefetch
+from django.conf import settings
+from django.core.mail import send_mail
 
 from apps.hero.models import Hero
 from apps.about.models import About
@@ -108,6 +110,19 @@ def submit_contact_view(request):
         subject=subject or "General Inquiry",
         message=message
     )
+
+    # Dispatch transmission to default administrator mailbox
+    try:
+        send_mail(
+            subject=f"[Transmission] {subject or 'General Inquiry'} from {name}",
+            message=f"New transmission received on HijbullahHub:\n\nName: {name}\nEmail: {email}\nSubject: {subject or 'General Inquiry'}\n\nMessage:\n{message}\n",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=["info@hijbullah.me"],
+            fail_silently=True,
+        )
+    except Exception:
+        pass
+
     messages.success(request, "Transmission dispatched securely. You will receive a response within 24 hours.")
     return redirect("contact")
 

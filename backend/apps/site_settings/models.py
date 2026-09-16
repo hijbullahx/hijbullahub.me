@@ -9,7 +9,7 @@ class SiteSetting(TimeStampedModel):
     meta_description = models.CharField(max_length=180, blank=True, default="")
     github_username = models.CharField(max_length=120, blank=True)
     linkedin_url = models.URLField(blank=True)
-    email = models.EmailField(blank=True, default="")
+    email = models.EmailField(blank=True, default="info@hijbullah.me")
     social_links = models.JSONField(default=dict, blank=True)
 
     # Sound settings — use RawMediaCloudinaryStorage so audio isn't validated as an image

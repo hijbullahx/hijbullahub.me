@@ -10,10 +10,16 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-dev-key-change-me")
+SECRET_KEY = os.getenv("SECRET_KEY") or os.getenv("DJANGO_SECRET_KEY", "unsafe-dev-key-change-me")
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
-ALLOWED_HOSTS = [host.strip() for host in os.getenv("ALLOWED_HOSTS", "*").split(",") if host.strip()]
+# Host configuration
+_raw_hosts = os.getenv("ALLOWED_HOSTS", "*")
+ALLOWED_HOSTS = [host.strip() for host in _raw_hosts.split(",") if host.strip()]
+if DEBUG:
+    for _local in ["127.0.0.1", "localhost", "testserver"]:
+        if _local not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(_local)
 
 INSTALLED_APPS = [
     "jazzmin",
@@ -76,13 +82,41 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
-DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=60,
-        conn_health_checks=True,
-    )
-}
+# Database Configuration: Reads PostgreSQL parameters from environment variables
+DB_NAME = os.getenv("DATABASE_NAME", "").strip()
+DB_USER = os.getenv("DATABASE_USER", "").strip()
+DB_PASSWORD = os.getenv("DATABASE_PASSWORD", "").strip()
+DB_HOST = os.getenv("DATABASE_HOST", "localhost").strip()
+DB_PORT = os.getenv("DATABASE_PORT", "5432").strip()
+USE_SQLITE = os.getenv("USE_SQLITE", "False").lower() == "true"
+
+if DB_NAME and not USE_SQLITE:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": DB_NAME,
+            "USER": DB_USER,
+            "PASSWORD": DB_PASSWORD,
+            "HOST": DB_HOST,
+            "PORT": DB_PORT,
+            "CONN_MAX_AGE": 60,
+        }
+    }
+elif os.getenv("DATABASE_URL"):
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=os.getenv("DATABASE_URL"),
+            conn_max_age=60,
+            conn_health_checks=True,
+        )
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -363,3 +397,12 @@ JAZZMIN_UI_TWEAKS = {
 LOGIN_URL = "/dashboard/login/"
 LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/dashboard/login/"
+
+# Communications & Notifications (Default Email: info@hijbullah.me)
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "info@hijbullah.me")
+SERVER_EMAIL = os.getenv("SERVER_EMAIL", "info@hijbullah.me")
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "info@hijbullah.me")
+ADMINS = [("Md. Taher Bin Omar Hijbullah", ADMIN_EMAIL)]
+MANAGERS = ADMINS
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend" if DEBUG else "django.core.mail.backends.smtp.EmailBackend")
+
