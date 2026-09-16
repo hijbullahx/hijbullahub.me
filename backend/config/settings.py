@@ -61,7 +61,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -98,6 +98,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -209,7 +210,7 @@ JAZZMIN_SETTINGS = {
     # Top menu - Page-based navigation
     "topmenu_links": [
         {"name": "Dashboard",  "url": "admin:index", "permissions": ["auth.view_user"], "icon": "fas fa-home"},
-        {"name": "View Live Site", "url": "http://localhost:5174", "new_window": True, "icon": "fas fa-external-link-alt"},
+        {"name": "View Live Site", "url": "/", "new_window": True, "icon": "fas fa-external-link-alt"},
     ],
     
     # User menu on the right side
@@ -357,3 +358,7 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn-success",
     },
 }
+
+LOGIN_URL = "/dashboard/login/"
+LOGIN_REDIRECT_URL = "/dashboard/"
+LOGOUT_REDIRECT_URL = "/dashboard/login/"

@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI/ML Lab | Md. Taher Bin Omar Hijbullah{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+
+  <div class="text-center mb-12">
+    <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight gradient-text mb-3">
+      AI/ML Laboratory
+    </h1>
+    <p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base max-w-2xl mx-auto">
+      Machine Learning experiments, autonomous neural networks, and live model deployments
+    </p>
+  </div>
+
+  <!-- ── Live Streamlit ML Portfolio Banner ────────────────────────────── -->
+  <div class="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 p-8 sm:p-12 mb-14 shadow-lg backdrop-blur-md">
+    <div class="flex flex-col lg:flex-row items-center gap-8 justify-between">
+      <div class="flex-1 text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400 mb-2">
+          <span class="w-2 h-2 rounded-full bg-cyan-500 animate-ping"></span>
+          Live Streamlit Deployment
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+          See My ML Models Running Live
+        </h2>
+        <p class="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl">
+          I maintain a dedicated, interactive machine learning portfolio deployed on Streamlit where every architecture is running live. You can test inputs, evaluate inference latencies, and verify confusion metrics directly in your browser.
+        </p>
+
+        <div class="flex flex-wrap gap-2 mt-4 justify-center lg:justify-start">
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">🧠 Real-Time Inference</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">⚡ Live Performance Benchmarks</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">🔓 No Login Required</span>
+        </div>
+      </div>
+
+      <div class="shrink-0 flex flex-col items-center gap-2">
+        <a href="https://hijbullahml.streamlit.app/" target="_blank" rel="noopener noreferrer" class="glow-button px-8 py-3 text-sm sm:text-base font-semibold whitespace-nowrap">
+          Launch Live ML App ↗
+        </a>
+        <span class="text-[11px] text-slate-400">Opens live app in new tab</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Lab Experiments Grid ────────────────────────────── -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+    {% for model in models %}
+      <div class="glass p-6 flex flex-col justify-between">
+        <div>
+          <!-- Header & Status -->
+          <div class="flex items-center justify-between mb-3">
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold {% if model.status == 'active' %}bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20{% elif model.status == 'completed' %}bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20{% else %}bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20{% endif %}">
+              {{ model.status|title }}
+            </span>
+            <span class="text-xs text-slate-400">Model ID #{{ model.id }}</span>
+          </div>
+
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">
+            {{ model.title }}
+          </h3>
+
+          {% if model.details %}
+            <p class="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed mb-4 line-clamp-3">
+              {{ model.details }}
+            </p>
+          {% endif %}
+
+          <!-- Architecture & Dataset metadata -->
+          <div class="space-y-1.5 mb-4 text-xs">
+            {% if model.model_name %}
+              <div class="flex items-center justify-between py-1 border-b border-slate-200 dark:border-white/5">
+                <span class="text-slate-500">Architecture:</span>
+                <span class="font-semibold text-cyan-600 dark:text-cyan-400">{{ model.model_name }}</span>
+              </div>
+            {% endif %}
+            {% if model.dataset_name %}
+              <div class="flex items-center justify-between py-1 border-b border-slate-200 dark:border-white/5">
+                <span class="text-slate-500">Dataset:</span>
+                <span class="font-semibold text-emerald-600 dark:text-emerald-400">{{ model.dataset_name }}</span>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Evaluation Metrics Matrix -->
+          {% if model.accuracy or model.f1_score or model.precision or model.recall %}
+            <div class="grid grid-cols-2 gap-2 mb-4">
+              {% if model.accuracy %}
+                <div class="bg-slate-50 dark:bg-white/5 p-2.5 rounded-xl text-center border border-slate-200 dark:border-white/10">
+                  <span class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold block">Accuracy</span>
+                  <span class="text-base font-bold text-emerald-500">{{ model.accuracy }}%</span>
+                </div>
+              {% endif %}
+              {% if model.f1_score %}
+                <div class="bg-slate-50 dark:bg-white/5 p-2.5 rounded-xl text-center border border-slate-200 dark:border-white/10">
+                  <span class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold block">F1 Score</span>
+                  <span class="text-base font-bold text-cyan-500">{{ model.f1_score }}%</span>
+                </div>
+              {% endif %}
+              {% if model.precision %}
+                <div class="bg-slate-50 dark:bg-white/5 p-2.5 rounded-xl text-center border border-slate-200 dark:border-white/10">
+                  <span class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold block">Precision</span>
+                  <span class="text-base font-bold text-purple-400">{{ model.precision }}%</span>
+                </div>
+              {% endif %}
+              {% if model.recall %}
+                <div class="bg-slate-50 dark:bg-white/5 p-2.5 rounded-xl text-center border border-slate-200 dark:border-white/10">
+                  <span class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold block">Recall</span>
+                  <span class="text-base font-bold text-blue-400">{{ model.recall }}%</span>
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          <!-- Confusion Matrix Image -->
+          {% if model.confusion_matrix_image %}
+            <div class="mb-4 rounded-xl overflow-hidden border border-slate-200 dark:border-white/10">
+              <img src="{{ model.confusion_matrix_image.url }}" alt="Confusion Matrix for {{ model.title }}" class="w-full h-auto object-cover">
+            </div>
+          {% endif %}
+        </div>
+
+        {% if model.link %}
+          <a href="{{ model.link }}" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 rounded-xl font-semibold text-xs border border-cyan-500/40 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500 hover:text-white transition-all text-center inline-block mt-2">
+            Inspect Architecture ↗
+          </a>
+        {% endif %}
+      </div>
+    {% empty %}
+      <div class="col-span-3 text-center py-16 text-slate-500 dark:text-slate-400">
+        No AI/ML models currently loaded.
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

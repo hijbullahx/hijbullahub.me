@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Md. Taher Bin Omar Hijbullah | AI &amp; Robotics Engineer{% endblock %}</title>
+  <meta name="description" content="Official portfolio of Md. Taher Bin Omar Hijbullah - AI &amp; Robotics Engineer specializing in Machine Learning, Autonomous Systems, and IoT Innovation.">
+  <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN with configuration -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            cyan: {
+              400: '#22d3ee',
+              500: '#06b6d4',
+              600: '#0891b2',
+            },
+            emerald: {
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+            },
+            dark: {
+              base: '#0B0F19',
+              card: '#131825',
+              surface: '#181f30',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-[#0B0F19] text-slate-100 dark:bg-[#0B0F19] dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-300">
+
+  <!-- Precision Custom Cursor Elements (Desktop only) -->
+  <div class="cursor-dot"></div>
+  <div class="cursor-ring"></div>
+
+  <!-- ── Executive Glassmorphic Header ────────────────────────────── -->
+  <header class="fixed top-0 left-0 right-0 z-50 py-4 bg-slate-950/80 dark:bg-slate-950/80 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/10 shadow-sm transition-all duration-300">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="{% url 'home' %}" class="flex items-center gap-2.5 group focus:outline-none">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-emerald-500 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-cyan-500/20 group-hover:scale-105 transition-transform">
+          H
+        </div>
+        <div class="flex flex-col">
+          <span class="font-bold text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-cyan-500 transition-colors">
+            Hijbullah<span class="text-cyan-500">.</span>
+          </span>
+          <span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 tracking-wider uppercase -mt-1">
+            AI &amp; Robotics
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <div class="hidden md:flex items-center gap-1 bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 p-1.5 rounded-full backdrop-blur-md shadow-inner">
+        <a href="{% url 'home' %}" class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors {% if request.resolver_match.url_name == 'home' %}bg-white dark:bg-white/15 text-slate-950 dark:text-white shadow-sm font-semibold{% else %}text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white{% endif %}">
+          Home
+        </a>
+        <a href="{% url 'projects' %}" class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors {% if request.resolver_match.url_name == 'projects' %}bg-white dark:bg-white/15 text-slate-950 dark:text-white shadow-sm font-semibold{% else %}text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white{% endif %}">
+          Projects
+        </a>
+        <a href="{% url 'ai_lab' %}" class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors {% if request.resolver_match.url_name == 'ai_lab' %}bg-white dark:bg-white/15 text-slate-950 dark:text-white shadow-sm font-semibold{% else %}text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white{% endif %}">
+          AI/ML Lab
+        </a>
+        <a href="{% url 'research' %}" class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors {% if request.resolver_match.url_name == 'research' %}bg-white dark:bg-white/15 text-slate-950 dark:text-white shadow-sm font-semibold{% else %}text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white{% endif %}">
+          Research
+        </a>
+      </div>
+
+      <!-- Action: Get in Touch Button & Mobile Toggle -->
+      <div class="flex items-center gap-3">
+        <a href="{% url 'contact' %}" class="hidden sm:inline-flex px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-white hover:opacity-95 shadow-md shadow-cyan-500/20 transition-all hover:shadow-cyan-500/30">
+          Get in Touch
+        </a>
+
+        <button id="mobile-menu-toggle" type="button" class="md:hidden w-10 h-10 rounded-xl flex items-center justify-center text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10" aria-label="Toggle menu">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile Menu Dropdown -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 dark:border-white/10 bg-white dark:bg-slate-950/95 px-6 py-4 mt-3">
+      <div class="flex flex-col gap-2">
+        <a href="{% url 'home' %}" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5">Home</a>
+        <a href="{% url 'projects' %}" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5">Projects</a>
+        <a href="{% url 'ai_lab' %}" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5">AI/ML Lab</a>
+        <a href="{% url 'research' %}" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5">Research</a>
+        <a href="{% url 'contact' %}" class="mt-2 block text-center py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-white">Get in Touch</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Django Messages Framework Alert ────────────────────────────── -->
+  {% if messages %}
+    <div class="fixed top-20 right-4 z-50 max-w-md w-full px-4 space-y-2">
+      {% for message in messages %}
+        <div class="p-4 rounded-xl shadow-xl backdrop-blur-md border flex items-center justify-between {% if message.tags == 'success' %}bg-emerald-500/20 border-emerald-500/40 text-emerald-200{% elif message.tags == 'error' %}bg-rose-500/20 border-rose-500/40 text-rose-200{% else %}bg-cyan-500/20 border-cyan-500/40 text-cyan-200{% endif %}">
+          <span class="text-sm font-medium">{{ message }}</span>
+          <button type="button" onclick="this.parentElement.remove()" class="text-xs opacity-70 hover:opacity-100 ml-3">✕</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- ── Main Page Content Block ────────────────────────────── -->
+  <main class="flex-grow pt-20">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ── Executive Footer ────────────────────────────── -->
+  <footer class="mt-auto border-t border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-950/70 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+        <div>
+          <p class="text-sm font-semibold text-slate-800 dark:text-slate-200">
+            Md. Taher Bin Omar Hijbullah
+          </p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            AI &amp; Robotics Research • Autonomous Systems
+          </p>
+        </div>
+
+        <div class="flex items-center flex-wrap gap-2 sm:gap-4 text-sm text-slate-600 dark:text-slate-400">
+          <a href="{% url 'projects' %}" class="hover:text-cyan-500 transition-colors mx-2 text-sm text-slate-600 dark:text-slate-400">Projects</a>
+          <a href="{% url 'ai_lab' %}" class="hover:text-cyan-500 transition-colors mx-3 text-sm text-slate-600 dark:text-slate-400">AI/ML Lab</a>
+          <a href="{% url 'research' %}" class="hover:text-cyan-500 transition-colors mx-3 text-sm text-slate-600 dark:text-slate-400">Research</a>
+          <a href="{% url 'contact' %}" class="hover:text-cyan-500 transition-colors mx-3 text-sm text-slate-600 dark:text-slate-400">Contact</a>
+          <a href="{% url 'dashboard' %}" class="hover:text-cyan-500 transition-colors mx-3 text-sm text-slate-600 dark:text-slate-400">Admin Studio</a>
+        </div>
+
+        <div class="text-xs text-slate-500 dark:text-slate-500">
+          &copy; {% now "Y" %} All rights reserved.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── Floating Utility Dock (Theme & Scroll to Top) ────────────────────────────── -->
+  <div class="fixed bottom-4 right-4 z-40 flex flex-col items-center gap-2.5">
+    <!-- Scroll to Top Button -->
+    <button id="scroll-top-btn" type="button" class="opacity-0 pointer-events-none translate-y-2 w-10 h-10 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-white/10 shadow-lg flex items-center justify-center text-slate-700 dark:text-slate-200 hover:text-cyan-500 transition-all focus:outline-none" aria-label="Scroll to top">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+      </svg>
+    </button>
+
+    <!-- Lower Theme Toggle Button -->
+    <button type="button" class="theme-toggle-btn w-10 h-10 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-white/10 shadow-lg flex items-center justify-center text-slate-700 dark:text-slate-200 hover:border-cyan-500/40 transition-colors focus:outline-none" aria-label="Toggle theme">
+      <!-- Sun Icon (Active in Dark mode) -->
+      <svg class="theme-icon-sun w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+      </svg>
+      <!-- Moon Icon (Active in Light mode) -->
+      <svg class="theme-icon-moon hidden w-4 h-4 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Main JavaScript Engine -->
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
