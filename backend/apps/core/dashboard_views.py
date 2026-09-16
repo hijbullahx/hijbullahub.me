@@ -86,36 +86,45 @@ def dashboard_view(request):
 @login_required(login_url="dashboard_login")
 @require_POST
 def dashboard_update_hero_view(request):
-    hero, _ = Hero.objects.get_or_create(is_active=True, defaults={"name": "Md. Taher Bin Omar Hijbullah"})
-    hero.name = request.POST.get("name", hero.name).strip()
-    hero.tagline = request.POST.get("tagline", hero.tagline).strip()
-    hero.short_bio = request.POST.get("short_bio", hero.short_bio).strip()
+    try:
+        hero = Hero.objects.filter(is_active=True).first()
+        if not hero:
+            hero = Hero.objects.create(name="Md. Taher Bin Omar Hijbullah")
+        
+        hero.name = request.POST.get("name", hero.name).strip()
+        hero.tagline = request.POST.get("tagline", hero.tagline).strip()
+        hero.short_bio = request.POST.get("short_bio", hero.short_bio).strip()
 
-    if "profile_image" in request.FILES:
-        hero.profile_image = request.FILES["profile_image"]
+        if "profile_image" in request.FILES:
+            hero.profile_image = request.FILES["profile_image"]
 
-    hero.save()
-    messages.success(request, "Hero section updated successfully.")
+        hero.save()
+        messages.success(request, "Hero section updated successfully.")
+    except Exception as e:
+        messages.error(request, f"Failed to update Hero section: {str(e)}")
     return redirect("dashboard")
 
 
 @login_required(login_url="dashboard_login")
 @require_POST
 def dashboard_update_about_view(request):
-    about = About.objects.first()
-    if not about:
-        about = About()
+    try:
+        about = About.objects.first()
+        if not about:
+            about = About()
 
-    about.mission_statement = request.POST.get("mission_statement", "").strip()
-    about.vision_2030 = request.POST.get("vision_2030", "").strip()
-    about.long_bio = request.POST.get("long_bio", "").strip()
-    about.quote = request.POST.get("quote", "").strip()
+        about.mission_statement = request.POST.get("mission_statement", "").strip()
+        about.vision_2030 = request.POST.get("vision_2030", "").strip()
+        about.long_bio = request.POST.get("long_bio", "").strip()
+        about.quote = request.POST.get("quote", "").strip()
 
-    if "image" in request.FILES:
-        about.image = request.FILES["image"]
+        if "image" in request.FILES:
+            about.image = request.FILES["image"]
 
-    about.save()
-    messages.success(request, "About information updated successfully.")
+        about.save()
+        messages.success(request, "About information updated successfully.")
+    except Exception as e:
+        messages.error(request, f"Failed to update About section: {str(e)}")
     return redirect("dashboard")
 
 
@@ -150,29 +159,32 @@ def dashboard_delete_skill_view(request, skill_id):
 @login_required(login_url="dashboard_login")
 @require_POST
 def dashboard_add_project_view(request):
-    title = request.POST.get("title", "").strip()
-    status = request.POST.get("status", "ongoing")
-    short_desc = request.POST.get("short_description", "").strip()
-    full_desc = request.POST.get("full_description", "").strip()
-    github_link = request.POST.get("github_link", "").strip()
-    live_link = request.POST.get("live_link", "").strip()
-    featured = request.POST.get("featured") == "on"
+    try:
+        title = request.POST.get("title", "").strip()
+        status = request.POST.get("status", "ongoing")
+        short_desc = request.POST.get("short_description", "").strip()
+        full_desc = request.POST.get("full_description", "").strip()
+        github_link = request.POST.get("github_link", "").strip()
+        live_link = request.POST.get("live_link", "").strip()
+        featured = request.POST.get("featured") == "on"
 
-    if title:
-        project = Project.objects.create(
-            title=title,
-            status=status,
-            short_description=short_desc,
-            full_description=full_desc,
-            github_link=github_link,
-            live_link=live_link,
-            featured=featured
-        )
-        if "featured_image" in request.FILES:
-            project.featured_image = request.FILES["featured_image"]
-            project.save()
+        if title:
+            project = Project.objects.create(
+                title=title,
+                status=status,
+                short_description=short_desc,
+                full_description=full_desc,
+                github_link=github_link,
+                live_link=live_link,
+                featured=featured
+            )
+            if "featured_image" in request.FILES:
+                project.featured_image = request.FILES["featured_image"]
+                project.save()
 
-        messages.success(request, f"Project '{title}' deployed to showcase.")
+            messages.success(request, f"Project '{title}' deployed to showcase.")
+    except Exception as e:
+        messages.error(request, f"Failed to add project: {str(e)}")
     return redirect("dashboard")
 
 
@@ -256,21 +268,24 @@ def dashboard_add_ai_lab_view(request):
 @login_required(login_url="dashboard_login")
 @require_POST
 def dashboard_add_research_view(request):
-    title = request.POST.get("title", "").strip()
-    contributors = request.POST.get("contributors", "").strip()
-    status = request.POST.get("status", "published")
-    abstract = request.POST.get("abstract", "").strip()
-    paper_link = request.POST.get("paper_link", "").strip()
+    try:
+        title = request.POST.get("title", "").strip()
+        contributors = request.POST.get("contributors", "").strip()
+        status = request.POST.get("status", "published")
+        abstract = request.POST.get("abstract", "").strip()
+        paper_link = request.POST.get("paper_link", "").strip()
 
-    if title:
-        Research.objects.create(
-            title=title,
-            contributors=contributors,
-            status=status,
-            abstract=abstract,
-            paper_link=paper_link
-        )
-        messages.success(request, f"Research paper '{title}' registered.")
+        if title:
+            Research.objects.create(
+                title=title,
+                contributors=contributors,
+                status=status,
+                abstract=abstract,
+                paper_link=paper_link
+            )
+            messages.success(request, f"Research paper '{title}' registered.")
+    except Exception as e:
+        messages.error(request, f"Failed to add research paper: {str(e)}")
     return redirect("dashboard")
 
 
@@ -286,14 +301,17 @@ def dashboard_delete_contact_view(request, contact_id):
 @login_required(login_url="dashboard_login")
 @require_POST
 def dashboard_update_settings_view(request):
-    setting = SiteSetting.objects.first()
-    if not setting:
-        setting = SiteSetting()
+    try:
+        setting = SiteSetting.objects.first()
+        if not setting:
+            setting = SiteSetting()
 
-    setting.site_title = request.POST.get("site_title", setting.site_title).strip()
-    setting.email = request.POST.get("email", setting.email).strip()
-    setting.meta_description = request.POST.get("meta_description", setting.meta_description).strip()
-    setting.save()
+        setting.site_title = request.POST.get("site_title", setting.site_title).strip()
+        setting.email = request.POST.get("email", setting.email).strip()
+        setting.meta_description = request.POST.get("meta_description", setting.meta_description).strip()
+        setting.save()
 
-    messages.success(request, "Global site configuration updated.")
+        messages.success(request, "Global site configuration updated.")
+    except Exception as e:
+        messages.error(request, f"Failed to update settings: {str(e)}")
     return redirect("dashboard")

@@ -106,17 +106,18 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Cloudinary configuration for media file storage
 import cloudinary
 
-CLOUDINARY_URL = os.getenv('CLOUDINARY_URL', '')
+CLOUDINARY_URL = os.getenv('CLOUDINARY_URL', '').strip()
+USE_CLOUDINARY = bool(CLOUDINARY_URL and "dummy" not in CLOUDINARY_URL and not CLOUDINARY_URL.startswith("cloudinary://dummy"))
 
 CLOUDINARY_STORAGE = {
-    'CLOUDINARY_URL': CLOUDINARY_URL,
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME', 'dummy'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY', '123456789012345'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', 'dummy_secret'),
 }
 
-if CLOUDINARY_URL:
+if USE_CLOUDINARY:
+    CLOUDINARY_STORAGE['CLOUDINARY_URL'] = CLOUDINARY_URL
     cloudinary.config(cloudinary_url=CLOUDINARY_URL)
-
-# Storage backends - Use Cloudinary for media files ONLY if configured
-if CLOUDINARY_URL:
     STORAGES = {
         "default": {
             "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
@@ -126,7 +127,7 @@ if CLOUDINARY_URL:
         },
     }
 else:
-    # Fallback to local storage for development
+    # Use reliable local file storage for development
     STORAGES = {
         "default": {
             "BACKEND": "django.core.files.storage.FileSystemStorage",
