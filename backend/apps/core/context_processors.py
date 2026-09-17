@@ -9,10 +9,7 @@ def global_site_context(request):
 
     favicon_url = None
     if hero and hero.profile_image:
-        try:
-            favicon_url = hero.profile_image.url
-        except Exception:
-            favicon_url = None
+        favicon_url = "/favicon.png"
 
     return {
         "global_hero": hero,

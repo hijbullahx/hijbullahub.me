@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.views.generic import RedirectView
-from apps.core.views import health_check, record_visit, analytics_summary
+from apps.core.views import health_check, record_visit, analytics_summary, round_favicon_view
 from apps.core.page_views import (
     home_view,
     projects_view,
@@ -80,6 +80,8 @@ urlpatterns = [
     path("accounts/profile/", RedirectView.as_view(url="/dashboard/", permanent=False)),
 
     # Health & System
+    path("favicon.png", round_favicon_view, name="round_favicon"),
+    path("favicon.ico", round_favicon_view, name="round_favicon_ico"),
     path("health/", health_check, name="health_check"),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
