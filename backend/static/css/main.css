@@ -474,12 +474,14 @@ html.light .navbar-gloss {
 }
 
 /* ── Light Mode Specific Overrides & High Contrast Enhancements ────────────────────────────── */
-html.light body {
+html.light body,
+html:not(.dark) body {
   background-color: #f8fafc !important;
   color: #0f172a !important;
 }
 
-html.light .navbar-gloss {
+html.light .navbar-gloss,
+html:not(.dark) .navbar-gloss {
   background: rgba(255, 255, 255, 0.94) !important;
   backdrop-filter: blur(28px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
@@ -487,29 +489,35 @@ html.light .navbar-gloss {
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.06), 0 0 20px -5px rgba(6, 182, 212, 0.12) !important;
 }
 
-html.light .nav-robotic-frame {
+html.light .nav-robotic-frame,
+html:not(.dark) .nav-robotic-frame {
   background: rgba(15, 23, 42, 0.03) !important;
   border: 1px solid rgba(15, 23, 42, 0.12) !important;
 }
 
 html.light .nav-robotic-link:hover .nav-robotic-frame,
-html.light .nav-robotic-link.active .nav-robotic-frame {
+html.light .nav-robotic-link.active .nav-robotic-frame,
+html:not(.dark) .nav-robotic-link:hover .nav-robotic-frame,
+html:not(.dark) .nav-robotic-link.active .nav-robotic-frame {
   background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(16, 185, 129, 0.12)) !important;
   border: 1px solid rgba(8, 145, 178, 0.7) !important;
   box-shadow: 0 4px 20px rgba(6, 182, 212, 0.22), inset 0 0 15px rgba(16, 185, 129, 0.12) !important;
 }
 
-html.light .nav-robotic-text {
+html.light .nav-robotic-text,
+html:not(.dark) .nav-robotic-text {
   color: #0f172a !important;
   font-weight: 800 !important;
 }
 
-html.light .nav-robotic-link:hover .nav-robotic-text {
+html.light .nav-robotic-link:hover .nav-robotic-text,
+html:not(.dark) .nav-robotic-link:hover .nav-robotic-text {
   color: #0891b2 !important;
   text-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
 }
 
-html.light .nav-robotic-link.active .nav-robotic-text {
+html.light .nav-robotic-link.active .nav-robotic-text,
+html:not(.dark) .nav-robotic-link.active .nav-robotic-text {
   color: #0891b2 !important;
   background: linear-gradient(90deg, #0891b2, #059669) !important;
   -webkit-background-clip: text !important;
@@ -517,89 +525,95 @@ html.light .nav-robotic-link.active .nav-robotic-text {
   filter: drop-shadow(0 0 4px rgba(8, 145, 178, 0.25));
 }
 
-html.light .nav-corner-tl {
+html.light .nav-corner-tl,
+html:not(.dark) .nav-corner-tl {
   border-top-color: #0891b2 !important;
   border-left-color: #0891b2 !important;
   opacity: 0.7 !important;
 }
 
-html.light .nav-corner-br {
+html.light .nav-corner-br,
+html:not(.dark) .nav-corner-br {
   border-bottom-color: #059669 !important;
   border-right-color: #059669 !important;
   opacity: 0.7 !important;
 }
 
-html.light .nav-robotic-underline {
+html.light .nav-robotic-underline,
+html:not(.dark) .nav-robotic-underline {
   background: linear-gradient(90deg, #0891b2, #059669) !important;
   box-shadow: 0 0 12px rgba(8, 145, 178, 0.6) !important;
 }
 
-html.light #mobile-menu {
+html.light #mobile-menu,
+html:not(.dark) #mobile-menu {
   background: rgba(255, 255, 255, 0.98) !important;
   border-top: 1px solid rgba(6, 182, 212, 0.3) !important;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
 }
 
-html.light .glass {
-  background: rgba(255, 255, 255, 0.85) !important;
-  border-color: rgba(15, 23, 42, 0.08) !important;
+html.light .glass,
+html:not(.dark) .glass {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border-color: rgba(15, 23, 42, 0.09) !important;
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.9) !important;
 }
 
-html.light .glass:hover {
+html.light .glass:hover,
+html:not(.dark) .glass:hover {
   border-color: rgba(6, 182, 212, 0.45) !important;
   box-shadow: 0 14px 35px -8px rgba(6, 182, 212, 0.16), inset 0 1px 0 0 rgba(255, 255, 255, 0.9) !important;
 }
 
 /* Light Mode Global Text Contrast Enhancement */
-html.light h1,
-html.light h2,
-html.light h3,
-html.light h4,
-html.light h5,
-html.light h6 {
+html.light h1, html:not(.dark) h1,
+html.light h2, html:not(.dark) h2,
+html.light h3, html:not(.dark) h3,
+html.light h4, html:not(.dark) h4,
+html.light h5, html:not(.dark) h5,
+html.light h6, html:not(.dark) h6 {
   color: #0f172a;
 }
 
-html.light p {
+html.light p, html:not(.dark) p {
   color: #334155;
 }
 
-html.light .text-slate-400 {
+html.light .text-slate-400, html:not(.dark) .text-slate-400 {
   color: #475569 !important;
 }
 
-html.light .text-slate-300 {
+html.light .text-slate-300, html:not(.dark) .text-slate-300 {
   color: #334155 !important;
 }
 
-html.light .text-slate-500 {
+html.light .text-slate-500, html:not(.dark) .text-slate-500 {
   color: #64748b !important;
 }
 
-html.light .text-slate-200 {
+html.light .text-slate-200, html:not(.dark) .text-slate-200 {
   color: #1e293b !important;
 }
 
-html.light .text-slate-100 {
+html.light .text-slate-100, html:not(.dark) .text-slate-100 {
   color: #0f172a !important;
 }
 
-html.light .border-white\/10,
-html.light .border-white\/15,
-html.light .border-white\/20,
-html.light .border-white\/5 {
+html.light .border-white\/10, html:not(.dark) .border-white\/10,
+html.light .border-white\/15, html:not(.dark) .border-white\/15,
+html.light .border-white\/20, html:not(.dark) .border-white\/20,
+html.light .border-white\/5, html:not(.dark) .border-white\/5 {
   border-color: rgba(15, 23, 42, 0.09) !important;
 }
 
-html.light .bg-white\/5,
-html.light .bg-white\/10 {
+html.light .bg-white\/5, html:not(.dark) .bg-white\/5,
+html.light .bg-white\/10, html:not(.dark) .bg-white\/10 {
   background-color: rgba(15, 23, 42, 0.03) !important;
 }
 
-html.light .bg-slate-900\/80,
-html.light .bg-slate-950\/70,
-html.light .bg-slate-950\/50 {
+html.light .bg-slate-900\/80, html:not(.dark) .bg-slate-900\/80,
+html.light .bg-slate-950\/70, html:not(.dark) .bg-slate-950\/70,
+html.light .bg-slate-950\/50, html:not(.dark) .bg-slate-950\/50 {
   background-color: rgba(255, 255, 255, 0.85) !important;
 }
 
