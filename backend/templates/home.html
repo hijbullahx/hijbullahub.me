@@ -351,7 +351,6 @@
   {% endif %}
 
   <!-- ── Feedback & Reviews Section ────────────────────────────── -->
-  {% if feedbacks %}
   <section class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
     <div class="text-center mb-14">
       <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight gradient-text mb-3">
@@ -362,6 +361,7 @@
       </p>
     </div>
 
+    {% if feedbacks %}
     <!-- Review Cards Grid -->
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {% for fb in feedbacks %}
@@ -405,8 +405,26 @@
         <span>✍️</span> Leave a Review
       </button>
     </div>
+    {% else %}
+    <!-- Empty State: Inviting visitors to be the first to review -->
+    <div class="glass p-8 sm:p-12 text-center max-w-xl mx-auto rounded-3xl border border-slate-200/80 dark:border-white/10">
+      <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-500 flex items-center justify-center text-2xl mx-auto mb-4">
+        💬
+      </div>
+      <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">
+        Share Your Experience
+      </h3>
+      <p class="text-sm text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
+        Have we collaborated on a project, research, or engineering? Your thoughts and feedback are highly appreciated.
+      </p>
+      <div>
+        <button type="button" data-modal-target="leave-review-modal" class="glow-button">
+          <span>✍️</span> Leave Feedback
+        </button>
+      </div>
+    </div>
+    {% endif %}
   </section>
-  {% endif %}
 
   <!-- ── Leave a Review Modal ────────────────────────────── -->
   <div id="leave-review-modal" class="modal-backdrop hidden">
