@@ -187,8 +187,7 @@ else:
         },
     }
 
-# Backwards compatibility for django-cloudinary-storage
-STATICFILES_STORAGE = "whitenoise.storage.StaticFilesStorage"
+
 
 # Ensure STATICFILES_DIRS is not empty so collectstatic creates the dir
 STATICFILES_DIRS = [
