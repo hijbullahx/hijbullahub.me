@@ -58,7 +58,204 @@
   </script>
 
   <!-- Custom Stylesheet (with cache-busting version) -->
-  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=2.2">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=3.0">
+
+  <!-- Core Navbar & Theme Engine Styles (Embedded for 100% instant server-render without CDN/cache delay) -->
+  <style id="navbar-core-styles">
+    /* ── Ultra-Glossy Executive Navbar & Robotic Nav System ── */
+    .navbar-gloss {
+      background: rgba(11, 15, 25, 0.85) !important;
+      backdrop-filter: blur(28px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+      border-bottom: 1px solid rgba(34, 211, 238, 0.25) !important;
+      box-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.8), 0 0 25px -5px rgba(6, 182, 212, 0.2) !important;
+    }
+
+    html.light .navbar-gloss,
+    html:not(.dark) .navbar-gloss {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(28px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.1) !important;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 0 20px -5px rgba(6, 182, 212, 0.12) !important;
+    }
+
+    .nav-glow-line-top {
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.9), rgba(16, 185, 129, 0.9), rgba(34, 211, 238, 0.9), transparent);
+      background-size: 200% 100%;
+      animation: navGlowMove 4s linear infinite;
+      filter: blur(0.5px);
+      z-index: 60;
+    }
+    .nav-glow-line-bottom {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.5), rgba(16, 185, 129, 0.5), rgba(34, 211, 238, 0.5), transparent);
+      background-size: 200% 100%;
+      animation: navGlowMove 6s linear infinite reverse;
+    }
+    @keyframes navGlowMove {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
+    }
+
+    .brand-shimmer {
+      background: linear-gradient(90deg, #22d3ee, #10b981, #38bdf8, #22d3ee);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: brandShimmer 5s ease infinite;
+      transition: letter-spacing 0.3s ease, filter 0.3s ease;
+    }
+    .brand-shimmer:hover {
+      letter-spacing: 0.03em;
+      filter: drop-shadow(0 0 12px rgba(34, 211, 238, 0.8));
+    }
+    @keyframes brandShimmer {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .nav-robotic-link {
+      position: relative;
+      display: inline-block;
+      padding: 0.65rem 1.4rem;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .nav-robotic-frame {
+      position: absolute;
+      inset: 0;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .nav-robotic-link:hover .nav-robotic-frame,
+    .nav-robotic-link.active .nav-robotic-frame {
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.22), rgba(16, 185, 129, 0.18)) !important;
+      border: 1px solid rgba(34, 211, 238, 0.75) !important;
+      box-shadow: 0 0 28px rgba(34, 211, 238, 0.5), inset 0 0 20px rgba(16, 185, 129, 0.25) !important;
+      transform: translateY(-2px) scale(1.06);
+    }
+    .nav-corner-tl {
+      position: absolute; top: 0; left: 0; width: 9px; height: 9px;
+      border-top: 2px solid #22d3ee; border-left: 2px solid #22d3ee; opacity: 0.45;
+      transition: all 0.3s ease; pointer-events: none;
+    }
+    .nav-corner-br {
+      position: absolute; bottom: 0; right: 0; width: 9px; height: 9px;
+      border-bottom: 2px solid #10b981; border-right: 2px solid #10b981; opacity: 0.45;
+      transition: all 0.3s ease; pointer-events: none;
+    }
+    .nav-robotic-link:hover .nav-corner-tl, .nav-robotic-link.active .nav-corner-tl {
+      opacity: 1; transform: scale(1.25) translate(-1px, -1px); filter: drop-shadow(0 0 8px #22d3ee);
+    }
+    .nav-robotic-link:hover .nav-corner-br, .nav-robotic-link.active .nav-corner-br {
+      opacity: 1; transform: scale(1.25) translate(1px, 1px); filter: drop-shadow(0 0 8px #10b981);
+    }
+    .nav-robotic-scanline {
+      position: absolute; inset: 0; opacity: 0; pointer-events: none;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(34, 211, 238, 0.2) 2px, rgba(34, 211, 238, 0.2) 4px);
+      transition: opacity 0.3s ease;
+    }
+    .nav-robotic-link:hover .nav-robotic-scanline {
+      opacity: 0.6; animation: scanlinePass 1.8s linear infinite;
+    }
+    @keyframes scanlinePass {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+    .nav-robotic-text {
+      position: relative; z-index: 10;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.85rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: #cbd5e1; transition: all 0.3s ease;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .nav-robotic-link:hover .nav-robotic-text {
+      color: #ffffff; letter-spacing: 0.22em;
+      text-shadow: 0 0 14px rgba(34, 211, 238, 0.9), 0 0 25px rgba(6, 182, 212, 0.6);
+      transform: translateY(-2px);
+    }
+    .nav-robotic-link.active .nav-robotic-text {
+      color: #22d3ee; letter-spacing: 0.2em;
+      background: linear-gradient(90deg, #22d3ee, #10b981);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.7));
+    }
+    .nav-robotic-underline {
+      position: absolute; bottom: -2px; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #22d3ee, #10b981);
+      clip-path: polygon(0 50%, 5px 0, calc(100% - 5px) 0, 100% 50%, calc(100% - 5px) 100%, 5px 100%);
+      transform: scaleX(0); opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+      box-shadow: 0 0 16px rgba(34, 211, 238, 0.9);
+    }
+    .nav-robotic-link:hover .nav-robotic-underline,
+    .nav-robotic-link.active .nav-robotic-underline {
+      transform: scaleX(1); opacity: 1;
+    }
+    .nav-robotic-cta {
+      position: relative; display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 0.65rem 1.6rem;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+      background: linear-gradient(135deg, #06b6d4, #10b981);
+      font-family: "JetBrains Mono", monospace; font-size: 0.85rem; font-weight: 800;
+      letter-spacing: 0.15em; text-transform: uppercase; color: #ffffff !important;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.3);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+    }
+    .nav-robotic-cta:hover {
+      transform: translateY(-2px) scale(1.06); letter-spacing: 0.2em;
+      box-shadow: 0 0 35px rgba(6, 182, 212, 0.9), 0 0 20px rgba(16, 185, 129, 0.6);
+    }
+
+    /* ── Light Mode High-Contrast Overrides ── */
+    html.light body, html:not(.dark) body {
+      background-color: #f8fafc !important;
+      color: #0f172a !important;
+    }
+    html.light .nav-robotic-frame, html:not(.dark) .nav-robotic-frame {
+      background: rgba(15, 23, 42, 0.03) !important;
+      border: 1px solid rgba(15, 23, 42, 0.12) !important;
+    }
+    html.light .nav-robotic-link:hover .nav-robotic-frame,
+    html.light .nav-robotic-link.active .nav-robotic-frame,
+    html:not(.dark) .nav-robotic-link:hover .nav-robotic-frame,
+    html:not(.dark) .nav-robotic-link.active .nav-robotic-frame {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(16, 185, 129, 0.12)) !important;
+      border: 1px solid rgba(8, 145, 178, 0.7) !important;
+      box-shadow: 0 4px 20px rgba(6, 182, 212, 0.22), inset 0 0 15px rgba(16, 185, 129, 0.12) !important;
+    }
+    html.light .nav-robotic-text, html:not(.dark) .nav-robotic-text {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+    html.light .nav-robotic-link:hover .nav-robotic-text,
+    html:not(.dark) .nav-robotic-link:hover .nav-robotic-text {
+      color: #0284c7 !important;
+      text-shadow: 0 0 12px rgba(6, 182, 212, 0.3) !important;
+    }
+    html.light .nav-robotic-link.active .nav-robotic-text,
+    html:not(.dark) .nav-robotic-link.active .nav-robotic-text {
+      color: #0891b2 !important;
+      background: linear-gradient(90deg, #0891b2, #059669) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.3)) !important;
+    }
+    html.light .nav-corner-tl, html:not(.dark) .nav-corner-tl {
+      border-color: #0891b2 !important; opacity: 0.6 !important;
+    }
+    html.light .nav-corner-br, html:not(.dark) .nav-corner-br {
+      border-color: #059669 !important; opacity: 0.6 !important;
+    }
+  </style>
+
   {% block extra_css %}{% endblock %}
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-[#0B0F19] dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-300">
