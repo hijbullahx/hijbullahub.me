@@ -3,7 +3,14 @@ from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.db.models import Prefetch
 from django.conf import settings
-from django.core.mail import send_mail
+
+from apps.core.email_utils import (
+    send_transmission_acknowledgment,
+    send_hire_acknowledgment,
+    send_acquisition_acknowledgment,
+    send_research_acknowledgment,
+    send_feedback_acknowledgment,
+)
 
 from apps.hero.models import Hero
 from apps.about.models import About
@@ -111,17 +118,8 @@ def submit_contact_view(request):
         message=message
     )
 
-    # Dispatch transmission to default administrator mailbox
-    try:
-        send_mail(
-            subject=f"[Transmission] {subject or 'General Inquiry'} from {name}",
-            message=f"New transmission received on HijbullahHub:\n\nName: {name}\nEmail: {email}\nSubject: {subject or 'General Inquiry'}\n\nMessage:\n{message}\n",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=["info@hijbullah.me"],
-            fail_silently=True,
-        )
-    except Exception:
-        pass
+    # Dispatch transmission acknowledgment to visitor and notification to admin
+    send_transmission_acknowledgment(name=name, email=email, subject=subject, message=message)
 
     messages.success(request, "Transmission dispatched securely. You will receive a response within 24 hours.")
     return redirect("contact")
@@ -154,6 +152,10 @@ def submit_feedback_view(request):
         comment=comment,
         is_visible=True
     )
+
+    # Dispatch thank-you email to reviewer (if email provided) and notification to admin
+    send_feedback_acknowledgment(name=name, email=email, profession=profession, rating=rating, comment=comment)
+
     messages.success(request, "Thank you! Your review has been submitted successfully.")
     return redirect("home")
 
@@ -186,6 +188,10 @@ def submit_hire_request_view(request):
         duration=duration or "TBD",
         message=message
     )
+
+    # Dispatch engagement confirmation to client and alert to admin
+    send_hire_acknowledgment(name=name, email=email, work_details=work_details, proposed_rate=rate_decimal, rate_type=rate_type, duration=duration, message=message)
+
     messages.success(request, "Your proposal has been securely logged. I will review and follow up promptly.")
     return redirect("home")
 
@@ -208,6 +214,10 @@ def submit_acquisition_view(request):
         phone=phone,
         message=message
     )
+
+    # Dispatch acquisition confirmation to inquirer and alert to admin
+    send_acquisition_acknowledgment(email=email, phone=phone, message=message, project_title=project.title)
+
     messages.success(request, f"Acquisition inquiry for '{project.title}' received. Our team will contact you shortly.")
     return redirect("projects")
 
@@ -228,5 +238,9 @@ def submit_research_contribution_view(request):
         email=email,
         message=message
     )
+
+    # Dispatch research collaboration confirmation to contributor and alert to admin
+    send_research_acknowledgment(email=email, message=message, research_title=research.title)
+
     messages.success(request, f"Contribution request for '{research.title}' submitted successfully.")
     return redirect("research")

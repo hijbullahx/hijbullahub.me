@@ -59,6 +59,7 @@ def dashboard_view(request):
     research_list = Research.objects.all().order_by("-created_at")
     contacts = Contact.objects.all().order_by("-timestamp")
     hire_requests = HireRequest.objects.all().order_by("-created_at")
+    feedbacks = Feedback.objects.all().order_by("-created_at")
     site_setting = SiteSetting.objects.first()
 
     context = {
@@ -72,11 +73,13 @@ def dashboard_view(request):
         "research_list": research_list,
         "contacts": contacts,
         "hire_requests": hire_requests,
+        "feedbacks": feedbacks,
         "site_setting": site_setting,
         "projects_count": projects.count(),
         "contacts_count": contacts.count(),
         "unread_contacts_count": contacts.filter(is_read=False).count(),
         "hire_count": hire_requests.count(),
+        "feedbacks_count": feedbacks.count(),
         "research_count": research_list.count(),
         "ai_count": ai_list.count(),
     }
@@ -314,4 +317,50 @@ def dashboard_update_settings_view(request):
         messages.success(request, "Global site configuration updated.")
     except Exception as e:
         messages.error(request, f"Failed to update settings: {str(e)}")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_toggle_feedback_view(request, feedback_id):
+    try:
+        feedback = get_object_or_404(Feedback, id=feedback_id)
+        feedback.is_visible = not feedback.is_visible
+        feedback.save()
+        status_text = "visible on public site" if feedback.is_visible else "hidden from public view"
+        messages.success(request, f"Review from '{feedback.name}' is now {status_text}.")
+    except Exception as e:
+        messages.error(request, f"Failed to update review visibility: {str(e)}")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_reply_feedback_view(request, feedback_id):
+    try:
+        feedback = get_object_or_404(Feedback, id=feedback_id)
+        reply = request.POST.get("admin_reply", "").strip()
+        display_order = request.POST.get("display_order", "0").strip()
+        try:
+            feedback.display_order = int(display_order)
+        except ValueError:
+            feedback.display_order = 0
+        feedback.admin_reply = reply
+        feedback.save()
+        messages.success(request, f"Reply and display order saved for review by '{feedback.name}'.")
+    except Exception as e:
+        messages.error(request, f"Failed to save reply: {str(e)}")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_delete_feedback_view(request, feedback_id):
+    try:
+        feedback = get_object_or_404(Feedback, id=feedback_id)
+        name = feedback.name
+        feedback.delete()
+        messages.success(request, f"Review from '{name}' permanently deleted.")
+    except Exception as e:
+        messages.error(request, f"Failed to delete review: {str(e)}")
     return redirect("dashboard")

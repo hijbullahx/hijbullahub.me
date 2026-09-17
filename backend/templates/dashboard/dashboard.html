@@ -96,6 +96,14 @@
                 <span>Transmissions &amp; Leads</span>
             </button>
 
+            <button onclick="switchTab('feedbacks')" id="tab-btn-feedbacks" class="dash-tab-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
+                <div class="flex items-center gap-3">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+                    <span>Feedback &amp; Reviews</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-500/10 text-amber-500 border border-amber-500/20 font-bold">{{ feedbacks_count }}</span>
+            </button>
+
             <button onclick="switchTab('settings')" id="tab-btn-settings" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 <span>Site Configuration</span>
@@ -107,7 +115,7 @@
 
             <!-- ── TAB 1: OVERVIEW ──────────────────────────────────────── -->
             <div id="pane-overview" class="dash-pane space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                     <div class="glass p-5 rounded-2xl border border-slate-200/80 dark:border-white/10">
                         <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Engineered Projects</div>
                         <div class="text-3xl font-black text-slate-900 dark:text-white mt-2">{{ projects_count }}</div>
@@ -119,6 +127,11 @@
                         <div class="text-[11px] text-emerald-500 font-medium mt-1">{{ unread_contacts_count }} unread transmissions</div>
                     </div>
                     <div class="glass p-5 rounded-2xl border border-slate-200/80 dark:border-white/10">
+                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Client Reviews</div>
+                        <div class="text-3xl font-black text-slate-900 dark:text-white mt-2">{{ feedbacks_count }}</div>
+                        <div class="text-[11px] text-amber-500 font-medium mt-1">Public &amp; Verified</div>
+                    </div>
+                    <div class="glass p-5 rounded-2xl border border-slate-200/80 dark:border-white/10">
                         <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Hire Proposals</div>
                         <div class="text-3xl font-black text-slate-900 dark:text-white mt-2">{{ hire_count }}</div>
                         <div class="text-[11px] text-purple-500 font-medium mt-1">Client engagements</div>
@@ -126,7 +139,7 @@
                     <div class="glass p-5 rounded-2xl border border-slate-200/80 dark:border-white/10">
                         <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Scientific Papers</div>
                         <div class="text-3xl font-black text-slate-900 dark:text-white mt-2">{{ research_count }}</div>
-                        <div class="text-[11px] text-amber-500 font-medium mt-1">{{ ai_count }} AI/ML experiments</div>
+                        <div class="text-[11px] text-cyan-500 font-medium mt-1">{{ ai_count }} AI/ML experiments</div>
                     </div>
                 </div>
 
@@ -627,7 +640,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Primary Contact Email</label>
-                                <input type="email" name="email" value="{{ site_setting.email|default:'hijbullah119445@gmail.com' }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                                <input type="email" name="email" value="{{ site_setting.email|default:'info@hijbullah.me' }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
                             </div>
                         </div>
 
@@ -642,6 +655,90 @@
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+
+            <!-- ── TAB: FEEDBACK & REVIEWS ──────────────────────────────── -->
+            <div id="pane-feedbacks" class="dash-pane hidden space-y-6">
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Feedback &amp; Client Reviews</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Moderate peer critiques, client reviews, manage public visibility, and craft executive replies.</p>
+                        </div>
+                        <div class="px-3.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-500 text-xs font-semibold flex items-center gap-2">
+                            <span>★</span> {{ feedbacks_count }} Total Reviews
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        {% for review in feedbacks %}
+                        <div class="p-5 rounded-2xl bg-white/40 dark:bg-white/5 border {% if review.is_visible %}border-slate-200/80 dark:border-white/10{% else %}border-amber-500/40 bg-amber-500/5{% endif %} transition-all space-y-3">
+                            <div class="flex flex-wrap items-start justify-between gap-3">
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h4 class="font-bold text-sm text-slate-900 dark:text-white">{{ review.name }}</h4>
+                                        <span class="text-xs text-amber-400 font-bold">
+                                            {% if review.rating == 5 %}★★★★★{% elif review.rating == 4 %}★★★★☆{% elif review.rating == 3 %}★★★☆☆{% elif review.rating == 2 %}★★☆☆☆{% else %}★☆☆☆☆{% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                        {% if review.profession %}<span>{{ review.profession }}</span> &bull;{% endif %}
+                                        {% if review.email %}<a href="mailto:{{ review.email }}" class="text-cyan-500 hover:underline">{{ review.email }}</a> &bull;{% endif %}
+                                        <span>{{ review.created_at|date:"M d, Y, h:i A" }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-2">
+                                    <!-- Visibility Toggle -->
+                                    <form action="{% url 'dashboard_toggle_feedback' review.id %}" method="POST" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5 {% if review.is_visible %}bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border border-emerald-500/20{% else %}bg-slate-500/10 text-slate-400 hover:bg-slate-500/20 border border-slate-500/20{% endif %}" title="Click to toggle public display">
+                                            {% if review.is_visible %}
+                                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Live on Site
+                                            {% else %}
+                                            <span class="w-2 h-2 rounded-full bg-slate-500"></span> Hidden
+                                            {% endif %}
+                                        </button>
+                                    </form>
+
+                                    <!-- Delete Button -->
+                                    <form action="{% url 'dashboard_delete_feedback' review.id %}" method="POST" onsubmit="return confirm('Permanently delete review from {{ review.name }}?');" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="p-1.5 rounded-xl text-rose-500 hover:bg-rose-500/10 transition-colors" title="Delete Review">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Comment Text -->
+                            <div class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-black/20 p-3 rounded-xl border border-slate-100 dark:border-white/5 leading-relaxed">
+                                &ldquo;{{ review.comment }}&rdquo;
+                            </div>
+
+                            <!-- Admin Reply & Display Order Form -->
+                            <form action="{% url 'dashboard_reply_feedback' review.id %}" method="POST" class="pt-1 flex flex-col sm:flex-row gap-2 items-end sm:items-center">
+                                {% csrf_token %}
+                                <div class="w-full flex-1">
+                                    <input type="text" name="admin_reply" value="{{ review.admin_reply|default:'' }}" placeholder="Write official executive response..." class="w-full px-3.5 py-1.5 rounded-xl text-xs border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500">
+                                </div>
+                                <div class="w-24">
+                                    <input type="number" name="display_order" value="{{ review.display_order|default:0 }}" title="Display Priority (lower = higher up)" placeholder="Order" class="w-full px-2.5 py-1.5 rounded-xl text-xs border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-center focus:outline-none focus:border-cyan-500">
+                                </div>
+                                <button type="submit" class="px-3.5 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-500 text-xs font-semibold border border-cyan-500/20 transition-colors whitespace-nowrap">
+                                    Save Reply &amp; Order
+                                </button>
+                            </form>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-12 text-slate-400">
+                            <div class="text-3xl mb-2">✍️</div>
+                            <p class="text-sm font-semibold">No feedback submissions logged yet.</p>
+                            <p class="text-xs text-slate-500 mt-1">Incoming reviews submitted through the landing page form will appear here with instant moderation controls.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
 

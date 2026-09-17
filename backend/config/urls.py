@@ -34,6 +34,9 @@ from apps.core.dashboard_views import (
     dashboard_add_research_view,
     dashboard_delete_contact_view,
     dashboard_update_settings_view,
+    dashboard_toggle_feedback_view,
+    dashboard_reply_feedback_view,
+    dashboard_delete_feedback_view,
 )
 
 urlpatterns = [
@@ -68,6 +71,9 @@ urlpatterns = [
     path("dashboard/research/add/", dashboard_add_research_view, name="dashboard_add_research"),
     path("dashboard/contact/delete/<int:contact_id>/", dashboard_delete_contact_view, name="dashboard_delete_contact"),
     path("dashboard/settings/update/", dashboard_update_settings_view, name="dashboard_update_settings"),
+    path("dashboard/feedback/toggle/<int:feedback_id>/", dashboard_toggle_feedback_view, name="dashboard_toggle_feedback"),
+    path("dashboard/feedback/reply/<int:feedback_id>/", dashboard_reply_feedback_view, name="dashboard_reply_feedback"),
+    path("dashboard/feedback/delete/<int:feedback_id>/", dashboard_delete_feedback_view, name="dashboard_delete_feedback"),
 
     # Raw Django Admin
     path("django-admin/", admin.site.urls),
