@@ -7,13 +7,16 @@
   <title>{% block title %}HijbullahHub{% endblock %}</title>
   <!-- Dynamic Browser Tab Favicon (Automatically uses Hero picture when uploaded) -->
   {% if dynamic_favicon_url %}
-    <link rel="icon" href="{{ dynamic_favicon_url }}">
-    <link rel="apple-touch-icon" href="{{ dynamic_favicon_url }}">
+    <link rel="icon" type="image/png" href="{{ dynamic_favicon_url }}?v={{ global_hero.updated_at|date:'U'|default:'1' }}">
+    <link rel="shortcut icon" href="{{ dynamic_favicon_url }}?v={{ global_hero.updated_at|date:'U'|default:'1' }}">
+    <link rel="apple-touch-icon" href="{{ dynamic_favicon_url }}?v={{ global_hero.updated_at|date:'U'|default:'1' }}">
   {% elif hero.profile_image %}
-    <link rel="icon" href="{{ hero.profile_image.url }}">
-    <link rel="apple-touch-icon" href="{{ hero.profile_image.url }}">
+    <link rel="icon" type="image/png" href="{{ hero.profile_image.url }}?v={{ hero.updated_at|date:'U'|default:'1' }}">
+    <link rel="shortcut icon" href="{{ hero.profile_image.url }}?v={{ hero.updated_at|date:'U'|default:'1' }}">
+    <link rel="apple-touch-icon" href="{{ hero.profile_image.url }}?v={{ hero.updated_at|date:'U'|default:'1' }}">
   {% else %}
     <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+    <link rel="shortcut icon" href="{% static 'images/favicon.svg' %}">
   {% endif %}
 
   <!-- Modern Typography -->
