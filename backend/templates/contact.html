@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}Get in Touch | Executive Contact{% endblock %}
+
+{% block content %}
+<div class="relative py-12 md:py-20">
+    <!-- Header -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold uppercase tracking-wider mb-4">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            Direct Lines Open
+        </div>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight">
+            Initiate <span class="gradient-text">Contact</span>
+        </h1>
+        <p class="mt-4 text-base md:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            Available for executive consulting, full-stack architectural leadership, high-impact machine learning projects, and strategic partnerships.
+        </p>
+
+        <!-- 1-Click Clipboard Bar -->
+        {% if primary_email %}
+        <div class="mt-8 inline-flex items-center gap-3 p-2 pl-4 rounded-2xl glass border border-slate-200/80 dark:border-white/10 shadow-sm max-w-md w-full justify-between">
+            <div class="flex items-center gap-2 overflow-hidden text-left">
+                <svg class="w-5 h-5 text-cyan-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                <span id="primaryEmailText" class="text-xs md:text-sm font-semibold text-slate-900 dark:text-white truncate">{{ primary_email }}</span>
+            </div>
+            <button onclick="copyToClipboard('{{ primary_email }}')" class="shrink-0 px-4 py-2 rounded-xl text-xs font-semibold bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-all active:scale-95 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Main Grid: Channels & Form -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            
+            <!-- Channels / Contact Profiles Column -->
+            <div class="lg:col-span-5 space-y-6">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Direct Channels</h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Connect through verified social credentials or verified messaging channels.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+                    {% for profile in profiles %}
+                    <a href="{{ profile.formatted_link }}" target="_blank" rel="noopener noreferrer" class="glass p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 hover:border-cyan-500/30 transition-all duration-300 flex items-center justify-between group shadow-sm hover:shadow-lg hover:shadow-cyan-500/5 relative overflow-hidden">
+                        {% if profile.profile_image %}
+                        <div class="absolute inset-0 bg-cover bg-center pointer-events-none" style="background-image: url('{{ profile.profile_image.url }}'); opacity: {{ profile.image_opacity }};"></div>
+                        {% endif %}
+
+                        <div class="flex items-center gap-4 relative z-10">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/10 to-purple-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                                {% if profile.icon_type == 'github' %}
+                                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                                {% elif profile.icon_type == 'linkedin' %}
+                                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                                {% elif profile.icon_type == 'twitter' %}
+                                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                {% elif profile.icon_type == 'whatsapp' %}
+                                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                                {% else %}
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-cyan-500 transition-colors">{{ profile.title }}</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 truncate max-w-[200px]">{{ profile.link }}</p>
+                            </div>
+                        </div>
+
+                        <div class="relative z-10 text-slate-400 group-hover:text-cyan-500 group-hover:translate-x-1 transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                        </div>
+                    </a>
+                    {% empty %}
+                    <div class="glass p-6 rounded-2xl border border-slate-200/80 dark:border-white/10 text-center">
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Social channels are available via the contact form on the right.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Office / Response SLA Card -->
+                <div class="glass p-6 rounded-2xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
+                        <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        Guaranteed Turnaround
+                    </h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                        All verified inquiries receive a response within <strong>24 business hours</strong>. Direct NDA agreements and encrypted communications available upon request.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Contact Form Column -->
+            <div class="lg:col-span-7">
+                <div class="glass p-8 md:p-10 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-xl relative">
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-1">Dispatch Transmission</h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-6">Complete the briefing form below to dispatch an encrypted message.</p>
+
+                    <form action="{% url 'submit_contact' %}" method="POST" class="space-y-5">
+                        {% csrf_token %}
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Your Full Name</label>
+                                <input type="text" name="name" required placeholder="e.g. Alex Morgan" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Email Address</label>
+                                <input type="email" name="email" required placeholder="alex@company.com" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Subject / Engagement Type</label>
+                            <input type="text" name="subject" required placeholder="e.g. Executive Architecture Consulting / Project Proposal" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Transmission Details</label>
+                            <textarea name="message" rows="5" required placeholder="Provide context regarding requirements, timeline, scope or objectives..." class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="submit" class="w-full glow-button py-3.5 rounded-xl text-white font-semibold text-sm shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2">
+                                <span>Transmit Message</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

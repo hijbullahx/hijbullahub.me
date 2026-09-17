@@ -1,0 +1,806 @@
+{% extends 'base.html' %}
+
+{% block title %}Custom Control Center | HijbullahHub{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- Top Executive Header Bar -->
+    <div class="glass p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-lg mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 to-emerald-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-md shadow-cyan-500/20">
+                H
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-xl font-bold text-slate-900 dark:text-white">Custom Executive Studio</h1>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 uppercase tracking-wider">Master Control</span>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Authenticated as <strong class="text-slate-700 dark:text-slate-200">{{ request.user.username }}</strong> • Live synchronized with portfolio</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3 flex-wrap">
+            <a href="{% url 'home' %}" target="_blank" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:border-cyan-500/40 transition-all flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                <span>View Public Site</span>
+            </a>
+            <a href="/admin/" target="_blank" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:border-purple-500/40 transition-all flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <span>Raw Database Admin</span>
+            </a>
+            <a href="{% url 'dashboard_logout' %}" class="px-4 py-2 rounded-xl text-xs font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 hover:bg-rose-500/20 transition-all flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 100 KB Image Upload Directive Banner -->
+    <div class="mb-8 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-amber-600 dark:text-amber-300">
+        <div class="flex items-center gap-2.5">
+            <svg class="w-5 h-5 shrink-0 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <div>
+                <strong>Performance Directive:</strong> All uploaded images are limited to <strong>&le; 100 KB</strong> to maintain instantaneous page loads and low bandwidth consumption.
+            </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+            <span class="text-[11px] opacity-80">Free Compressors:</span>
+            <a href="https://tinyjpg.com" target="_blank" rel="noreferrer" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 font-bold transition-colors">TinyPNG ↗</a>
+            <a href="https://squoosh.app" target="_blank" rel="noreferrer" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 font-bold transition-colors">Squoosh ↗</a>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Grid Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        <!-- Sidebar Tabs -->
+        <div class="lg:col-span-3 glass p-4 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-1.5 sticky top-24">
+            <button onclick="switchTab('overview')" id="tab-btn-overview" class="dash-tab-btn active w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                <span>Overview &amp; Stats</span>
+            </button>
+
+            <button onclick="switchTab('hero')" id="tab-btn-hero" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>Hero &amp; Profile</span>
+            </button>
+
+            <button onclick="switchTab('about')" id="tab-btn-about" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                <span>About &amp; Mission</span>
+            </button>
+
+            <button onclick="switchTab('skills')" id="tab-btn-skills" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                <span>Skills &amp; Mastery</span>
+            </button>
+
+            <button onclick="switchTab('projects')" id="tab-btn-projects" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+                <span>Projects Portfolio</span>
+            </button>
+
+            <button onclick="switchTab('education')" id="tab-btn-education" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5"/></svg>
+                <span>Education &amp; Work</span>
+            </button>
+
+            <button onclick="switchTab('ai-research')" id="tab-btn-ai-research" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                <span>AI Lab &amp; Research</span>
+            </button>
+
+            <button onclick="switchTab('messages')" id="tab-btn-messages" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                <span>Transmissions &amp; Leads</span>
+            </button>
+
+            <button onclick="switchTab('feedbacks')" id="tab-btn-feedbacks" class="dash-tab-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
+                <div class="flex items-center gap-3">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+                    <span>Feedback &amp; Reviews</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-500/10 text-amber-500 border border-amber-500/20 font-bold">{{ feedbacks_count }}</span>
+            </button>
+
+            <button onclick="switchTab('settings')" id="tab-btn-settings" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <span>Site Configuration</span>
+            </button>
+        </div>
+
+        <!-- Main Content Panes -->
+        <div class="lg:col-span-9 space-y-6">
+
+            <!-- ── TAB 1: OVERVIEW ──────────────────────────────────────── -->
+            <div id="pane-overview" class="dash-pane space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div class="glass p-5 rounded-2xl border border-slate-200/80 dark:border-white/10">
+                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Engineered Projects</div>
+                        <div class="text-3xl font-black text-slate-900 dark:text-white mt-2">{{ projects_count }}</div>
+                        <div class="text-[11px] text-cyan-500 font-medium mt-1">Live in showcase</div>
+                    </div>
+                    <div class="glass p-5 rounded-2xl border border-slate-200/80 dark:border-white/10">
+                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Messages &amp; Leads</div>
+                        <div class="text-3xl font-black text-slate-900 dark:text-white mt-2">{{ contacts_count }}</div>
+                        <div class="text-[11px] text-emerald-500 font-medium mt-1">{{ unread_contacts_count }} unread transmissions</div>
+                    </div>
+                    <div class="glass p-5 rounded-2xl border border-slate-200/80 dark:border-white/10">
+                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Client Reviews</div>
+                        <div class="text-3xl font-black text-slate-900 dark:text-white mt-2">{{ feedbacks_count }}</div>
+                        <div class="text-[11px] text-amber-500 font-medium mt-1">Public &amp; Verified</div>
+                    </div>
+                    <div class="glass p-5 rounded-2xl border border-slate-200/80 dark:border-white/10">
+                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Hire Proposals</div>
+                        <div class="text-3xl font-black text-slate-900 dark:text-white mt-2">{{ hire_count }}</div>
+                        <div class="text-[11px] text-purple-500 font-medium mt-1">Client engagements</div>
+                    </div>
+                    <div class="glass p-5 rounded-2xl border border-slate-200/80 dark:border-white/10">
+                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Scientific Papers</div>
+                        <div class="text-3xl font-black text-slate-900 dark:text-white mt-2">{{ research_count }}</div>
+                        <div class="text-[11px] text-cyan-500 font-medium mt-1">{{ ai_count }} AI/ML experiments</div>
+                    </div>
+                </div>
+
+                <!-- Quick Action Shortcuts -->
+                <div class="glass p-6 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">Quick Studio Actions</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <button onclick="switchTab('hero')" class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 hover:border-cyan-500 text-left transition-all group">
+                            <div class="text-cyan-500 text-lg mb-1">⚡</div>
+                            <div class="text-xs font-bold text-slate-900 dark:text-white group-hover:text-cyan-500">Edit Hero &amp; Bio</div>
+                            <div class="text-[10px] text-slate-500">Tagline, image, title</div>
+                        </button>
+                        <button onclick="switchTab('projects')" class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 hover:border-cyan-500 text-left transition-all group">
+                            <div class="text-emerald-500 text-lg mb-1">📁</div>
+                            <div class="text-xs font-bold text-slate-900 dark:text-white group-hover:text-emerald-500">Add New Project</div>
+                            <div class="text-[10px] text-slate-500">Links, images, tags</div>
+                        </button>
+                        <button onclick="switchTab('skills')" class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 hover:border-cyan-500 text-left transition-all group">
+                            <div class="text-purple-500 text-lg mb-1">🎯</div>
+                            <div class="text-xs font-bold text-slate-900 dark:text-white group-hover:text-purple-500">Manage Skills</div>
+                            <div class="text-[10px] text-slate-500">Level sliders, tools</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── TAB 2: HERO & PROFILE ─────────────────────────────────── -->
+            <div id="pane-hero" class="dash-pane hidden space-y-6">
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Hero Section Management</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Update the primary headline, animated tagline, short bio, and profile photograph displayed on your portfolio landing screen.</p>
+
+                    <form action="{% url 'dashboard_update_hero' %}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                        {% csrf_token %}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Executive Name</label>
+                                <input type="text" name="name" value="{{ hero.name|default:'Md. Taher Bin Omar Hijbullah' }}" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Animated Tagline (or comma separated)</label>
+                                <input type="text" name="tagline" value="{{ hero.tagline|default:'Robotics Researcher • Autonomous Systems Architect' }}" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Short Bio</label>
+                            <textarea name="short_bio" rows="3" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">{{ hero.short_bio|default:'' }}</textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                                Profile Picture <span class="text-amber-500 font-bold">(Max 100 KB)</span>
+                            </label>
+                            {% if hero.profile_image %}
+                            <div class="flex items-center gap-3 mb-2">
+                                <img src="{{ hero.profile_image.url }}" alt="Current Hero Image" class="w-12 h-12 rounded-xl object-cover border border-cyan-500/30">
+                                <span class="text-xs text-slate-500">Current file active. Select new image below to replace.</span>
+                            </div>
+                            {% endif %}
+                            <input type="file" name="profile_image" accept="image/*" class="dash-image-input w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/10 file:text-cyan-500 hover:file:bg-cyan-500/20">
+                            <div class="dash-file-status text-[11px] mt-1 font-medium"></div>
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="submit" class="glow-button px-6 py-2.5 rounded-xl text-white font-semibold text-xs">
+                                Save Hero Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ── TAB 3: ABOUT & MISSION ────────────────────────────────── -->
+            <div id="pane-about" class="dash-pane hidden space-y-6">
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">About &amp; Mission Directive</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Define your overarching mission, Vision 2030 roadmap, long narrative biography, and keynote quote.</p>
+
+                    <form action="{% url 'dashboard_update_about' %}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                        {% csrf_token %}
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Mission Statement</label>
+                            <textarea name="mission_statement" rows="3" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">{{ about.mission_statement|default:'' }}</textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Vision 2030 Strategic Trajectory</label>
+                            <textarea name="vision_2030" rows="3" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">{{ about.vision_2030|default:'' }}</textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Long Biography</label>
+                            <textarea name="long_bio" rows="4" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">{{ about.long_bio|default:'' }}</textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Keynote Quote</label>
+                            <input type="text" name="quote" value="{{ about.quote|default:'' }}" placeholder="e.g. Pioneering autonomy and intelligent agents." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="submit" class="glow-button px-6 py-2.5 rounded-xl text-white font-semibold text-xs">
+                                Save About Information
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ── TAB 4: SKILLS ─────────────────────────────────────────── -->
+            <div id="pane-skills" class="dash-pane hidden space-y-6">
+                <!-- Add Skill Form -->
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Add Technical Competency</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Add programming languages, frameworks, AI/ML tools, robotics libraries, and hardware interfaces.</p>
+
+                    <form action="{% url 'dashboard_add_skill' %}" method="POST" class="space-y-4">
+                        {% csrf_token %}
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Skill Name</label>
+                                <input type="text" name="name" required placeholder="e.g. PyTorch, ROS2, Django" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Category</label>
+                                <input type="text" name="category" required placeholder="Programming, AI/ML, Robotics, IoT" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <label class="text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">Proficiency Level</label>
+                                    <span id="skillLevelLabel" class="text-xs font-bold text-cyan-500">85%</span>
+                                </div>
+                                <input type="range" name="level" min="10" max="100" value="85" oninput="document.getElementById('skillLevelLabel').textContent = this.value + '%'" class="w-full accent-cyan-500 mt-2">
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="submit" class="glow-button px-6 py-2.5 rounded-xl text-white font-semibold text-xs">
+                                + Add Competency
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Existing Skills Table -->
+                <div class="glass p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 overflow-hidden">
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">Current Skills ({{ skills|length }})</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs text-slate-600 dark:text-slate-300">
+                            <thead class="border-b border-slate-200 dark:border-white/10 text-[11px] uppercase font-bold text-slate-500">
+                                <tr>
+                                    <th class="py-3 px-4">Name</th>
+                                    <th class="py-3 px-4">Category</th>
+                                    <th class="py-3 px-4">Level</th>
+                                    <th class="py-3 px-4 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200/60 dark:divide-white/5">
+                                {% for s in skills %}
+                                <tr>
+                                    <td class="py-3 px-4 font-bold text-slate-900 dark:text-white">{{ s.name }}</td>
+                                    <td class="py-3 px-4">
+                                        <span class="px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">{{ s.category }}</span>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-24 h-1.5 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden">
+                                                <div class="h-full bg-cyan-500 rounded-full" style="width: {{ s.level }}%"></div>
+                                            </div>
+                                            <span class="font-bold text-xs">{{ s.level }}%</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 px-4 text-right">
+                                        <form action="{% url 'dashboard_delete_skill' s.id %}" method="POST" onsubmit="return confirm('Delete {{ s.name }}?')">
+                                            {% csrf_token %}
+                                            <button type="submit" class="text-rose-500 hover:text-rose-400 font-semibold text-xs">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="py-4 text-center text-slate-400">No skills added yet. Use the form above to add your first skill.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── TAB 5: PROJECTS ───────────────────────────────────────── -->
+            <div id="pane-projects" class="dash-pane hidden space-y-6">
+                <!-- Add Project Form -->
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Create Engineered Project</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Deploy a showcase project complete with description, status, repositories, and media.</p>
+
+                    <form action="{% url 'dashboard_add_project' %}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                        {% csrf_token %}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Project Title</label>
+                                <input type="text" name="title" required placeholder="e.g. Autonomous Drone Swarm Architecture" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Status</label>
+                                <select name="status" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                                    <option value="ongoing">Ongoing</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="research">Research</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Short Overview / Pitch</label>
+                            <input type="text" name="short_description" required placeholder="High-level 1-line impact summary" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Full Description &amp; Architecture</label>
+                            <textarea name="full_description" rows="3" placeholder="Technical specifications, components, and results..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">GitHub URL</label>
+                                <input type="url" name="github_link" placeholder="https://github.com/username/repo" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Live Demo URL</label>
+                                <input type="url" name="live_link" placeholder="https://demo.domain.com" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                                    Featured Image <span class="text-amber-500 font-bold">(Max 100 KB)</span>
+                                </label>
+                                <input type="file" name="featured_image" accept="image/*" class="dash-image-input w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/10 file:text-cyan-500 hover:file:bg-cyan-500/20">
+                                <div class="dash-file-status text-[11px] mt-1 font-medium"></div>
+                            </div>
+                            <div class="flex items-center gap-2 pt-6">
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="featured" class="w-4 h-4 text-cyan-500 rounded border-slate-300 focus:ring-cyan-500">
+                                    <span class="ml-2 text-xs font-bold text-slate-700 dark:text-slate-300">Mark as Featured Showcase</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="submit" class="glow-button px-6 py-2.5 rounded-xl text-white font-semibold text-xs">
+                                Publish Project
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Projects List -->
+                <div class="glass p-6 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">Published Projects ({{ projects|length }})</h3>
+                    <div class="space-y-3">
+                        {% for p in projects %}
+                        <div class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex items-center justify-between gap-4">
+                            <div class="flex items-center gap-3">
+                                {% if p.featured_image %}
+                                <img src="{{ p.featured_image.url }}" alt="{{ p.title }}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-white/10">
+                                {% else %}
+                                <div class="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center font-bold">{{ p.title|slice:":1" }}</div>
+                                {% endif %}
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-900 dark:text-white">{{ p.title }}</h4>
+                                    <p class="text-xs text-slate-500 truncate max-w-sm">{{ p.short_description }}</p>
+                                </div>
+                            </div>
+                            <form action="{% url 'dashboard_delete_project' p.id %}" method="POST" onsubmit="return confirm('Delete project: {{ p.title }}?')">
+                                {% csrf_token %}
+                                <button type="submit" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 transition-colors">Delete</button>
+                            </form>
+                        </div>
+                        {% empty %}
+                        <p class="text-xs text-slate-400 text-center py-4">No projects yet. Use the form above to add one.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── TAB 6: EDUCATION & WORK ───────────────────────────────── -->
+            <div id="pane-education" class="dash-pane hidden space-y-6">
+                <!-- Add Education -->
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Add Academic Credential</h3>
+                    <form action="{% url 'dashboard_add_education' %}" method="POST" class="space-y-4 mt-4">
+                        {% csrf_token %}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Degree / Certification Name</label>
+                                <input type="text" name="degree_name" required placeholder="e.g. B.Sc. in Computer Science &amp; Engineering" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Institution Name</label>
+                                <input type="text" name="institution_name" required placeholder="e.g. University of Dhaka" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Result / CGPA</label>
+                                <input type="text" name="result" placeholder="e.g. CGPA 3.90 / 4.00" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Location</label>
+                                <input type="text" name="location" placeholder="e.g. Dhaka, Bangladesh" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                        </div>
+                        <button type="submit" class="glow-button px-6 py-2.5 rounded-xl text-white font-semibold text-xs">+ Add Academic Record</button>
+                    </form>
+                </div>
+
+                <!-- Add Experience -->
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Add Work Experience</h3>
+                    <form action="{% url 'dashboard_add_experience' %}" method="POST" class="space-y-4 mt-4">
+                        {% csrf_token %}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Role / Position Title</label>
+                                <input type="text" name="role" required placeholder="e.g. Autonomous Systems Lead" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Organization / Company</label>
+                                <input type="text" name="organization" required placeholder="e.g. Robotics Innovation Lab" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Duration / Timeline</label>
+                            <input type="text" name="duration" placeholder="e.g. 2024 - Present" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Responsibilities &amp; Achievements</label>
+                            <textarea name="description" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
+                        </div>
+                        <button type="submit" class="glow-button px-6 py-2.5 rounded-xl text-white font-semibold text-xs">+ Add Experience Record</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ── TAB 7: AI LAB & RESEARCH ─────────────────────────────── -->
+            <div id="pane-ai-research" class="dash-pane hidden space-y-6">
+                <!-- Add AI Lab Experiment -->
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Add AI/ML Experiment</h3>
+                    <form action="{% url 'dashboard_add_ai_lab' %}" method="POST" class="space-y-4 mt-4">
+                        {% csrf_token %}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Project / Model Title</label>
+                                <input type="text" name="title" required placeholder="e.g. Transformer-based Multi-Agent Pathfinding" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Architecture Model</label>
+                                <input type="text" name="model_name" placeholder="e.g. YOLOv8x + ByteTrack" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">Accuracy (%)</label>
+                                <input type="number" step="0.01" name="accuracy" placeholder="98.5" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">Precision (%)</label>
+                                <input type="number" step="0.01" name="precision" placeholder="97.8" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">Recall (%)</label>
+                                <input type="number" step="0.01" name="recall" placeholder="96.9" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">F1 Score (%)</label>
+                                <input type="number" step="0.01" name="f1_score" placeholder="97.3" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-xs">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Demo / Streamlit Link</label>
+                            <input type="url" name="link" placeholder="https://share.streamlit.io/..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        </div>
+                        <button type="submit" class="glow-button px-6 py-2.5 rounded-xl text-white font-semibold text-xs">+ Register AI/ML Experiment</button>
+                    </form>
+                </div>
+
+                <!-- Add Research Paper -->
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Publish Research Paper</h3>
+                    <form action="{% url 'dashboard_add_research' %}" method="POST" class="space-y-4 mt-4">
+                        {% csrf_token %}
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Paper Title</label>
+                            <input type="text" name="title" required placeholder="Full academic publication title" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Contributors / Authors</label>
+                                <input type="text" name="contributors" placeholder="Md. Taher Bin Omar Hijbullah, Dr. Smith, et al." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Status</label>
+                                <select name="status" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white text-sm">
+                                    <option value="published">Published</option>
+                                    <option value="active">Active</option>
+                                    <option value="planning">Planning</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Abstract</label>
+                            <textarea name="abstract" rows="3" placeholder="Summary of investigation..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">DOI / Paper URL</label>
+                            <input type="url" name="paper_link" placeholder="https://arxiv.org/abs/..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        </div>
+                        <button type="submit" class="glow-button px-6 py-2.5 rounded-xl text-white font-semibold text-xs">+ Save Research Publication</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ── TAB 8: MESSAGES & INQUIRIES ──────────────────────────── -->
+            <div id="pane-messages" class="dash-pane hidden space-y-6">
+                <!-- Transmissions -->
+                <div class="glass p-6 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">Contact Transmissions ({{ contacts|length }})</h3>
+                    <div class="space-y-3">
+                        {% for c in contacts %}
+                        <div class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bold text-sm text-slate-900 dark:text-white">{{ c.name }}</span>
+                                    <span class="text-xs text-cyan-500">&lt;{{ c.email }}&gt;</span>
+                                    {% if not c.is_read %}
+                                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" title="Unread"></span>
+                                    {% endif %}
+                                </div>
+                                <div class="text-xs font-semibold text-slate-700 dark:text-slate-300 mt-1">{{ c.subject }}</div>
+                                <p class="text-xs text-slate-500 mt-1">{{ c.message }}</p>
+                                <div class="text-[10px] text-slate-400 mt-2">{{ c.timestamp|date:"M d, Y, h:i A" }}</div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <a href="mailto:{{ c.email }}?subject=Re: {{ c.subject|urlencode }}" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors">Reply</a>
+                                <form action="{% url 'dashboard_delete_contact' c.id %}" method="POST" onsubmit="return confirm('Delete transmission from {{ c.name }}?')">
+                                    {% csrf_token %}
+                                    <button type="submit" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 transition-colors">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-xs text-slate-400 text-center py-4">No contact messages received yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Hire Requests -->
+                <div class="glass p-6 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">Client Hire Proposals ({{ hire_requests|length }})</h3>
+                    <div class="space-y-3">
+                        {% for h in hire_requests %}
+                        <div class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bold text-sm text-slate-900 dark:text-white">{{ h.name }}</span>
+                                    <span class="text-xs text-emerald-500">&lt;{{ h.email }}&gt;</span>
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/10 text-purple-400 border border-purple-500/20">${{ h.proposed_rate }} / {{ h.rate_type }}</span>
+                                </div>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">{{ h.work_details }}</p>
+                                <div class="text-[10px] text-slate-400 mt-1">Duration: {{ h.duration }} • Status: {{ h.get_status_display }}</div>
+                            </div>
+                            <a href="mailto:{{ h.email }}?subject=Re: Engagement Proposal" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-colors shrink-0">Engage</a>
+                        </div>
+                        {% empty %}
+                        <p class="text-xs text-slate-400 text-center py-4">No hire proposals logged yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── TAB 9: SETTINGS ───────────────────────────────────────── -->
+            <div id="pane-settings" class="dash-pane hidden space-y-6">
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Global Site Configuration</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Manage global meta descriptions, branding title, primary communication email, and ambient sound effects.</p>
+
+                    <form action="{% url 'dashboard_update_settings' %}" method="POST" class="space-y-4">
+                        {% csrf_token %}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Site Title</label>
+                                <input type="text" name="site_title" value="{{ site_setting.site_title|default:'Md. Taher Bin Omar Hijbullah | AI & Robotics Executive Portfolio' }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Primary Contact Email</label>
+                                <input type="email" name="email" value="{{ site_setting.email|default:'info@hijbullah.me' }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Meta Description (SEO)</label>
+                            <textarea name="meta_description" rows="2" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">{{ site_setting.meta_description|default:'' }}</textarea>
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="submit" class="glow-button px-6 py-2.5 rounded-xl text-white font-semibold text-xs">
+                                Save Global Configuration
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ── TAB: FEEDBACK & REVIEWS ──────────────────────────────── -->
+            <div id="pane-feedbacks" class="dash-pane hidden space-y-6">
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Feedback &amp; Client Reviews</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Moderate peer critiques, client reviews, manage public visibility, and craft executive replies.</p>
+                        </div>
+                        <div class="px-3.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-500 text-xs font-semibold flex items-center gap-2">
+                            <span>★</span> {{ feedbacks_count }} Total Reviews
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        {% for review in feedbacks %}
+                        <div class="p-5 rounded-2xl bg-white/40 dark:bg-white/5 border {% if review.is_visible %}border-slate-200/80 dark:border-white/10{% else %}border-amber-500/40 bg-amber-500/5{% endif %} transition-all space-y-3">
+                            <div class="flex flex-wrap items-start justify-between gap-3">
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h4 class="font-bold text-sm text-slate-900 dark:text-white">{{ review.name }}</h4>
+                                        <span class="text-xs text-amber-400 font-bold">
+                                            {% if review.rating == 5 %}★★★★★{% elif review.rating == 4 %}★★★★☆{% elif review.rating == 3 %}★★★☆☆{% elif review.rating == 2 %}★★☆☆☆{% else %}★☆☆☆☆{% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                        {% if review.profession %}<span>{{ review.profession }}</span> &bull;{% endif %}
+                                        {% if review.email %}<a href="mailto:{{ review.email }}" class="text-cyan-500 hover:underline">{{ review.email }}</a> &bull;{% endif %}
+                                        <span>{{ review.created_at|date:"M d, Y, h:i A" }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-2">
+                                    <!-- Visibility Toggle -->
+                                    <form action="{% url 'dashboard_toggle_feedback' review.id %}" method="POST" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5 {% if review.is_visible %}bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border border-emerald-500/20{% else %}bg-slate-500/10 text-slate-400 hover:bg-slate-500/20 border border-slate-500/20{% endif %}" title="Click to toggle public display">
+                                            {% if review.is_visible %}
+                                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Live on Site
+                                            {% else %}
+                                            <span class="w-2 h-2 rounded-full bg-slate-500"></span> Hidden
+                                            {% endif %}
+                                        </button>
+                                    </form>
+
+                                    <!-- Delete Button -->
+                                    <form action="{% url 'dashboard_delete_feedback' review.id %}" method="POST" onsubmit="return confirm('Permanently delete review from {{ review.name }}?');" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="p-1.5 rounded-xl text-rose-500 hover:bg-rose-500/10 transition-colors" title="Delete Review">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Comment Text -->
+                            <div class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-black/20 p-3 rounded-xl border border-slate-100 dark:border-white/5 leading-relaxed">
+                                &ldquo;{{ review.comment }}&rdquo;
+                            </div>
+
+                            <!-- Admin Reply & Display Order Form -->
+                            <form action="{% url 'dashboard_reply_feedback' review.id %}" method="POST" class="pt-1 flex flex-col sm:flex-row gap-2 items-end sm:items-center">
+                                {% csrf_token %}
+                                <div class="w-full flex-1">
+                                    <input type="text" name="admin_reply" value="{{ review.admin_reply|default:'' }}" placeholder="Write official executive response..." class="w-full px-3.5 py-1.5 rounded-xl text-xs border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500">
+                                </div>
+                                <div class="w-24">
+                                    <input type="number" name="display_order" value="{{ review.display_order|default:0 }}" title="Display Priority (lower = higher up)" placeholder="Order" class="w-full px-2.5 py-1.5 rounded-xl text-xs border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-center focus:outline-none focus:border-cyan-500">
+                                </div>
+                                <button type="submit" class="px-3.5 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-500 text-xs font-semibold border border-cyan-500/20 transition-colors whitespace-nowrap">
+                                    Save Reply &amp; Order
+                                </button>
+                            </form>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-12 text-slate-400">
+                            <div class="text-3xl mb-2">✍️</div>
+                            <p class="text-sm font-semibold">No feedback submissions logged yet.</p>
+                            <p class="text-xs text-slate-500 mt-1">Incoming reviews submitted through the landing page form will appear here with instant moderation controls.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+.dash-tab-btn {
+    color: #94a3b8;
+}
+.dash-tab-btn:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #38bdf8;
+}
+.dash-tab-btn.active {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(16, 185, 129, 0.1));
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    color: #38bdf8;
+    box-shadow: 0 4px 20px -5px rgba(6, 182, 212, 0.25);
+}
+</style>
+
+<script>
+function switchTab(tabId) {
+    // Hide all panes
+    document.querySelectorAll('.dash-pane').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.dash-tab-btn').forEach(b => b.classList.remove('active'));
+
+    // Show target pane
+    const targetPane = document.getElementById('pane-' + tabId);
+    const targetBtn = document.getElementById('tab-btn-' + tabId);
+    if (targetPane) targetPane.classList.remove('hidden');
+    if (targetBtn) targetBtn.classList.add('active');
+
+    // Save active tab in session
+    sessionStorage.setItem('active_dash_tab', tabId);
+}
+
+// Restore saved tab or default to overview
+document.addEventListener('DOMContentLoaded', () => {
+    const saved = sessionStorage.getItem('active_dash_tab') || 'overview';
+    switchTab(saved);
+
+    // Dynamic 100 KB Image Checker
+    document.querySelectorAll('.dash-image-input').forEach(input => {
+        input.addEventListener('change', function() {
+            const statusDiv = this.parentElement.querySelector('.dash-file-status');
+            if (!this.files || !this.files[0]) {
+                if (statusDiv) statusDiv.textContent = '';
+                return;
+            }
+            const file = this.files[0];
+            const sizeKB = (file.size / 1024).toFixed(1);
+            if (file.size > 100 * 1024) {
+                statusDiv.innerHTML = `<span class="text-rose-500 font-bold">⚠️ ${sizeKB} KB — Exceeds 100 KB limit! Compress at <a href="https://tinyjpg.com" target="_blank" class="underline font-black">tinyjpg.com</a> first.</span>`;
+                this.value = ''; // clear invalid selection
+            } else {
+                statusDiv.innerHTML = `<span class="text-emerald-500 font-semibold">✓ ${sizeKB} KB (Approved &le; 100 KB)</span>`;
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

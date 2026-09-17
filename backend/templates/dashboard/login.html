@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Portal Access | Executive Dashboard{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
+    <div class="max-w-md w-full glass p-8 md:p-10 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-2xl relative">
+        <div class="text-center mb-8">
+            <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-emerald-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-500">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Executive <span class="gradient-text">Control</span></h2>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2">Sign in to customize every section, project, skill, and metric across your portfolio.</p>
+        </div>
+
+        {% if error_message %}
+        <div class="mb-6 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-semibold flex items-center gap-2">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>{{ error_message }}</span>
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'dashboard_login' %}" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Username</label>
+                <input type="text" name="username" required autofocus placeholder="e.g. hijbullah or admin" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Password</label>
+                <input type="password" name="password" required placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+
+            <div class="pt-2">
+                <button type="submit" class="w-full glow-button py-3.5 rounded-xl text-white font-semibold text-sm shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2">
+                    <span>Authenticate &amp; Enter Dashboard</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-6 pt-6 border-t border-slate-200/60 dark:border-white/5 text-center">
+            <a href="{% url 'home' %}" class="text-xs text-slate-500 hover:text-cyan-500 transition-colors inline-flex items-center gap-1">
+                <span>← Return to Public Portfolio</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

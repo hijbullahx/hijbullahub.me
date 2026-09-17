@@ -23,6 +23,11 @@ class Research(TimeStampedModel):
     class Meta:
         ordering = ["-created_at"]
 
+    def save(self, *args, **kwargs):
+        if self.paper_link and not self.paper_link.startswith(("http://", "https://")):
+            self.paper_link = f"https://{self.paper_link.strip()}"
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.title
 

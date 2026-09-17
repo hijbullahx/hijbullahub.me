@@ -10,10 +10,16 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-dev-key-change-me")
+SECRET_KEY = os.getenv("SECRET_KEY") or os.getenv("DJANGO_SECRET_KEY", "unsafe-dev-key-change-me")
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
-ALLOWED_HOSTS = [host.strip() for host in os.getenv("ALLOWED_HOSTS", "*").split(",") if host.strip()]
+# Host configuration
+_raw_hosts = os.getenv("ALLOWED_HOSTS", "*")
+ALLOWED_HOSTS = [host.strip() for host in _raw_hosts.split(",") if host.strip()]
+if DEBUG:
+    for _local in ["127.0.0.1", "localhost", "testserver"]:
+        if _local not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(_local)
 
 INSTALLED_APPS = [
     "jazzmin",
@@ -61,7 +67,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -76,13 +82,41 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
-DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=60,
-        conn_health_checks=True,
-    )
-}
+# Database Configuration: Reads PostgreSQL parameters from environment variables
+DB_NAME = os.getenv("DATABASE_NAME", "").strip()
+DB_USER = os.getenv("DATABASE_USER", "").strip()
+DB_PASSWORD = os.getenv("DATABASE_PASSWORD", "").strip()
+DB_HOST = os.getenv("DATABASE_HOST", "localhost").strip()
+DB_PORT = os.getenv("DATABASE_PORT", "5432").strip()
+USE_SQLITE = os.getenv("USE_SQLITE", "False").lower() == "true"
+
+if DB_NAME and not USE_SQLITE:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": DB_NAME,
+            "USER": DB_USER,
+            "PASSWORD": DB_PASSWORD,
+            "HOST": DB_HOST,
+            "PORT": DB_PORT,
+            "CONN_MAX_AGE": 60,
+        }
+    }
+elif os.getenv("DATABASE_URL"):
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=os.getenv("DATABASE_URL"),
+            conn_max_age=60,
+            conn_health_checks=True,
+        )
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -98,6 +132,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -105,17 +140,18 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Cloudinary configuration for media file storage
 import cloudinary
 
-CLOUDINARY_URL = os.getenv('CLOUDINARY_URL', '')
+CLOUDINARY_URL = os.getenv('CLOUDINARY_URL', '').strip()
+USE_CLOUDINARY = bool(CLOUDINARY_URL and "dummy" not in CLOUDINARY_URL and not CLOUDINARY_URL.startswith("cloudinary://dummy"))
 
 CLOUDINARY_STORAGE = {
-    'CLOUDINARY_URL': CLOUDINARY_URL,
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME', 'dummy'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY', '123456789012345'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', 'dummy_secret'),
 }
 
-if CLOUDINARY_URL:
+if USE_CLOUDINARY:
+    CLOUDINARY_STORAGE['CLOUDINARY_URL'] = CLOUDINARY_URL
     cloudinary.config(cloudinary_url=CLOUDINARY_URL)
-
-# Storage backends - Use Cloudinary for media files ONLY if configured
-if CLOUDINARY_URL:
     STORAGES = {
         "default": {
             "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
@@ -125,7 +161,7 @@ if CLOUDINARY_URL:
         },
     }
 else:
-    # Fallback to local storage for development
+    # Use reliable local file storage for development
     STORAGES = {
         "default": {
             "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -209,7 +245,7 @@ JAZZMIN_SETTINGS = {
     # Top menu - Page-based navigation
     "topmenu_links": [
         {"name": "Dashboard",  "url": "admin:index", "permissions": ["auth.view_user"], "icon": "fas fa-home"},
-        {"name": "View Live Site", "url": "http://localhost:5174", "new_window": True, "icon": "fas fa-external-link-alt"},
+        {"name": "View Live Site", "url": "/", "new_window": True, "icon": "fas fa-external-link-alt"},
     ],
     
     # User menu on the right side
@@ -357,3 +393,23 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn-success",
     },
 }
+
+LOGIN_URL = "/dashboard/login/"
+LOGIN_REDIRECT_URL = "/dashboard/"
+LOGOUT_REDIRECT_URL = "/dashboard/login/"
+
+# Communications & Notifications (SMTP Configuration)
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
+EMAIL_HOST = os.getenv("EMAIL_HOST", "mail.helplinehellonaogaon.com")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 465))
+EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "True").lower() == "true"
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "False").lower() == "true"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "info@helplinehellonaogaon.com")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "info@helplinehellonaogaon.com")
+SERVER_EMAIL = os.getenv("SERVER_EMAIL", "admin@helplinehellonaogaon.com")
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "info@hijbullah.me")
+ADMINS = [("Md. Taher Bin Omar Hijbullah", ADMIN_EMAIL)]
+MANAGERS = ADMINS
+

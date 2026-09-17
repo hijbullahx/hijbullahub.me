@@ -46,6 +46,20 @@ class ContactProfile(TimeStampedModel):
         verbose_name = "Contact Profile"
         verbose_name_plural = "Contact Profiles"
 
+    @property
+    def formatted_link(self):
+        url = (self.link or "").strip()
+        if url and not url.startswith(("http://", "https://", "mailto:", "tel:", "#", "/")):
+            return f"https://{url}"
+        return url
+
+    def save(self, *args, **kwargs):
+        if self.link:
+            val = self.link.strip()
+            if val and not val.startswith(("http://", "https://", "mailto:", "tel:", "#", "/")):
+                self.link = f"https://{val}"
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.title
 
