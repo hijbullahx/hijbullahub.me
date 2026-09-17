@@ -1,4 +1,8 @@
-from django.http import JsonResponse
+import io
+import os
+from django.conf import settings
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import redirect
 from django.utils import timezone
 from django.db.models import Count
 from django.db.models.functions import TruncDate, TruncHour
@@ -6,8 +10,76 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework.response import Response
 import datetime
+from PIL import Image, ImageDraw
 
 from .models import PageVisit
+from apps.hero.models import Hero
+
+
+def round_favicon_view(request):
+    """
+    Generates and returns a crisp circular PNG favicon (with transparent background)
+    from the active Hero profile image.
+    Caches the generated circular image in MEDIA_ROOT for high performance.
+    """
+    hero = Hero.objects.filter(is_active=True).first()
+    if not hero or not hero.profile_image:
+        return redirect(f"{settings.STATIC_URL}images/favicon.svg")
+
+    timestamp = int(hero.updated_at.timestamp()) if hero.updated_at else 1
+    cache_dir = os.path.join(settings.MEDIA_ROOT, "favicons")
+    os.makedirs(cache_dir, exist_ok=True)
+    cache_file = os.path.join(cache_dir, f"favicon_{hero.id}_{timestamp}.png")
+
+    if os.path.exists(cache_file):
+        try:
+            with open(cache_file, "rb") as f:
+                content = f.read()
+            response = HttpResponse(content, content_type="image/png")
+            response["Cache-Control"] = "public, max-age=86400"
+            return response
+        except Exception:
+            pass
+
+    try:
+        source_path = hero.profile_image.path
+        if not os.path.exists(source_path):
+            return redirect(hero.profile_image.url)
+
+        with Image.open(source_path) as img:
+            img = img.convert("RGBA")
+            # Center crop to 1:1 square
+            size = min(img.size)
+            left = (img.width - size) // 2
+            top = (img.height - size) // 2
+            img = img.crop((left, top, left + size, top + size))
+
+            # 192x192 high-res favicon
+            fav_size = 192
+            img = img.resize((fav_size, fav_size), Image.Resampling.LANCZOS)
+
+            # Circular mask with 4x antialiased supersampling
+            scale = 4
+            mask = Image.new("L", (fav_size * scale, fav_size * scale), 0)
+            draw = ImageDraw.Draw(mask)
+            draw.ellipse((0, 0, fav_size * scale, fav_size * scale), fill=255)
+            mask = mask.resize((fav_size, fav_size), Image.Resampling.LANCZOS)
+
+            img.putalpha(mask)
+
+            # Save to disk cache
+            img.save(cache_file, format="PNG", optimize=True)
+
+            buffer = io.BytesIO()
+            img.save(buffer, format="PNG", optimize=True)
+            content = buffer.getvalue()
+
+        response = HttpResponse(content, content_type="image/png")
+        response["Cache-Control"] = "public, max-age=86400"
+        return response
+    except Exception:
+        return redirect(hero.profile_image.url)
+
 
 
 def health_check(request):
