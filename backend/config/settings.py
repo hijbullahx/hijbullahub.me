@@ -82,23 +82,39 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
-# Database Configuration: Reads PostgreSQL parameters from environment variables
+# PyMySQL driver setup for MySQL in cPanel / shared hosting environments
+DB_ENGINE = os.getenv("DB_ENGINE", "mysql" if "mysql" in os.getenv("DATABASE_ENGINE", "") else "postgresql").strip().lower()
+if "mysql" in DB_ENGINE:
+    try:
+        import pymysql
+        pymysql.install_as_MySQLdb()
+    except ImportError:
+        pass
+
+# Database Configuration: Reads MySQL/PostgreSQL parameters from environment variables
 DB_NAME = os.getenv("DATABASE_NAME", "").strip()
 DB_USER = os.getenv("DATABASE_USER", "").strip()
 DB_PASSWORD = os.getenv("DATABASE_PASSWORD", "").strip()
 DB_HOST = os.getenv("DATABASE_HOST", "localhost").strip()
-DB_PORT = os.getenv("DATABASE_PORT", "5432").strip()
+DB_PORT = os.getenv("DATABASE_PORT", "").strip()
 USE_SQLITE = os.getenv("USE_SQLITE", "False").lower() == "true"
 
 if DB_NAME and not USE_SQLITE:
+    if "mysql" in DB_ENGINE:
+        engine = "django.db.backends.mysql"
+        port = DB_PORT or "3306"
+    else:
+        engine = "django.db.backends.postgresql"
+        port = DB_PORT or "5432"
+
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.postgresql",
+            "ENGINE": engine,
             "NAME": DB_NAME,
             "USER": DB_USER,
             "PASSWORD": DB_PASSWORD,
             "HOST": DB_HOST,
-            "PORT": DB_PORT,
+            "PORT": port,
             "CONN_MAX_AGE": 60,
         }
     }
@@ -219,6 +235,18 @@ if not CORS_ALLOW_ALL_ORIGINS:
 CORS_ALLOW_HEADERS = (*default_headers, "cache-control")
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# CSRF Trusted Origins for live domain forms and dashboard
+_raw_csrf = os.getenv("CSRF_TRUSTED_ORIGINS", "")
+if _raw_csrf:
+    CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in _raw_csrf.split(",") if origin.strip()]
+else:
+    CSRF_TRUSTED_ORIGINS = [
+        "https://hijbullah.me",
+        "https://www.hijbullah.me",
+        "http://hijbullah.me",
+        "http://www.hijbullah.me",
+    ]
 
 # ===========================
 # JAZZMIN ADMIN THEME CONFIG

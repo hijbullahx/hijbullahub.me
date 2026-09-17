@@ -11,3 +11,4 @@ Pillow>=10.4.0
 whitenoise[brotli]
 cloudinary>=1.40.0
 django-cloudinary-storage>=0.3.0
+PyMySQL>=1.1.1
