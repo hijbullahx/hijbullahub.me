@@ -46,7 +46,7 @@
     {% for project in projects %}
       <div class="project-item-card glass p-6 flex flex-col justify-between"
            data-title="{{ project.title }}"
-           data-desc="{{ project.short_description }}"
+           data-desc="{{ project.short_description|default:project.full_description }}"
            data-featured="{% if project.featured %}true{% else %}false{% endif %}"
            data-tags="{% for t in project.tech_stack.all %}{{ t.name }} {% endfor %}">
 
@@ -84,7 +84,7 @@
           </h3>
 
           <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed line-clamp-3 mb-6">
-            {{ project.short_description }}
+            {{ project.short_description|default:project.full_description }}
           </p>
         </div>
 
