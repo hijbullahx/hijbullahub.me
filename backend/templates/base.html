@@ -254,6 +254,50 @@
     html.light .nav-corner-br, html:not(.dark) .nav-corner-br {
       border-color: #059669 !important; opacity: 0.6 !important;
     }
+
+    /* ── Mobile Menu Dropdown Precision Theme Adaptation ── */
+    #mobile-menu {
+      background: rgba(11, 15, 25, 0.96) !important;
+      border-top: 1px solid rgba(34, 211, 238, 0.25) !important;
+      backdrop-filter: blur(28px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+    }
+    html.light #mobile-menu,
+    html:not(.dark) #mobile-menu {
+      background: rgba(255, 255, 255, 0.98) !important;
+      border-top: 1px solid rgba(15, 23, 42, 0.1) !important;
+      box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.08) !important;
+    }
+    #mobile-menu .nav-robotic-link {
+      display: flex !important;
+      align-items: center;
+      width: 100% !important;
+      margin-bottom: 0.4rem;
+    }
+    #mobile-menu .nav-robotic-link:hover .nav-robotic-frame,
+    #mobile-menu .nav-robotic-link.active .nav-robotic-frame {
+      transform: translateY(-1px) !important;
+    }
+    html.dark #mobile-menu .nav-robotic-frame {
+      background: rgba(255, 255, 255, 0.03) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+    html.dark #mobile-menu .nav-robotic-text {
+      color: #cbd5e1 !important;
+    }
+    html.dark #mobile-menu .nav-robotic-link:hover .nav-robotic-text,
+    html.dark #mobile-menu .nav-robotic-link.active .nav-robotic-text {
+      color: #22d3ee !important;
+    }
+    html.light #mobile-menu .nav-robotic-frame,
+    html:not(.dark) #mobile-menu .nav-robotic-frame {
+      background: rgba(15, 23, 42, 0.03) !important;
+      border: 1px solid rgba(15, 23, 42, 0.1) !important;
+    }
+    html.light #mobile-menu .nav-robotic-text,
+    html:not(.dark) #mobile-menu .nav-robotic-text {
+      color: #0f172a !important;
+    }
   </style>
 
   {% block extra_css %}{% endblock %}
@@ -355,7 +399,7 @@
     </nav>
 
     <!-- Mobile Menu Dropdown -->
-    <div id="mobile-menu" class="hidden md:hidden border-t border-cyan-500/20 bg-white/95 dark:bg-slate-950/98 backdrop-blur-2xl px-6 py-5 shadow-2xl space-y-2">
+    <div id="mobile-menu" class="hidden md:hidden border-t border-cyan-500/20 bg-white/95 dark:bg-[#0B0F19]/95 backdrop-blur-2xl px-6 py-5 shadow-2xl space-y-2">
       <a href="{% url 'home' %}" class="block nav-robotic-link w-full {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
         <div class="nav-robotic-frame"></div>
         <div class="nav-corner-tl"></div>

@@ -535,13 +535,8 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Short Overview / Pitch</label>
-                            <input type="text" name="short_description" required placeholder="High-level 1-line impact summary" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
-                        </div>
-
-                        <div>
                             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Full Description &amp; Architecture</label>
-                            <textarea name="full_description" rows="3" placeholder="Technical specifications, components, and results..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
+                            <textarea name="full_description" rows="4" placeholder="Technical specifications, components, and results..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1195,12 +1190,8 @@
                 </div>
             </div>
             <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Short Summary *</label>
-                <input type="text" name="short_description" id="edit-project-short-desc" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
-            </div>
-            <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Full Architectural Description</label>
-                <textarea name="full_description" id="edit-project-full-desc" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
+                <textarea name="full_description" id="edit-project-full-desc" rows="4" placeholder="Technical specifications, components, and results..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
             </div>
             <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Tech Stack Tags (Comma Separated)</label>
@@ -1483,12 +1474,13 @@ function openEditProjectModal(id, title, status, shortDesc, fullDesc, github, li
     form.action = '/dashboard/projects/edit/' + id + '/';
     document.getElementById('edit-project-title').value = title;
     document.getElementById('edit-project-status').value = status;
-    document.getElementById('edit-project-short-desc').value = shortDesc;
-    document.getElementById('edit-project-full-desc').value = fullDesc;
-    document.getElementById('edit-project-github').value = github;
-    document.getElementById('edit-project-live').value = live;
-    document.getElementById('edit-project-demo').value = demo;
-    document.getElementById('edit-project-tech-stack').value = tags;
+    const shortDescEl = document.getElementById('edit-project-short-desc');
+    if (shortDescEl) shortDescEl.value = shortDesc || '';
+    document.getElementById('edit-project-full-desc').value = fullDesc || '';
+    document.getElementById('edit-project-github').value = github || '';
+    document.getElementById('edit-project-live').value = live || '';
+    document.getElementById('edit-project-demo').value = demo || '';
+    document.getElementById('edit-project-tech-stack').value = tags || '';
     document.getElementById('edit-project-featured').checked = (featured === true || featured === 'true');
     openModal('edit-project-modal');
 }

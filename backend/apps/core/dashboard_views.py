@@ -286,8 +286,10 @@ def dashboard_add_project_view(request):
     try:
         title = request.POST.get("title", "").strip()
         status = request.POST.get("status", "ongoing")
-        short_desc = request.POST.get("short_description", "").strip()
         full_desc = request.POST.get("full_description", "").strip()
+        short_desc = request.POST.get("short_description", "").strip()
+        if not short_desc and full_desc:
+            short_desc = full_desc[:250].rsplit(" ", 1)[0] if len(full_desc) > 250 else full_desc
         github_link = request.POST.get("github_link", "").strip()
         live_link = request.POST.get("live_link", "").strip()
         featured = request.POST.get("featured") == "on"
@@ -608,8 +610,12 @@ def dashboard_edit_project_view(request, project_id):
     project = get_object_or_404(Project, id=project_id)
     project.title = request.POST.get("title", project.title).strip()
     project.status = request.POST.get("status", project.status)
-    project.short_description = request.POST.get("short_description", project.short_description).strip()
     project.full_description = request.POST.get("full_description", project.full_description).strip()
+    short_desc = request.POST.get("short_description", "").strip()
+    if short_desc:
+        project.short_description = short_desc
+    elif not project.short_description and project.full_description:
+        project.short_description = project.full_description[:250].rsplit(" ", 1)[0] if len(project.full_description) > 250 else project.full_description
     project.github_link = request.POST.get("github_link", "").strip()
     project.live_link = request.POST.get("live_link", "").strip()
     project.demo_video_url = request.POST.get("demo_video_url", "").strip()
