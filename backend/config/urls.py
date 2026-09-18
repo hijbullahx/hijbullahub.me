@@ -46,6 +46,7 @@ from apps.core.dashboard_views import (
     dashboard_edit_education_view,
     dashboard_edit_experience_view,
     dashboard_delete_feedback_view,
+    dashboard_send_monthly_report_view,
 )
 
 urlpatterns = [
@@ -68,6 +69,7 @@ urlpatterns = [
     path("dashboard/", dashboard_view, name="dashboard"),
     path("dashboard/login/", dashboard_login_view, name="dashboard_login"),
     path("dashboard/logout/", dashboard_logout_view, name="dashboard_logout"),
+    path("dashboard/analytics/send-report/", dashboard_send_monthly_report_view, name="dashboard_send_monthly_report"),
     path("dashboard/reorder/<str:item_type>/", dashboard_reorder_view, name="dashboard_reorder"),
     path("dashboard/hero/update/", dashboard_update_hero_view, name="dashboard_update_hero"),
     path("dashboard/about/update/", dashboard_update_about_view, name="dashboard_update_about"),

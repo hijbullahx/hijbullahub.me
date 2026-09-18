@@ -51,6 +51,24 @@ def dashboard_logout_view(request):
 
 
 @login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_send_monthly_report_view(request):
+    """Admin endpoint to dispatch live 30-day analytics report email on demand."""
+    if not request.user.is_staff:
+        return JsonResponse({"status": "error", "message": "Administrative clearance required."}, status=403)
+
+    try:
+        from apps.core.email_utils import send_monthly_analytics_report_email
+        success = send_monthly_analytics_report_email()
+        if success:
+            return JsonResponse({"status": "success", "message": "Monthly telemetry report dispatched to info@hijbullah.me successfully!"})
+        else:
+            return JsonResponse({"status": "error", "message": "Failed to dispatch email. Please verify SMTP host and credentials."}, status=500)
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": f"SMTP Error: {str(e)}"}, status=500)
+
+
+@login_required(login_url="dashboard_login")
 def dashboard_view(request):
     if not request.user.is_staff:
         messages.error(request, "Administrative clearance required.")
