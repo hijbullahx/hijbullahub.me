@@ -432,6 +432,33 @@
 
   <!-- Main JavaScript Engine -->
   <script src="{% static 'js/main.js' %}"></script>
+
+  <!-- Privacy-Respecting Silent Analytics Beacon (Zero Browser Location Prompts) -->
+  <script>
+    (function() {
+      try {
+        var path = window.location.pathname;
+        if (!path.startsWith('/admin') && !path.startsWith('/dashboard')) {
+          var csrf = '';
+          var csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+          if (csrfInput) csrf = csrfInput.value;
+          var cleanPage = path === '/' ? 'home' : path.replace(/^\/+|\/+$/g, '');
+          fetch('/api/analytics/visit/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrf
+            },
+            body: JSON.stringify({
+              page: cleanPage,
+              referrer: document.referrer || ''
+            })
+          }).catch(function() {});
+        }
+      } catch (err) {}
+    })();
+  </script>
+
   {% block extra_js %}{% endblock %}
 </body>
 </html>

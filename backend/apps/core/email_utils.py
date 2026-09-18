@@ -5,7 +5,7 @@ from django.core.mail import EmailMultiAlternatives
 logger = logging.getLogger(__name__)
 
 ADMIN_EMAIL = getattr(settings, "ADMIN_EMAIL", "info@hijbullah.me")
-DEFAULT_FROM = getattr(settings, "DEFAULT_FROM_EMAIL", "info@helplinehellonaogaon.com")
+DEFAULT_FROM = getattr(settings, "DEFAULT_FROM_EMAIL", "info@hijbullah.me")
 # Format sender name cleanly
 FROM_EMAIL = f"Md. Taher Bin Omar Hijbullah <{DEFAULT_FROM}>" if "<" not in str(DEFAULT_FROM) else DEFAULT_FROM
 
@@ -381,4 +381,169 @@ def send_feedback_acknowledgment(name: str, email: str, profession: str, rating:
         html_content="",
         to_email=ADMIN_EMAIL,
         reply_to=email or ADMIN_EMAIL,
+    )
+
+
+def send_monthly_analytics_report_email(to_email: str = None) -> bool:
+    """
+    Compiles real-time 30-day analytics data from the live database
+    and dispatches an executive HTML summary report to info@hijbullah.me.
+    """
+    from django.utils import timezone
+    import datetime
+    from django.db.models import Count
+    from django.db.models.functions import TruncDate
+    from apps.core.models import PageVisit
+    from apps.contact.models import Contact, Feedback
+    from apps.hire.models import HireRequest
+
+    target = to_email or ADMIN_EMAIL
+    now = timezone.now()
+    start_date = now - datetime.timedelta(days=30)
+    month_name = now.strftime("%B %Y")
+
+    # 1. Real Database Queries
+    monthly_visits = PageVisit.objects.filter(timestamp__gte=start_date).count()
+    total_visits = PageVisit.objects.count()
+
+    peak_row = (
+        PageVisit.objects.filter(timestamp__gte=start_date)
+        .annotate(date=TruncDate("timestamp"))
+        .values("date")
+        .annotate(count=Count("id"))
+        .order_by("-count", "-date")
+        .first()
+    )
+    peak_day_str = peak_row["date"].strftime("%d %b %Y") if (peak_row and peak_row.get("date")) else "No peak day"
+    peak_count = peak_row["count"] if peak_row else 0
+
+    top_locations = list(
+        PageVisit.objects.filter(timestamp__gte=start_date)
+        .values("country")
+        .annotate(count=Count("id"))
+        .order_by("-count")[:5]
+    )
+
+    top_pages = list(
+        PageVisit.objects.filter(timestamp__gte=start_date)
+        .values("page")
+        .annotate(count=Count("id"))
+        .order_by("-count")[:5]
+    )
+
+    monthly_contacts = Contact.objects.filter(timestamp__gte=start_date).count()
+    monthly_hires = HireRequest.objects.filter(created_at__gte=start_date).count()
+    monthly_feedbacks = Feedback.objects.filter(created_at__gte=start_date).count()
+
+    # Determine top location name
+    top_loc_name = "Direct / Local"
+    if top_locations:
+        first = top_locations[0]["country"]
+        top_loc_name = "Local / Direct" if first in ["", "Unknown"] else first
+
+    # Format locations HTML rows
+    loc_rows = ""
+    for loc in top_locations:
+        c_name = "Local / Direct" if loc["country"] in ["", "Unknown"] else loc["country"]
+        loc_rows += f"""
+        <tr>
+          <td style="padding: 8px 12px; border-bottom: 1px solid #f1f5f9; font-size: 13px; color: #334155;">{c_name}</td>
+          <td style="padding: 8px 12px; border-bottom: 1px solid #f1f5f9; font-size: 13px; font-weight: 700; color: #0284c7; text-align: right;">{loc['count']}</td>
+        </tr>
+        """
+    if not loc_rows:
+        loc_rows = "<tr><td colspan='2' style='padding: 10px; font-size: 12px; color: #94a3b8; text-align: center;'>No visits logged this month</td></tr>"
+
+    # Format top pages HTML rows
+    page_rows = ""
+    for p in top_pages:
+        page_rows += f"""
+        <tr>
+          <td style="padding: 8px 12px; border-bottom: 1px solid #f1f5f9; font-size: 13px; font-family: monospace; color: #0284c7;">/{p['page']}</td>
+          <td style="padding: 8px 12px; border-bottom: 1px solid #f1f5f9; font-size: 13px; font-weight: 700; color: #334155; text-align: right;">{p['count']}</td>
+        </tr>
+        """
+    if not page_rows:
+        page_rows = "<tr><td colspan='2' style='padding: 10px; font-size: 12px; color: #94a3b8; text-align: center;'>No page visit logs</td></tr>"
+
+    # Build Content Card
+    card_html = f"""
+    <!-- 4 Key Stat Metric Boxes -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-bottom: 24px;">
+      <tr>
+        <td width="48%" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; vertical-align: top;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px;">Monthly Visits (30d)</div>
+          <div style="font-size: 24px; font-weight: 800; color: #0284c7; margin-top: 4px;">{monthly_visits}</div>
+          <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">All-time: {total_visits} visits</div>
+        </td>
+        <td width="4%"></td>
+        <td width="48%" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; vertical-align: top;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px;">Peak Traffic Day</div>
+          <div style="font-size: 18px; font-weight: 800; color: #0f172a; margin-top: 4px;">{peak_day_str}</div>
+          <div style="font-size: 11px; color: #059669; font-weight: 600; margin-top: 2px;">{peak_count} clicks on peak day</div>
+        </td>
+      </tr>
+      <tr><td colspan="3" height="12"></td></tr>
+      <tr>
+        <td width="48%" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; vertical-align: top;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px;">Top Visitor Origin</div>
+          <div style="font-size: 18px; font-weight: 800; color: #0f172a; margin-top: 4px;">{top_loc_name}</div>
+          <div style="font-size: 11px; color: #64748b; margin-top: 2px;">IP Network Verified</div>
+        </td>
+        <td width="4%"></td>
+        <td width="48%" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; vertical-align: top;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px;">Inquiries & Leads</div>
+          <div style="font-size: 24px; font-weight: 800; color: #7c3aed; margin-top: 4px;">{monthly_contacts + monthly_hires}</div>
+          <div style="font-size: 11px; color: #64748b; margin-top: 2px;">{monthly_contacts} contacts • {monthly_hires} proposals</div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Locations & Pages Table -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-bottom: 20px;">
+      <tr>
+        <td width="48%" style="vertical-align: top;">
+          <div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Top Visitor Locations</div>
+          <table width="100%" style="border-collapse: collapse; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px;">
+            {loc_rows}
+          </table>
+        </td>
+        <td width="4%"></td>
+        <td width="48%" style="vertical-align: top;">
+          <div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Top Visited Pages</div>
+          <table width="100%" style="border-collapse: collapse; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px;">
+            {page_rows}
+          </table>
+        </td>
+      </tr>
+    </table>
+    """
+
+    subject = f"[Monthly Telemetry Report] HijbullahHub Portfolio Analytics - {month_name}"
+    html = _wrap_html_email(
+        badge_text=f"Monthly Telemetry &bull; {month_name}",
+        heading="Executive Portfolio Monthly Report",
+        lead_text=f"Here is your automated monthly performance summary for <strong>hijbullah.me</strong> compiled directly from live database traffic for the past 30 days.",
+        content_card_html=card_html,
+        cta_text="Access Studio Control Center →",
+        cta_url="https://hijbullah.me/dashboard/"
+    )
+
+    plain = (
+        f"HijbullahHub Portfolio Monthly Analytics Report - {month_name}\n\n"
+        f"30-Day Visits: {monthly_visits} (All-Time: {total_visits})\n"
+        f"Peak Traffic Day: {peak_day_str} ({peak_count} clicks)\n"
+        f"Top Origin Location: {top_loc_name}\n"
+        f"New Contacts: {monthly_contacts}\n"
+        f"New Hire Proposals: {monthly_hires}\n"
+        f"New Client Reviews: {monthly_feedbacks}\n\n"
+        f"View Full Dashboard: https://hijbullah.me/dashboard/\n"
+    )
+
+    return _send_clean_email(
+        subject=subject,
+        text_content=plain,
+        html_content=html,
+        to_email=target,
+        reply_to=ADMIN_EMAIL,
     )

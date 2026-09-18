@@ -1,9 +1,16 @@
+import json
+import datetime
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib import messages
+from django.utils import timezone
+from django.db.models import Count
+from django.db.models.functions import TruncDate
 
+from apps.core.models import PageVisit
 from apps.hero.models import Hero
 from apps.about.models import About
 from apps.skills.models import Skill
@@ -44,6 +51,24 @@ def dashboard_logout_view(request):
 
 
 @login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_send_monthly_report_view(request):
+    """Admin endpoint to dispatch live 30-day analytics report email on demand."""
+    if not request.user.is_staff:
+        return JsonResponse({"status": "error", "message": "Administrative clearance required."}, status=403)
+
+    try:
+        from apps.core.email_utils import send_monthly_analytics_report_email
+        success = send_monthly_analytics_report_email()
+        if success:
+            return JsonResponse({"status": "success", "message": "Monthly telemetry report dispatched to info@hijbullah.me successfully!"})
+        else:
+            return JsonResponse({"status": "error", "message": "Failed to dispatch email. Please verify SMTP host and credentials."}, status=500)
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": f"SMTP Error: {str(e)}"}, status=500)
+
+
+@login_required(login_url="dashboard_login")
 def dashboard_view(request):
     if not request.user.is_staff:
         messages.error(request, "Administrative clearance required.")
@@ -54,13 +79,108 @@ def dashboard_view(request):
     skills = Skill.objects.all().order_by("display_order", "name")
     projects = Project.objects.all().order_by("display_order", "-created_at")
     education_list = Education.objects.all().order_by("display_order", "-end_date")
-    experience_list = Experience.objects.all().order_by("-highlight", "-created_at")
+    experience_list = Experience.objects.all().order_by("display_order", "-highlight", "-created_at")
     ai_list = AILab.objects.all().order_by("-created_at")
     research_list = Research.objects.all().order_by("-created_at")
     contacts = Contact.objects.all().order_by("-timestamp")
     hire_requests = HireRequest.objects.all().order_by("-created_at")
     feedbacks = Feedback.objects.all().order_by("-created_at")
     site_setting = SiteSetting.objects.first()
+
+    # ── Analytics Telemetry Aggregation (Privacy-safe, Zero browser prompts) ──
+    now = timezone.now()
+    today = now.date()
+
+    total_clicks = PageVisit.objects.count()
+    today_clicks = PageVisit.objects.filter(timestamp__date=today).count()
+    last_week_clicks = PageVisit.objects.filter(timestamp__gte=now - datetime.timedelta(days=7)).count()
+    last_year_clicks = PageVisit.objects.filter(timestamp__gte=now - datetime.timedelta(days=365)).count()
+
+    # Peak traffic day
+    peak_row = (
+        PageVisit.objects
+        .annotate(date=TruncDate("timestamp"))
+        .values("date")
+        .annotate(count=Count("id"))
+        .order_by("-count", "-date")
+        .first()
+    )
+    peak_day_formatted = peak_row["date"].strftime("%d %b %Y") if (peak_row and peak_row.get("date")) else "No data yet"
+    peak_day_count = peak_row["count"] if peak_row else 0
+
+    # Top location (Derived strictly from IP/headers - never requests browser GPS permission)
+    top_loc_row = (
+        PageVisit.objects
+        .exclude(country__in=["", "Unknown", None])
+        .values("country")
+        .annotate(count=Count("id"))
+        .order_by("-count")
+        .first()
+    )
+    if top_loc_row:
+        top_location = top_loc_row["country"]
+        top_location_count = top_loc_row["count"]
+    else:
+        first_loc = PageVisit.objects.values("country").annotate(count=Count("id")).order_by("-count").first()
+        top_location = "Local / Direct" if (first_loc and first_loc["country"] in ["Unknown", "Local / Direct", ""]) else (first_loc["country"] if first_loc else "Direct / Unspecified")
+        top_location_count = first_loc["count"] if first_loc else 0
+
+    # Top locations breakdown
+    top_locations_list = list(
+        PageVisit.objects
+        .values("country")
+        .annotate(count=Count("id"))
+        .order_by("-count")[:5]
+    )
+    for loc in top_locations_list:
+        if loc["country"] in ["", "Unknown"]:
+            loc["country_display"] = "Local / Direct"
+        else:
+            loc["country_display"] = loc["country"]
+        loc["percentage"] = round((loc["count"] / total_clicks * 100), 1) if total_clicks > 0 else 0
+
+    # Top pages visited
+    top_pages = list(
+        PageVisit.objects
+        .values("page")
+        .annotate(count=Count("id"))
+        .order_by("-count")[:6]
+    )
+
+    # 14-day daily chart data
+    days_14_ago = today - datetime.timedelta(days=13)
+    daily_qs = (
+        PageVisit.objects.filter(timestamp__date__gte=days_14_ago)
+        .annotate(date=TruncDate("timestamp"))
+        .values("date")
+        .annotate(count=Count("id"))
+        .order_by("date")
+    )
+    daily_map = {row["date"]: row["count"] for row in daily_qs}
+    max_daily = max(daily_map.values(), default=1) or 1
+    daily_trend = []
+    for i in range(14):
+        d = days_14_ago + datetime.timedelta(days=i)
+        c = daily_map.get(d, 0)
+        daily_trend.append({
+            "date_str": d.strftime("%d %b"),
+            "count": c,
+            "height_percent": max(8, int((c / max_daily) * 100)) if c > 0 else 4
+        })
+
+    analytics = {
+        "total_clicks": total_clicks,
+        "today_clicks": today_clicks,
+        "last_week_clicks": last_week_clicks,
+        "last_year_clicks": last_year_clicks,
+        "peak_day_formatted": peak_day_formatted,
+        "peak_day_count": peak_day_count,
+        "top_location": top_location,
+        "top_location_count": top_location_count,
+        "top_locations_list": top_locations_list,
+        "top_pages": top_pages,
+        "daily_trend": daily_trend,
+    }
 
     context = {
         "hero": hero,
@@ -82,6 +202,7 @@ def dashboard_view(request):
         "feedbacks_count": feedbacks.count(),
         "research_count": research_list.count(),
         "ai_count": ai_list.count(),
+        "analytics": analytics,
     }
     return render(request, "dashboard/dashboard.html", context)
 
@@ -208,16 +329,43 @@ def dashboard_add_education_view(request):
     institution_name = request.POST.get("institution_name", "").strip()
     result = request.POST.get("result", "").strip()
     location = request.POST.get("location", "").strip()
+    institution_type = request.POST.get("institution_type", "university").strip()
+    is_current = request.POST.get("is_current") in ["on", "true", "1"]
+    start_date = request.POST.get("start_date") or None
+    end_date = request.POST.get("end_date") or None
+    logo = request.FILES.get("institution_logo")
+    certificate = request.FILES.get("certificate")
 
     if degree_name and institution_name:
-        Education.objects.create(
+        edu = Education(
             degree_name=degree_name,
             institution_name=institution_name,
             result=result,
             location=location,
-            is_active=True
+            institution_type=institution_type,
+            is_current=is_current,
+            is_active=True,
         )
+        if start_date:
+            edu.start_date = start_date
+        if end_date:
+            edu.end_date = end_date
+        if logo:
+            edu.institution_logo = logo
+        if certificate:
+            edu.certificate = certificate
+        edu.save()
         messages.success(request, f"Academic credential '{degree_name}' added.")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_delete_education_view(request, education_id):
+    edu = get_object_or_404(Education, id=education_id)
+    name = edu.degree_name
+    edu.delete()
+    messages.success(request, f"Academic credential '{name}' removed.")
     return redirect("dashboard")
 
 
@@ -228,15 +376,31 @@ def dashboard_add_experience_view(request):
     organization = request.POST.get("organization", "").strip()
     duration = request.POST.get("duration", "").strip()
     description = request.POST.get("description", "").strip()
+    highlight = request.POST.get("highlight") in ["on", "true", "1"]
+    logo = request.FILES.get("logo")
 
     if role and organization:
-        Experience.objects.create(
+        exp = Experience(
             role=role,
             organization=organization,
             duration=duration,
-            description=description
+            description=description,
+            highlight=highlight,
         )
+        if logo:
+            exp.logo = logo
+        exp.save()
         messages.success(request, f"Work experience '{role}' added.")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_delete_experience_view(request, experience_id):
+    exp = get_object_or_404(Experience, id=experience_id)
+    role = exp.role
+    exp.delete()
+    messages.success(request, f"Work experience '{role}' removed.")
     return redirect("dashboard")
 
 
@@ -270,6 +434,16 @@ def dashboard_add_ai_lab_view(request):
 
 @login_required(login_url="dashboard_login")
 @require_POST
+def dashboard_delete_ai_lab_view(request, ai_id):
+    item = get_object_or_404(AILab, id=ai_id)
+    title = item.title
+    item.delete()
+    messages.success(request, f"AI/ML experiment '{title}' removed.")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
 def dashboard_add_research_view(request):
     try:
         title = request.POST.get("title", "").strip()
@@ -289,6 +463,16 @@ def dashboard_add_research_view(request):
             messages.success(request, f"Research paper '{title}' registered.")
     except Exception as e:
         messages.error(request, f"Failed to add research paper: {str(e)}")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_delete_research_view(request, research_id):
+    item = get_object_or_404(Research, id=research_id)
+    title = item.title
+    item.delete()
+    messages.success(request, f"Research publication '{title}' removed.")
     return redirect("dashboard")
 
 
@@ -364,3 +548,135 @@ def dashboard_delete_feedback_view(request, feedback_id):
     except Exception as e:
         messages.error(request, f"Failed to delete review: {str(e)}")
     return redirect("dashboard")
+
+
+# ── Drag-and-Drop Reorder API ──────────────────────────────────────────────────
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_reorder_view(request, item_type):
+    if not request.user.is_staff:
+        return JsonResponse({"status": "error", "message": "Administrative clearance required."}, status=403)
+
+    try:
+        data = json.loads(request.body)
+        order_ids = data.get("order", [])
+        if not isinstance(order_ids, list):
+            return JsonResponse({"status": "error", "message": "Invalid ordering payload."}, status=400)
+
+        model_map = {
+            "skills": Skill,
+            "projects": Project,
+            "education": Education,
+            "experience": Experience,
+        }
+
+        model = model_map.get(item_type)
+        if not model:
+            return JsonResponse({"status": "error", "message": f"Unsupported reorder type '{item_type}'."}, status=400)
+
+        for index, item_id in enumerate(order_ids):
+            model.objects.filter(id=item_id).update(display_order=index)
+
+        return JsonResponse({"status": "success", "message": f"{item_type.capitalize()} sequence updated successfully."})
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
+
+# ── Item Edit Handlers ─────────────────────────────────────────────────────────
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_edit_skill_view(request, skill_id):
+    skill = get_object_or_404(Skill, id=skill_id)
+    skill.name = request.POST.get("name", skill.name).strip()
+    skill.category = request.POST.get("category", skill.category).strip()
+    try:
+        skill.level = int(request.POST.get("level", skill.level))
+    except ValueError:
+        pass
+
+    if "icon" in request.FILES:
+        skill.icon = request.FILES["icon"]
+
+    skill.save()
+    messages.success(request, f"Skill '{skill.name}' updated.")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_edit_project_view(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    project.title = request.POST.get("title", project.title).strip()
+    project.status = request.POST.get("status", project.status)
+    project.short_description = request.POST.get("short_description", project.short_description).strip()
+    project.full_description = request.POST.get("full_description", project.full_description).strip()
+    project.github_link = request.POST.get("github_link", "").strip()
+    project.live_link = request.POST.get("live_link", "").strip()
+    project.demo_video_url = request.POST.get("demo_video_url", "").strip()
+    project.featured = request.POST.get("featured") in ["on", "true", "1"]
+
+    if "featured_image" in request.FILES:
+        project.featured_image = request.FILES["featured_image"]
+
+    project.save()
+
+    tags_str = request.POST.get("tech_stack", "")
+    if tags_str:
+        tag_names = [t.strip() for t in tags_str.split(",") if t.strip()]
+        tag_objs = []
+        for name in tag_names:
+            t, _ = Tag.objects.get_or_create(name=name)
+            tag_objs.append(t)
+        project.tech_stack.set(tag_objs)
+
+    messages.success(request, f"Project '{project.title}' updated.")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_edit_education_view(request, education_id):
+    edu = get_object_or_404(Education, id=education_id)
+    edu.degree_name = request.POST.get("degree_name", edu.degree_name).strip()
+    edu.institution_name = request.POST.get("institution_name", edu.institution_name).strip()
+    edu.institution_type = request.POST.get("institution_type", edu.institution_type).strip()
+    edu.result = request.POST.get("result", "").strip()
+    edu.location = request.POST.get("location", "").strip()
+    edu.is_current = request.POST.get("is_current") in ["on", "true", "1"]
+
+    start_date = request.POST.get("start_date")
+    if start_date:
+        edu.start_date = start_date
+    end_date = request.POST.get("end_date")
+    if end_date:
+        edu.end_date = end_date
+    elif "end_date" in request.POST and not end_date:
+        edu.end_date = None
+
+    if "institution_logo" in request.FILES:
+        edu.institution_logo = request.FILES["institution_logo"]
+    if "certificate" in request.FILES:
+        edu.certificate = request.FILES["certificate"]
+
+    edu.save()
+    messages.success(request, f"Academic credential '{edu.degree_name}' updated.")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_edit_experience_view(request, experience_id):
+    exp = get_object_or_404(Experience, id=experience_id)
+    exp.role = request.POST.get("role", exp.role).strip()
+    exp.organization = request.POST.get("organization", exp.organization).strip()
+    exp.duration = request.POST.get("duration", exp.duration).strip()
+    exp.description = request.POST.get("description", exp.description).strip()
+    exp.highlight = request.POST.get("highlight") in ["on", "true", "1"]
+
+    if "logo" in request.FILES:
+        exp.logo = request.FILES["logo"]
+
+    exp.save()
+    messages.success(request, f"Work experience '{exp.role}' updated.")
+    return redirect("dashboard")
+

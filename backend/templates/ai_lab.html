@@ -48,7 +48,7 @@
 
   <!-- ── Lab Experiments Grid ────────────────────────────── -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-    {% for model in models %}
+    {% for model in models|default:experiments %}
       <div class="glass p-6 flex flex-col justify-between">
         <div>
           <!-- Header & Status -->

@@ -31,7 +31,7 @@ def home_view(request):
     about = About.objects.first()
     skills = Skill.objects.all().order_by("display_order", "name")
     education_list = Education.objects.filter(is_active=True).order_by("display_order", "-end_date")
-    experience_list = Experience.objects.all().order_by("-highlight", "-created_at")
+    experience_list = Experience.objects.all().order_by("display_order", "-highlight", "-created_at")
     achievements = Achievement.objects.all().order_by("-date")
     feedbacks = Feedback.objects.filter(is_visible=True).order_by("display_order", "-created_at")
     
@@ -44,7 +44,9 @@ def home_view(request):
         "hero": hero,
         "about": about,
         "skills": skills,
+        "education": education_list,
         "education_list": education_list,
+        "experience": experience_list,
         "experience_list": experience_list,
         "achievements": achievements,
         "feedbacks": feedbacks,
@@ -69,6 +71,7 @@ def ai_lab_view(request):
     experiments = AILab.objects.all().order_by("-created_at")
     context = {
         "experiments": experiments,
+        "models": experiments,
     }
     return render(request, "ai_lab.html", context)
 

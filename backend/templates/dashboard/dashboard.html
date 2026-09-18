@@ -143,6 +143,171 @@
                     </div>
                 </div>
 
+                <!-- ── Executive Audience & Click Telemetry Directive ── -->
+                <div class="glass p-6 md:p-8 rounded-3xl border border-cyan-500/30 bg-gradient-to-br from-slate-900/60 via-slate-950/60 to-cyan-950/20 shadow-xl space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200/60 dark:border-white/10">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h2 class="text-lg font-bold text-slate-900 dark:text-white">Audience &amp; Traffic Telemetry</h2>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> Live Tracking
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Real-time visitor analytics • Server-side IP telemetry • <strong class="text-slate-700 dark:text-slate-200">Zero browser GPS prompts requested</strong></p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 text-xs flex-wrap">
+                            <span class="px-3 py-1.5 rounded-xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 text-slate-700 dark:text-slate-300">
+                                All-Time: <strong class="text-cyan-400">{{ analytics.total_clicks }}</strong>
+                            </span>
+                            <span class="px-3 py-1.5 rounded-xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 text-slate-700 dark:text-slate-300">
+                                Today: <strong class="text-emerald-400">{{ analytics.today_clicks }}</strong>
+                            </span>
+                            <button id="btn-send-monthly-report" type="button" onclick="triggerMonthlyReportEmail(this)" class="px-3.5 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                <span>Send Report to info@hijbullah.me</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 4 Primary Metrics Grid Requested by User -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- 1. Peak Traffic Day -->
+                        <div class="p-5 rounded-2xl bg-white/60 dark:bg-white/5 border border-cyan-500/20 hover:border-cyan-500/50 transition-all relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-all"></div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Peak Traffic Day</span>
+                                <span class="text-cyan-400 text-sm">🚀</span>
+                            </div>
+                            <div class="text-xl font-black text-slate-900 dark:text-white mt-3 truncate" title="{{ analytics.peak_day_formatted }}">
+                                {{ analytics.peak_day_formatted }}
+                            </div>
+                            <div class="flex items-center gap-1.5 text-xs text-cyan-500 font-semibold mt-1">
+                                <span>{{ analytics.peak_day_count }} clicks</span>
+                                <span class="text-[10px] text-slate-500 font-normal">• All-time highest</span>
+                            </div>
+                        </div>
+
+                        <!-- 2. Top Location (Zero-Prompt IP Derived) -->
+                        <div class="p-5 rounded-2xl bg-white/60 dark:bg-white/5 border border-emerald-500/20 hover:border-emerald-500/50 transition-all relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-all"></div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Top Origin Location</span>
+                                <span class="text-emerald-400 text-sm">📍</span>
+                            </div>
+                            <div class="text-xl font-black text-slate-900 dark:text-white mt-3 truncate" title="{{ analytics.top_location }}">
+                                {{ analytics.top_location }}
+                            </div>
+                            <div class="flex items-center gap-1.5 text-xs text-emerald-500 font-semibold mt-1">
+                                <span>{{ analytics.top_location_count }} visits</span>
+                                <span class="text-[10px] text-slate-500 font-normal">• IP network safe</span>
+                            </div>
+                        </div>
+
+                        <!-- 3. Last Week Total Clicks -->
+                        <div class="p-5 rounded-2xl bg-white/60 dark:bg-white/5 border border-purple-500/20 hover:border-purple-500/50 transition-all relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/10 transition-all"></div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Past 7 Days (Last Week)</span>
+                                <span class="text-purple-400 text-sm">⚡</span>
+                            </div>
+                            <div class="text-2xl font-black text-slate-900 dark:text-white mt-3">
+                                {{ analytics.last_week_clicks }}
+                            </div>
+                            <div class="text-[11px] text-purple-400 font-semibold mt-1">
+                                Total clicks in past 7 days
+                            </div>
+                        </div>
+
+                        <!-- 4. Last Year Total Clicks -->
+                        <div class="p-5 rounded-2xl bg-white/60 dark:bg-white/5 border border-amber-500/20 hover:border-amber-500/50 transition-all relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-all"></div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Past 1 Year (Last Year)</span>
+                                <span class="text-amber-400 text-sm">📅</span>
+                            </div>
+                            <div class="text-2xl font-black text-slate-900 dark:text-white mt-3">
+                                {{ analytics.last_year_clicks }}
+                            </div>
+                            <div class="text-[11px] text-amber-400 font-semibold mt-1">
+                                365-day cumulative clicks
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Breakdown & Geolocation Matrix -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
+                        <!-- 14-Day Daily Sparkline Trend -->
+                        <div class="lg:col-span-2 p-5 rounded-2xl bg-white/40 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">14-Day Traffic Trajectory</h3>
+                                <span class="text-[10px] text-slate-500">Daily visit volume</span>
+                            </div>
+                            <div class="h-32 flex items-end gap-1 sm:gap-2 pt-4 px-2 border-b border-slate-200/40 dark:border-white/5">
+                                {% for day in analytics.daily_trend %}
+                                <div class="flex-1 flex flex-col items-center gap-1 group relative h-full justify-end">
+                                    <!-- Tooltip -->
+                                    <div class="absolute -top-7 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none bg-slate-900 text-white text-[9px] px-1.5 py-0.5 rounded shadow whitespace-nowrap z-20">
+                                        {{ day.date_str }}: {{ day.count }}
+                                    </div>
+                                    <div class="w-full bg-cyan-500/20 hover:bg-cyan-500 rounded-t transition-all group-hover:shadow-[0_0_8px_rgba(6,182,212,0.6)]" style="height: {{ day.height_percent }}%;"></div>
+                                    <span class="text-[8px] text-slate-500 truncate w-full text-center hidden sm:block">{{ day.date_str|slice:":2" }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Top Locations & Top Pages -->
+                        <div class="space-y-4">
+                            <!-- Top Locations -->
+                            <div class="p-4 rounded-2xl bg-white/40 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 space-y-2.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-slate-900 dark:text-white">Visitor Origins (IP Safe)</span>
+                                    <span class="text-[10px] text-slate-500">Share</span>
+                                </div>
+                                <div class="space-y-2">
+                                    {% for loc in analytics.top_locations_list %}
+                                    <div>
+                                        <div class="flex items-center justify-between text-[11px] mb-1">
+                                            <span class="text-slate-700 dark:text-slate-300 font-medium truncate max-w-[130px]">{{ loc.country_display }}</span>
+                                            <span class="text-slate-500 font-mono">{{ loc.count }} ({{ loc.percentage }}%)</span>
+                                        </div>
+                                        <div class="w-full h-1.5 bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full" style="width: {{ loc.percentage }}%;"></div>
+                                        </div>
+                                    </div>
+                                    {% empty %}
+                                    <div class="text-[11px] text-slate-500 text-center py-2">No location records yet.</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Top Pages -->
+                            <div class="p-4 rounded-2xl bg-white/40 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-slate-900 dark:text-white">Popular Destinations</span>
+                                    <span class="text-[10px] text-slate-500">Visits</span>
+                                </div>
+                                <div class="space-y-1.5">
+                                    {% for p in analytics.top_pages|slice:":4" %}
+                                    <div class="flex items-center justify-between text-[11px] px-2 py-1 rounded-lg bg-slate-100 dark:bg-white/5">
+                                        <span class="font-mono text-cyan-500 dark:text-cyan-400 truncate max-w-[140px]">/{{ p.page }}</span>
+                                        <span class="font-bold text-slate-700 dark:text-slate-300">{{ p.count }}</span>
+                                    </div>
+                                    {% empty %}
+                                    <div class="text-[11px] text-slate-500 text-center py-2">No page visit logs.</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Quick Action Shortcuts -->
                 <div class="glass p-6 rounded-3xl border border-slate-200/80 dark:border-white/10">
                     <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">Quick Studio Actions</h3>
@@ -286,21 +451,32 @@
                 </div>
 
                 <!-- Existing Skills Table -->
-                <div class="glass p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 overflow-hidden">
-                    <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">Current Skills ({{ skills|length }})</h3>
+                <div class="glass p-6 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white">Current Skills ({{ skills|length }})</h3>
+                        <span class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                            <span class="text-cyan-500 font-bold">⋮⋮</span> Drag rows to rearrange order
+                        </span>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs text-slate-600 dark:text-slate-300">
                             <thead class="border-b border-slate-200 dark:border-white/10 text-[11px] uppercase font-bold text-slate-500">
                                 <tr>
+                                    <th class="py-3 px-3 w-10 text-center">Move</th>
                                     <th class="py-3 px-4">Name</th>
                                     <th class="py-3 px-4">Category</th>
                                     <th class="py-3 px-4">Level</th>
                                     <th class="py-3 px-4 text-right">Action</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-200/60 dark:divide-white/5">
+                            <tbody id="skills-sortable-container" class="divide-y divide-slate-200/60 dark:divide-white/5">
                                 {% for s in skills %}
-                                <tr>
+                                <tr data-id="{{ s.id }}" class="hover:bg-white/5 transition-colors group">
+                                    <td class="py-3 px-3 text-center">
+                                        <span class="drag-handle cursor-grab active:cursor-grabbing p-1 inline-flex items-center justify-center text-slate-400 hover:text-cyan-400" title="Drag to reorder position">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
+                                        </span>
+                                    </td>
                                     <td class="py-3 px-4 font-bold text-slate-900 dark:text-white">{{ s.name }}</td>
                                     <td class="py-3 px-4">
                                         <span class="px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">{{ s.category }}</span>
@@ -314,15 +490,18 @@
                                         </div>
                                     </td>
                                     <td class="py-3 px-4 text-right">
-                                        <form action="{% url 'dashboard_delete_skill' s.id %}" method="POST" onsubmit="return confirm('Delete {{ s.name }}?')">
-                                            {% csrf_token %}
-                                            <button type="submit" class="text-rose-500 hover:text-rose-400 font-semibold text-xs">Delete</button>
-                                        </form>
+                                        <div class="inline-flex items-center gap-2">
+                                            <button type="button" onclick="openEditSkillModal('{{ s.id }}', '{{ s.name|escapejs }}', '{{ s.category|escapejs }}', '{{ s.level }}')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-cyan-500/10 text-cyan-500 hover:bg-cyan-500/20 border border-cyan-500/20 transition-colors">✏ Edit</button>
+                                            <form action="{% url 'dashboard_delete_skill' s.id %}" method="POST" onsubmit="return confirm('Delete {{ s.name }}?')">
+                                                {% csrf_token %}
+                                                <button type="submit" class="text-rose-500 hover:text-rose-400 font-semibold text-xs px-2 py-1">Delete</button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="4" class="py-4 text-center text-slate-400">No skills added yet. Use the form above to add your first skill.</td>
+                                    <td colspan="5" class="py-4 text-center text-slate-400">No skills added yet. Use the form above to add your first skill.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -402,25 +581,41 @@
 
                 <!-- Projects List -->
                 <div class="glass p-6 rounded-3xl border border-slate-200/80 dark:border-white/10">
-                    <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">Published Projects ({{ projects|length }})</h3>
-                    <div class="space-y-3">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white">Published Projects ({{ projects|length }})</h3>
+                        <span class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                            <span class="text-cyan-500 font-bold">⋮⋮</span> Drag cards to rearrange order
+                        </span>
+                    </div>
+                    <div id="projects-sortable-container" class="space-y-3">
                         {% for p in projects %}
-                        <div class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex items-center justify-between gap-4">
-                            <div class="flex items-center gap-3">
+                        <div data-id="{{ p.id }}" class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex items-center justify-between gap-4 group hover:border-cyan-500/30 transition-all">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <span class="drag-handle cursor-grab active:cursor-grabbing p-1.5 text-slate-400 hover:text-cyan-400 shrink-0" title="Drag to reorder position">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
+                                </span>
                                 {% if p.featured_image %}
-                                <img src="{{ p.featured_image.url }}" alt="{{ p.title }}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-white/10">
+                                <img src="{{ p.featured_image.url }}" alt="{{ p.title }}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-white/10 shrink-0">
                                 {% else %}
-                                <div class="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center font-bold">{{ p.title|slice:":1" }}</div>
+                                <div class="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center font-bold shrink-0">{{ p.title|slice:":1" }}</div>
                                 {% endif %}
-                                <div>
-                                    <h4 class="text-sm font-bold text-slate-900 dark:text-white">{{ p.title }}</h4>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-2">
+                                        <h4 class="text-sm font-bold text-slate-900 dark:text-white truncate">{{ p.title }}</h4>
+                                        {% if p.featured %}
+                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-500 border border-cyan-500/20 shrink-0">Featured</span>
+                                        {% endif %}
+                                    </div>
                                     <p class="text-xs text-slate-500 truncate max-w-sm">{{ p.short_description }}</p>
                                 </div>
                             </div>
-                            <form action="{% url 'dashboard_delete_project' p.id %}" method="POST" onsubmit="return confirm('Delete project: {{ p.title }}?')">
-                                {% csrf_token %}
-                                <button type="submit" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 transition-colors">Delete</button>
-                            </form>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button type="button" onclick="openEditProjectModal('{{ p.id }}', '{{ p.title|escapejs }}', '{{ p.status }}', '{{ p.short_description|escapejs }}', '{{ p.full_description|escapejs }}', '{{ p.github_link|escapejs }}', '{{ p.live_link|escapejs }}', '{{ p.demo_video_url|escapejs }}', {% if p.featured %}true{% else %}false{% endif %}, '{% for t in p.tech_stack.all %}{{ t.name }}{% if not forloop.last %}, {% endif %}{% endfor %}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-cyan-500/10 text-cyan-500 hover:bg-cyan-500/20 border border-cyan-500/20 transition-colors">✏ Edit</button>
+                                <form action="{% url 'dashboard_delete_project' p.id %}" method="POST" onsubmit="return confirm('Delete project: {{ p.title }}?')">
+                                    {% csrf_token %}
+                                    <button type="submit" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 transition-colors">Delete</button>
+                                </form>
+                            </div>
                         </div>
                         {% empty %}
                         <p class="text-xs text-slate-400 text-center py-4">No projects yet. Use the form above to add one.</p>
@@ -434,19 +629,30 @@
                 <!-- Add Education -->
                 <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Add Academic Credential</h3>
-                    <form action="{% url 'dashboard_add_education' %}" method="POST" class="space-y-4 mt-4">
+                    <p class="text-xs text-slate-500 mb-4">Credentials added here will instantly appear in the Education section on the home page.</p>
+                    <form action="{% url 'dashboard_add_education' %}" method="POST" enctype="multipart/form-data" class="space-y-4">
                         {% csrf_token %}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Degree / Certification Name</label>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Degree / Certification Name *</label>
                                 <input type="text" name="degree_name" required placeholder="e.g. B.Sc. in Computer Science &amp; Engineering" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Institution Name</label>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Institution Name *</label>
                                 <input type="text" name="institution_name" required placeholder="e.g. University of Dhaka" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Institution Type</label>
+                                <select name="institution_type" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white text-sm">
+                                    <option value="university">University</option>
+                                    <option value="college">College</option>
+                                    <option value="school">School</option>
+                                    <option value="madrasah">Madrasah</option>
+                                    <option value="board">Board</option>
+                                </select>
+                            </div>
                             <div>
                                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Result / CGPA</label>
                                 <input type="text" name="result" placeholder="e.g. CGPA 3.90 / 4.00" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
@@ -456,35 +662,157 @@
                                 <input type="text" name="location" placeholder="e.g. Dhaka, Bangladesh" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
                             </div>
                         </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Start Date</label>
+                                <input type="date" name="start_date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">End Date</label>
+                                <input type="date" name="end_date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Institution Logo</label>
+                                <input type="file" name="institution_logo" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/10 file:text-cyan-600 dark:file:text-cyan-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Certificate (PDF or Image)</label>
+                                <input type="file" name="certificate" accept=".pdf,image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/10 file:text-cyan-600 dark:file:text-cyan-400">
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" name="is_current" id="is_current_edu" class="rounded border-slate-300 text-cyan-500 focus:ring-cyan-500">
+                            <label for="is_current_edu" class="text-xs text-slate-700 dark:text-slate-300">Currently studying here (Ongoing)</label>
+                        </div>
                         <button type="submit" class="glow-button px-6 py-2.5 rounded-xl text-white font-semibold text-xs">+ Add Academic Record</button>
                     </form>
+                </div>
+
+                <!-- Existing Education List -->
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Existing Academic Credentials ({{ education_list|length }})</h3>
+                        <span class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                            <span class="text-cyan-500 font-bold">⋮⋮</span> Drag cards to rearrange order
+                        </span>
+                    </div>
+                    {% if education_list %}
+                    <div id="education-sortable-container" class="space-y-3">
+                        {% for edu in education_list %}
+                        <div data-id="{{ edu.id }}" class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 group hover:border-cyan-500/30 transition-all">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <span class="drag-handle cursor-grab active:cursor-grabbing p-1.5 text-slate-400 hover:text-cyan-400 shrink-0" title="Drag to reorder position">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
+                                </span>
+                                {% if edu.institution_logo %}
+                                    <img src="{{ edu.institution_logo.url }}" alt="{{ edu.institution_name }}" class="w-10 h-10 rounded-lg object-cover border border-slate-200 dark:border-white/10 shrink-0">
+                                {% else %}
+                                    <div class="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-lg shrink-0">🎓</div>
+                                {% endif %}
+                                <div class="min-w-0">
+                                    <h4 class="text-sm font-bold text-slate-900 dark:text-white truncate">{{ edu.degree_name }}</h4>
+                                    <p class="text-xs text-slate-500 truncate">{{ edu.institution_name }} &bull; <span class="text-cyan-600 dark:text-cyan-400 font-medium">{{ edu.passing_year }}</span> {% if edu.result %}&bull; {{ edu.result }}{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button type="button" onclick="openEditEducationModal('{{ edu.id }}', '{{ edu.degree_name|escapejs }}', '{{ edu.institution_name|escapejs }}', '{{ edu.institution_type }}', '{{ edu.result|default:''|escapejs }}', '{{ edu.location|default:''|escapejs }}', '{{ edu.start_date|date:'Y-m-d'|default:'' }}', '{{ edu.end_date|date:'Y-m-d'|default:'' }}', {% if edu.is_current %}true{% else %}false{% endif %})" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 text-cyan-500 hover:bg-cyan-500/20 border border-cyan-500/20 transition-colors">✏ Edit</button>
+                                <form action="{% url 'dashboard_delete_education' edu.id %}" method="POST" onsubmit="return confirm('Delete credential: {{ edu.degree_name }}?')">
+                                    {% csrf_token %}
+                                    <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-red-500/30 text-red-500 hover:bg-red-500/10 transition-colors">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-xs text-slate-400">No academic credentials currently registered.</p>
+                    {% endif %}
                 </div>
 
                 <!-- Add Experience -->
                 <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Add Work Experience</h3>
-                    <form action="{% url 'dashboard_add_experience' %}" method="POST" class="space-y-4 mt-4">
+                    <p class="text-xs text-slate-500 mb-4">Roles added here will instantly appear in the Experience section on the home page.</p>
+                    <form action="{% url 'dashboard_add_experience' %}" method="POST" enctype="multipart/form-data" class="space-y-4">
                         {% csrf_token %}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Role / Position Title</label>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Role / Position Title *</label>
                                 <input type="text" name="role" required placeholder="e.g. Autonomous Systems Lead" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Organization / Company</label>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Organization / Company *</label>
                                 <input type="text" name="organization" required placeholder="e.g. Robotics Innovation Lab" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Duration / Timeline</label>
-                            <input type="text" name="duration" placeholder="e.g. 2024 - Present" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Duration / Timeline</label>
+                                <input type="text" name="duration" placeholder="e.g. 2024 - Present" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Company Logo</label>
+                                <input type="file" name="logo" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/10 file:text-cyan-600 dark:file:text-cyan-400">
+                            </div>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Responsibilities &amp; Achievements</label>
                             <textarea name="description" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
                         </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" name="highlight" id="exp_highlight" class="rounded border-slate-300 text-amber-500 focus:ring-amber-500">
+                            <label for="exp_highlight" class="text-xs text-slate-700 dark:text-slate-300">Feature this position (Featured Badge)</label>
+                        </div>
                         <button type="submit" class="glow-button px-6 py-2.5 rounded-xl text-white font-semibold text-xs">+ Add Experience Record</button>
                     </form>
+                </div>
+
+                <!-- Existing Experience List -->
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Existing Work Experience ({{ experience_list|length }})</h3>
+                        <span class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                            <span class="text-cyan-500 font-bold">⋮⋮</span> Drag cards to rearrange order
+                        </span>
+                    </div>
+                    {% if experience_list %}
+                    <div id="experience-sortable-container" class="space-y-3">
+                        {% for exp in experience_list %}
+                        <div data-id="{{ exp.id }}" class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 group hover:border-cyan-500/30 transition-all">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <span class="drag-handle cursor-grab active:cursor-grabbing p-1.5 text-slate-400 hover:text-cyan-400 shrink-0" title="Drag to reorder position">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
+                                </span>
+                                {% if exp.logo %}
+                                    <img src="{{ exp.logo.url }}" alt="{{ exp.organization }}" class="w-10 h-10 rounded-lg object-cover border border-slate-200 dark:border-white/10 shrink-0">
+                                {% else %}
+                                    <div class="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-lg shrink-0">💼</div>
+                                {% endif %}
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-2">
+                                        <h4 class="text-sm font-bold text-slate-900 dark:text-white truncate">{{ exp.role }}</h4>
+                                        {% if exp.highlight %}
+                                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold border border-amber-500/20 shrink-0">Featured</span>
+                                        {% endif %}
+                                    </div>
+                                    <p class="text-xs text-slate-500 truncate">{{ exp.organization }} &bull; {{ exp.duration }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button type="button" onclick="openEditExperienceModal('{{ exp.id }}', '{{ exp.role|escapejs }}', '{{ exp.organization|escapejs }}', '{{ exp.duration|default:''|escapejs }}', '{{ exp.description|default:''|escapejs }}', {% if exp.highlight %}true{% else %}false{% endif %})" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 text-cyan-500 hover:bg-cyan-500/20 border border-cyan-500/20 transition-colors">✏ Edit</button>
+                                <form action="{% url 'dashboard_delete_experience' exp.id %}" method="POST" onsubmit="return confirm('Delete role: {{ exp.role }}?')">
+                                    {% csrf_token %}
+                                    <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-red-500/30 text-red-500 hover:bg-red-500/10 transition-colors">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-xs text-slate-400">No work experience entries currently registered.</p>
+                    {% endif %}
                 </div>
             </div>
 
@@ -531,6 +859,29 @@
                     </form>
                 </div>
 
+                <!-- Existing AI Experiments List -->
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Existing AI/ML Models ({{ ai_list|length }})</h3>
+                    {% if ai_list %}
+                    <div class="space-y-3">
+                        {% for item in ai_list %}
+                        <div class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-900 dark:text-white">{{ item.title }}</h4>
+                                <p class="text-xs text-slate-500">{{ item.model_name|default:"Model" }} {% if item.accuracy %}&bull; Accuracy: {{ item.accuracy }}%{% endif %}</p>
+                            </div>
+                            <form action="{% url 'dashboard_delete_ai_lab' item.id %}" method="POST" onsubmit="return confirm('Delete AI experiment: {{ item.title }}?')">
+                                {% csrf_token %}
+                                <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-red-500/30 text-red-500 hover:bg-red-500/10 transition-colors">Delete</button>
+                            </form>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-xs text-slate-400">No AI/ML models currently loaded.</p>
+                    {% endif %}
+                </div>
+
                 <!-- Add Research Paper -->
                 <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Publish Research Paper</h3>
@@ -564,6 +915,29 @@
                         </div>
                         <button type="submit" class="glow-button px-6 py-2.5 rounded-xl text-white font-semibold text-xs">+ Save Research Publication</button>
                     </form>
+                </div>
+
+                <!-- Existing Research List -->
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Existing Research Publications ({{ research_list|length }})</h3>
+                    {% if research_list %}
+                    <div class="space-y-3">
+                        {% for r in research_list %}
+                        <div class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-900 dark:text-white">{{ r.title }}</h4>
+                                <p class="text-xs text-slate-500">{{ r.contributors|default:"Md. Taher Bin Omar Hijbullah" }} &bull; <span class="capitalize">{{ r.status }}</span></p>
+                            </div>
+                            <form action="{% url 'dashboard_delete_research' r.id %}" method="POST" onsubmit="return confirm('Delete publication: {{ r.title }}?')">
+                                {% csrf_token %}
+                                <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-red-500/30 text-red-500 hover:bg-red-500/10 transition-colors">Delete</button>
+                            </form>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-xs text-slate-400">No research publications registered.</p>
+                    {% endif %}
                 </div>
             </div>
 
@@ -746,6 +1120,247 @@
     </div>
 </div>
 
+<!-- ── FLOATING TOAST NOTIFICATION ──────────────────────────────────────── -->
+<div id="dash-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-900/95 dark:bg-slate-800/95 border border-cyan-500/40 shadow-2xl backdrop-blur-md text-white text-xs font-semibold">
+    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+    <span id="dash-toast-msg">Sequence saved successfully.</span>
+</div>
+
+<!-- ── EDIT SKILL MODAL ─────────────────────────────────────────────────── -->
+<div id="edit-skill-modal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-content relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-cyan-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl">
+        <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-200 dark:border-white/10">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span>✏️</span> Edit Skill / Competency
+            </h3>
+            <button type="button" data-modal-close class="text-slate-400 hover:text-white text-lg">✕</button>
+        </div>
+        <form id="edit-skill-form" method="POST" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Skill Name *</label>
+                <input type="text" name="name" id="edit-skill-name" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Domain / Category *</label>
+                <input type="text" name="category" id="edit-skill-category" required list="edit-skill-cat-list" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <datalist id="edit-skill-cat-list">
+                    <option value="Programming"></option>
+                    <option value="Framework"></option>
+                    <option value="AI/ML"></option>
+                    <option value="Web"></option>
+                    <option value="IoT"></option>
+                    <option value="Tools"></option>
+                </datalist>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Proficiency Level (%) *</label>
+                <input type="number" name="level" id="edit-skill-level" min="1" max="100" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Change Icon / Badge</label>
+                <input type="file" name="icon" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/10 file:text-cyan-500">
+            </div>
+            <div class="flex gap-3 pt-3">
+                <button type="button" data-modal-close class="flex-1 py-2.5 rounded-xl text-xs font-semibold border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300">Cancel</button>
+                <button type="submit" class="flex-1 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-white shadow-md">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── EDIT PROJECT MODAL ───────────────────────────────────────────────── -->
+<div id="edit-project-modal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-content relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-cyan-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+        <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-200 dark:border-white/10">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span>✏️</span> Edit Engineered Project
+            </h3>
+            <button type="button" data-modal-close class="text-slate-400 hover:text-white text-lg">✕</button>
+        </div>
+        <form id="edit-project-form" method="POST" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Project Title *</label>
+                    <input type="text" name="title" id="edit-project-title" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Status</label>
+                    <select name="status" id="edit-project-status" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        <option value="ongoing">Ongoing</option>
+                        <option value="completed">Completed</option>
+                        <option value="research">Research</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Short Summary *</label>
+                <input type="text" name="short_description" id="edit-project-short-desc" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Full Architectural Description</label>
+                <textarea name="full_description" id="edit-project-full-desc" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Tech Stack Tags (Comma Separated)</label>
+                <input type="text" name="tech_stack" id="edit-project-tech-stack" placeholder="Python, ROS2, PyTorch" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">GitHub URL</label>
+                    <input type="url" name="github_link" id="edit-project-github" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Live Production URL</label>
+                    <input type="url" name="live_link" id="edit-project-live" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Demo Video URL</label>
+                    <input type="url" name="demo_video_url" id="edit-project-demo" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Update Featured Image (Max 100 KB)</label>
+                    <input type="file" name="featured_image" accept="image/*" class="dash-image-input w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/10 file:text-cyan-500">
+                    <div class="dash-file-status text-[11px] mt-1 font-medium"></div>
+                </div>
+                <div class="pt-4">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="featured" id="edit-project-featured" class="w-4 h-4 text-cyan-500 rounded border-slate-300 focus:ring-cyan-500">
+                        <span class="ml-2 text-xs font-bold text-slate-700 dark:text-slate-300">Mark as Featured Showcase</span>
+                    </label>
+                </div>
+            </div>
+            <div class="flex gap-3 pt-3">
+                <button type="button" data-modal-close class="flex-1 py-2.5 rounded-xl text-xs font-semibold border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300">Cancel</button>
+                <button type="submit" class="flex-1 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-white shadow-md">Save Project Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── EDIT EDUCATION MODAL ─────────────────────────────────────────────── -->
+<div id="edit-education-modal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-content relative w-full max-w-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-cyan-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+        <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-200 dark:border-white/10">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span>🎓</span> Edit Academic Credential
+            </h3>
+            <button type="button" data-modal-close class="text-slate-400 hover:text-white text-lg">✕</button>
+        </div>
+        <form id="edit-education-form" method="POST" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Degree / Certification *</label>
+                    <input type="text" name="degree_name" id="edit-edu-degree" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Institution Name *</label>
+                    <input type="text" name="institution_name" id="edit-edu-institution" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Institution Type</label>
+                    <select name="institution_type" id="edit-edu-type" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white text-sm">
+                        <option value="university">University</option>
+                        <option value="college">College</option>
+                        <option value="school">School</option>
+                        <option value="madrasah">Madrasah</option>
+                        <option value="board">Board</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Result / CGPA</label>
+                    <input type="text" name="result" id="edit-edu-result" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Location</label>
+                    <input type="text" name="location" id="edit-edu-location" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Start Date</label>
+                    <input type="date" name="start_date" id="edit-edu-start-date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">End Date</label>
+                    <input type="date" name="end_date" id="edit-edu-end-date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Change Institution Logo</label>
+                    <input type="file" name="institution_logo" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/10 file:text-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Change Certificate (PDF/Image)</label>
+                    <input type="file" name="certificate" accept=".pdf,image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/10 file:text-cyan-500">
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <input type="checkbox" name="is_current" id="edit-edu-is-current" class="rounded border-slate-300 text-cyan-500 focus:ring-cyan-500">
+                <label for="edit-edu-is-current" class="text-xs text-slate-700 dark:text-slate-300">Currently studying here (Ongoing)</label>
+            </div>
+            <div class="flex gap-3 pt-3">
+                <button type="button" data-modal-close class="flex-1 py-2.5 rounded-xl text-xs font-semibold border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300">Cancel</button>
+                <button type="submit" class="flex-1 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-white shadow-md">Save Credential</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── EDIT EXPERIENCE MODAL ────────────────────────────────────────────── -->
+<div id="edit-experience-modal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-content relative w-full max-w-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-cyan-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+        <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-200 dark:border-white/10">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span>💼</span> Edit Work Experience
+            </h3>
+            <button type="button" data-modal-close class="text-slate-400 hover:text-white text-lg">✕</button>
+        </div>
+        <form id="edit-experience-form" method="POST" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Role / Position *</label>
+                    <input type="text" name="role" id="edit-exp-role" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Organization / Company *</label>
+                    <input type="text" name="organization" id="edit-exp-org" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Duration / Timeline</label>
+                    <input type="text" name="duration" id="edit-exp-duration" placeholder="e.g. 2024 - Present" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Change Company Logo</label>
+                    <input type="file" name="logo" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/10 file:text-cyan-500">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Responsibilities &amp; Key Achievements</label>
+                <textarea name="description" id="edit-exp-desc" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
+            </div>
+            <div class="flex items-center gap-2">
+                <input type="checkbox" name="highlight" id="edit-exp-highlight" class="rounded border-slate-300 text-amber-500 focus:ring-amber-500">
+                <label for="edit-exp-highlight" class="text-xs text-slate-700 dark:text-slate-300">Feature this position (Featured Badge)</label>
+            </div>
+            <div class="flex gap-3 pt-3">
+                <button type="button" data-modal-close class="flex-1 py-2.5 rounded-xl text-xs font-semibold border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300">Cancel</button>
+                <button type="submit" class="flex-1 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-white shadow-md">Save Experience</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <style>
 .dash-tab-btn {
     color: #94a3b8;
@@ -760,30 +1375,211 @@
     color: #38bdf8;
     box-shadow: 0 4px 20px -5px rgba(6, 182, 212, 0.25);
 }
+.sortable-ghost {
+    opacity: 0.35;
+    background: rgba(6, 182, 212, 0.15) !important;
+    border: 1px dashed #06b6d4 !important;
+}
 </style>
+
+<!-- SortableJS library for robust drag-and-drop -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
 <script>
 function switchTab(tabId) {
-    // Hide all panes
     document.querySelectorAll('.dash-pane').forEach(p => p.classList.add('hidden'));
     document.querySelectorAll('.dash-tab-btn').forEach(b => b.classList.remove('active'));
 
-    // Show target pane
     const targetPane = document.getElementById('pane-' + tabId);
     const targetBtn = document.getElementById('tab-btn-' + tabId);
     if (targetPane) targetPane.classList.remove('hidden');
     if (targetBtn) targetBtn.classList.add('active');
 
-    // Save active tab in session
     sessionStorage.setItem('active_dash_tab', tabId);
 }
 
-// Restore saved tab or default to overview
+// Toast notification helper
+function showToast(msg) {
+    const toast = document.getElementById('dash-toast');
+    const toastMsg = document.getElementById('dash-toast-msg');
+    if (!toast || !toastMsg) return;
+    toastMsg.textContent = msg;
+    toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+    setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+    }, 2400);
+}
+
+// CSRF helper
+function getCsrfToken() {
+    const el = document.querySelector('[name=csrfmiddlewaretoken]');
+    return el ? el.value : '';
+}
+
+// Generic AJAX reorder dispatcher
+function sendReorderRequest(itemType, orderedIds) {
+    fetch('/dashboard/reorder/' + itemType + '/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCsrfToken()
+        },
+        body: JSON.stringify({ order: orderedIds })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showToast('✓ ' + (data.message || 'Position sequence saved'));
+        } else {
+            showToast('⚠️ Error: ' + (data.message || 'Could not save order'));
+        }
+    })
+    .catch(err => {
+        showToast('⚠️ Connection error while saving order');
+    });
+}
+
+// On-demand monthly telemetry report trigger
+function triggerMonthlyReportEmail(btn) {
+    const origHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳ Sending to info@...</span>';
+    fetch('/dashboard/analytics/send-report/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCsrfToken()
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+        if (data.status === 'success') {
+            showToast('✓ ' + data.message);
+        } else {
+            showToast('⚠️ ' + data.message);
+        }
+    })
+    .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+        showToast('⚠️ Error dispatching monthly report');
+    });
+}
+
+// ── Edit Modal Openers ────────────────────────────────────────────────────────
+function openEditSkillModal(id, name, category, level) {
+    const form = document.getElementById('edit-skill-form');
+    form.action = '/dashboard/skills/edit/' + id + '/';
+    document.getElementById('edit-skill-name').value = name;
+    document.getElementById('edit-skill-category').value = category;
+    document.getElementById('edit-skill-level').value = level;
+    openModal('edit-skill-modal');
+}
+
+function openEditProjectModal(id, title, status, shortDesc, fullDesc, github, live, demo, featured, tags) {
+    const form = document.getElementById('edit-project-form');
+    form.action = '/dashboard/projects/edit/' + id + '/';
+    document.getElementById('edit-project-title').value = title;
+    document.getElementById('edit-project-status').value = status;
+    document.getElementById('edit-project-short-desc').value = shortDesc;
+    document.getElementById('edit-project-full-desc').value = fullDesc;
+    document.getElementById('edit-project-github').value = github;
+    document.getElementById('edit-project-live').value = live;
+    document.getElementById('edit-project-demo').value = demo;
+    document.getElementById('edit-project-tech-stack').value = tags;
+    document.getElementById('edit-project-featured').checked = (featured === true || featured === 'true');
+    openModal('edit-project-modal');
+}
+
+function openEditEducationModal(id, degree, institution, type, result, location, startDate, endDate, isCurrent) {
+    const form = document.getElementById('edit-education-form');
+    form.action = '/dashboard/education/edit/' + id + '/';
+    document.getElementById('edit-edu-degree').value = degree;
+    document.getElementById('edit-edu-institution').value = institution;
+    document.getElementById('edit-edu-type').value = type;
+    document.getElementById('edit-edu-result').value = result;
+    document.getElementById('edit-edu-location').value = location;
+    document.getElementById('edit-edu-start-date').value = startDate;
+    document.getElementById('edit-edu-end-date').value = endDate;
+    document.getElementById('edit-edu-is-current').checked = (isCurrent === true || isCurrent === 'true');
+    openModal('edit-education-modal');
+}
+
+function openEditExperienceModal(id, role, organization, duration, description, highlight) {
+    const form = document.getElementById('edit-experience-form');
+    form.action = '/dashboard/experience/edit/' + id + '/';
+    document.getElementById('edit-exp-role').value = role;
+    document.getElementById('edit-exp-org').value = organization;
+    document.getElementById('edit-exp-duration').value = duration;
+    document.getElementById('edit-exp-desc').value = description;
+    document.getElementById('edit-exp-highlight').checked = (highlight === true || highlight === 'true');
+    openModal('edit-experience-modal');
+}
+
+// Initialize Drag-and-Drop Sortables on page load
 document.addEventListener('DOMContentLoaded', () => {
     const saved = sessionStorage.getItem('active_dash_tab') || 'overview';
     switchTab(saved);
 
-    // Dynamic 100 KB Image Checker
+    // 1. Skills sortable
+    const skillsContainer = document.getElementById('skills-sortable-container');
+    if (skillsContainer && typeof Sortable !== 'undefined') {
+        new Sortable(skillsContainer, {
+            handle: '.drag-handle',
+            animation: 180,
+            ghostClass: 'sortable-ghost',
+            onEnd: function() {
+                const ids = Array.from(skillsContainer.querySelectorAll('tr[data-id]')).map(el => el.getAttribute('data-id'));
+                sendReorderRequest('skills', ids);
+            }
+        });
+    }
+
+    // 2. Projects sortable
+    const projectsContainer = document.getElementById('projects-sortable-container');
+    if (projectsContainer && typeof Sortable !== 'undefined') {
+        new Sortable(projectsContainer, {
+            handle: '.drag-handle',
+            animation: 180,
+            ghostClass: 'sortable-ghost',
+            onEnd: function() {
+                const ids = Array.from(projectsContainer.querySelectorAll('[data-id]')).map(el => el.getAttribute('data-id'));
+                sendReorderRequest('projects', ids);
+            }
+        });
+    }
+
+    // 3. Education sortable
+    const eduContainer = document.getElementById('education-sortable-container');
+    if (eduContainer && typeof Sortable !== 'undefined') {
+        new Sortable(eduContainer, {
+            handle: '.drag-handle',
+            animation: 180,
+            ghostClass: 'sortable-ghost',
+            onEnd: function() {
+                const ids = Array.from(eduContainer.querySelectorAll('[data-id]')).map(el => el.getAttribute('data-id'));
+                sendReorderRequest('education', ids);
+            }
+        });
+    }
+
+    // 4. Experience sortable
+    const expContainer = document.getElementById('experience-sortable-container');
+    if (expContainer && typeof Sortable !== 'undefined') {
+        new Sortable(expContainer, {
+            handle: '.drag-handle',
+            animation: 180,
+            ghostClass: 'sortable-ghost',
+            onEnd: function() {
+                const ids = Array.from(expContainer.querySelectorAll('[data-id]')).map(el => el.getAttribute('data-id'));
+                sendReorderRequest('experience', ids);
+            }
+        });
+    }
+
+    // Image size warning checker
     document.querySelectorAll('.dash-image-input').forEach(input => {
         input.addEventListener('change', function() {
             const statusDiv = this.parentElement.querySelector('.dash-file-status');
@@ -795,7 +1591,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const sizeKB = (file.size / 1024).toFixed(1);
             if (file.size > 100 * 1024) {
                 statusDiv.innerHTML = `<span class="text-rose-500 font-bold">⚠️ ${sizeKB} KB — Exceeds 100 KB limit! Compress at <a href="https://tinyjpg.com" target="_blank" class="underline font-black">tinyjpg.com</a> first.</span>`;
-                this.value = ''; // clear invalid selection
+                this.value = '';
             } else {
                 statusDiv.innerHTML = `<span class="text-emerald-500 font-semibold">✓ ${sizeKB} KB (Approved &le; 100 KB)</span>`;
             }

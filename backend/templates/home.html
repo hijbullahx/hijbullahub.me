@@ -116,6 +116,7 @@
   </section>
 
   <!-- ── Skills Section ────────────────────────────── -->
+  {% if skills %}
   <section class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
     <div class="text-center mb-14">
       <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight gradient-text mb-3">
@@ -152,9 +153,10 @@
       {% endfor %}
     </div>
   </section>
+  {% endif %}
 
   <!-- ── Education Section ────────────────────────────── -->
-  {% if education %}
+  {% if education or education_list %}
   <section class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
     <div class="text-center mb-14">
       <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight gradient-text mb-3">
@@ -166,7 +168,7 @@
     </div>
 
     <div class="flex flex-col gap-4 max-w-4xl mx-auto">
-      {% for edu in education %}
+      {% for edu in education|default:education_list %}
         <div class="glass p-5 cursor-pointer relative {% if edu.is_current %}border-l-4 border-l-cyan-500{% endif %}"
              data-modal-target="edu-modal-{{ edu.id }}">
           {% if edu.is_current %}
@@ -200,9 +202,17 @@
                   Details ↗
                 </span>
               </div>
-              {% if edu.location %}
-                <p class="text-xs text-slate-500 mt-1">📍 {{ edu.location }}</p>
-              {% endif %}
+              <div class="flex items-center gap-3 mt-1.5 flex-wrap">
+                {% if edu.passing_year %}
+                  <span class="text-xs text-cyan-600 dark:text-cyan-400 font-mono font-medium">{{ edu.passing_year }}</span>
+                {% endif %}
+                {% if edu.location %}
+                  <span class="text-xs text-slate-500">📍 {{ edu.location }}</span>
+                {% endif %}
+                {% if edu.result %}
+                  <span class="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold">{{ edu.result }}</span>
+                {% endif %}
+              </div>
             </div>
           </div>
         </div>
@@ -230,7 +240,15 @@
                   <div class="bg-slate-50 dark:bg-white/5 rounded-xl p-3 border border-slate-200 dark:border-white/10">
                     <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Timeline</p>
                     <p class="font-semibold text-slate-900 dark:text-white text-xs sm:text-sm">
-                      {{ edu.start_date|date:"M Y" }} &mdash; {% if edu.is_current %}Present{% else %}{{ edu.end_date|date:"M Y" }}{% endif %}
+                      {% if edu.is_current %}
+                        {{ edu.start_date|date:"M Y" }} &mdash; Present
+                      {% elif edu.end_date %}
+                        {{ edu.start_date|date:"M Y" }} &mdash; {{ edu.end_date|date:"M Y" }}
+                      {% elif edu.passing_year %}
+                        {{ edu.passing_year }}
+                      {% else %}
+                        {{ edu.start_date|date:"M Y" }}
+                      {% endif %}
                     </p>
                   </div>
                   {% if edu.result %}
@@ -262,7 +280,7 @@
   {% endif %}
 
   <!-- ── Experience Section ────────────────────────────── -->
-  {% if experience %}
+  {% if experience or experience_list %}
   <section class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
     <div class="text-center mb-14">
       <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight gradient-text mb-3">
@@ -274,7 +292,7 @@
     </div>
 
     <div class="space-y-5 max-w-4xl mx-auto">
-      {% for exp in experience %}
+      {% for exp in experience|default:experience_list %}
         <div class="glass p-6 {% if exp.highlight %}border-amber-500/40{% endif %}">
           {% if exp.highlight %}
             <span class="float-right px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">
