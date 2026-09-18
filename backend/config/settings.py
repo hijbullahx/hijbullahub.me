@@ -428,15 +428,15 @@ LOGOUT_REDIRECT_URL = "/dashboard/login/"
 
 # Communications & Notifications (SMTP Configuration)
 EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
-EMAIL_HOST = os.getenv("EMAIL_HOST", "mail.helplinehellonaogaon.com")
+EMAIL_HOST = os.getenv("EMAIL_HOST", "mail.hijbullah.me")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT", 465))
 EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "True").lower() == "true"
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "False").lower() == "true"
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "info@helplinehellonaogaon.com")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "info@hijbullah.me")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "info@helplinehellonaogaon.com")
-SERVER_EMAIL = os.getenv("SERVER_EMAIL", "admin@helplinehellonaogaon.com")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "info@hijbullah.me")
+SERVER_EMAIL = os.getenv("SERVER_EMAIL", "info@hijbullah.me")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "info@hijbullah.me")
 ADMINS = [("Md. Taher Bin Omar Hijbullah", ADMIN_EMAIL)]
 MANAGERS = ADMINS

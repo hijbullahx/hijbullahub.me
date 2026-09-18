@@ -5,7 +5,7 @@ from django.core.mail import EmailMultiAlternatives
 logger = logging.getLogger(__name__)
 
 ADMIN_EMAIL = getattr(settings, "ADMIN_EMAIL", "info@hijbullah.me")
-DEFAULT_FROM = getattr(settings, "DEFAULT_FROM_EMAIL", "info@helplinehellonaogaon.com")
+DEFAULT_FROM = getattr(settings, "DEFAULT_FROM_EMAIL", "info@hijbullah.me")
 # Format sender name cleanly
 FROM_EMAIL = f"Md. Taher Bin Omar Hijbullah <{DEFAULT_FROM}>" if "<" not in str(DEFAULT_FROM) else DEFAULT_FROM
 

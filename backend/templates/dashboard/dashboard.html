@@ -143,6 +143,167 @@
                     </div>
                 </div>
 
+                <!-- ── Executive Audience & Click Telemetry Directive ── -->
+                <div class="glass p-6 md:p-8 rounded-3xl border border-cyan-500/30 bg-gradient-to-br from-slate-900/60 via-slate-950/60 to-cyan-950/20 shadow-xl space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200/60 dark:border-white/10">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h2 class="text-lg font-bold text-slate-900 dark:text-white">Audience &amp; Traffic Telemetry</h2>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> Live Tracking
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Real-time visitor analytics • Server-side IP telemetry • <strong class="text-slate-700 dark:text-slate-200">Zero browser GPS prompts requested</strong></p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="px-3 py-1.5 rounded-xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 text-slate-700 dark:text-slate-300">
+                                All-Time: <strong class="text-cyan-400">{{ analytics.total_clicks }}</strong>
+                            </span>
+                            <span class="px-3 py-1.5 rounded-xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 text-slate-700 dark:text-slate-300">
+                                Today: <strong class="text-emerald-400">{{ analytics.today_clicks }}</strong>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 4 Primary Metrics Grid Requested by User -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- 1. Peak Traffic Day -->
+                        <div class="p-5 rounded-2xl bg-white/60 dark:bg-white/5 border border-cyan-500/20 hover:border-cyan-500/50 transition-all relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-all"></div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Peak Traffic Day</span>
+                                <span class="text-cyan-400 text-sm">🚀</span>
+                            </div>
+                            <div class="text-xl font-black text-slate-900 dark:text-white mt-3 truncate" title="{{ analytics.peak_day_formatted }}">
+                                {{ analytics.peak_day_formatted }}
+                            </div>
+                            <div class="flex items-center gap-1.5 text-xs text-cyan-500 font-semibold mt-1">
+                                <span>{{ analytics.peak_day_count }} clicks</span>
+                                <span class="text-[10px] text-slate-500 font-normal">• All-time highest</span>
+                            </div>
+                        </div>
+
+                        <!-- 2. Top Location (Zero-Prompt IP Derived) -->
+                        <div class="p-5 rounded-2xl bg-white/60 dark:bg-white/5 border border-emerald-500/20 hover:border-emerald-500/50 transition-all relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-all"></div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Top Origin Location</span>
+                                <span class="text-emerald-400 text-sm">📍</span>
+                            </div>
+                            <div class="text-xl font-black text-slate-900 dark:text-white mt-3 truncate" title="{{ analytics.top_location }}">
+                                {{ analytics.top_location }}
+                            </div>
+                            <div class="flex items-center gap-1.5 text-xs text-emerald-500 font-semibold mt-1">
+                                <span>{{ analytics.top_location_count }} visits</span>
+                                <span class="text-[10px] text-slate-500 font-normal">• IP network safe</span>
+                            </div>
+                        </div>
+
+                        <!-- 3. Last Week Total Clicks -->
+                        <div class="p-5 rounded-2xl bg-white/60 dark:bg-white/5 border border-purple-500/20 hover:border-purple-500/50 transition-all relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/10 transition-all"></div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Past 7 Days (Last Week)</span>
+                                <span class="text-purple-400 text-sm">⚡</span>
+                            </div>
+                            <div class="text-2xl font-black text-slate-900 dark:text-white mt-3">
+                                {{ analytics.last_week_clicks }}
+                            </div>
+                            <div class="text-[11px] text-purple-400 font-semibold mt-1">
+                                Total clicks in past 7 days
+                            </div>
+                        </div>
+
+                        <!-- 4. Last Year Total Clicks -->
+                        <div class="p-5 rounded-2xl bg-white/60 dark:bg-white/5 border border-amber-500/20 hover:border-amber-500/50 transition-all relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-all"></div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Past 1 Year (Last Year)</span>
+                                <span class="text-amber-400 text-sm">📅</span>
+                            </div>
+                            <div class="text-2xl font-black text-slate-900 dark:text-white mt-3">
+                                {{ analytics.last_year_clicks }}
+                            </div>
+                            <div class="text-[11px] text-amber-400 font-semibold mt-1">
+                                365-day cumulative clicks
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Breakdown & Geolocation Matrix -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
+                        <!-- 14-Day Daily Sparkline Trend -->
+                        <div class="lg:col-span-2 p-5 rounded-2xl bg-white/40 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">14-Day Traffic Trajectory</h3>
+                                <span class="text-[10px] text-slate-500">Daily visit volume</span>
+                            </div>
+                            <div class="h-32 flex items-end gap-1 sm:gap-2 pt-4 px-2 border-b border-slate-200/40 dark:border-white/5">
+                                {% for day in analytics.daily_trend %}
+                                <div class="flex-1 flex flex-col items-center gap-1 group relative h-full justify-end">
+                                    <!-- Tooltip -->
+                                    <div class="absolute -top-7 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none bg-slate-900 text-white text-[9px] px-1.5 py-0.5 rounded shadow whitespace-nowrap z-20">
+                                        {{ day.date_str }}: {{ day.count }}
+                                    </div>
+                                    <div class="w-full bg-cyan-500/20 hover:bg-cyan-500 rounded-t transition-all group-hover:shadow-[0_0_8px_rgba(6,182,212,0.6)]" style="height: {{ day.height_percent }}%;"></div>
+                                    <span class="text-[8px] text-slate-500 truncate w-full text-center hidden sm:block">{{ day.date_str|slice:":2" }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Top Locations & Top Pages -->
+                        <div class="space-y-4">
+                            <!-- Top Locations -->
+                            <div class="p-4 rounded-2xl bg-white/40 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 space-y-2.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-slate-900 dark:text-white">Visitor Origins (IP Safe)</span>
+                                    <span class="text-[10px] text-slate-500">Share</span>
+                                </div>
+                                <div class="space-y-2">
+                                    {% for loc in analytics.top_locations_list %}
+                                    <div>
+                                        <div class="flex items-center justify-between text-[11px] mb-1">
+                                            <span class="text-slate-700 dark:text-slate-300 font-medium truncate max-w-[130px]">{{ loc.country_display }}</span>
+                                            <span class="text-slate-500 font-mono">{{ loc.count }} ({{ loc.percentage }}%)</span>
+                                        </div>
+                                        <div class="w-full h-1.5 bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full" style="width: {{ loc.percentage }}%;"></div>
+                                        </div>
+                                    </div>
+                                    {% empty %}
+                                    <div class="text-[11px] text-slate-500 text-center py-2">No location records yet.</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Top Pages -->
+                            <div class="p-4 rounded-2xl bg-white/40 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-slate-900 dark:text-white">Popular Destinations</span>
+                                    <span class="text-[10px] text-slate-500">Visits</span>
+                                </div>
+                                <div class="space-y-1.5">
+                                    {% for p in analytics.top_pages|slice:":4" %}
+                                    <div class="flex items-center justify-between text-[11px] px-2 py-1 rounded-lg bg-slate-100 dark:bg-white/5">
+                                        <span class="font-mono text-cyan-500 dark:text-cyan-400 truncate max-w-[140px]">/{{ p.page }}</span>
+                                        <span class="font-bold text-slate-700 dark:text-slate-300">{{ p.count }}</span>
+                                    </div>
+                                    {% empty %}
+                                    <div class="text-[11px] text-slate-500 text-center py-2">No page visit logs.</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Quick Action Shortcuts -->
                 <div class="glass p-6 rounded-3xl border border-slate-200/80 dark:border-white/10">
                     <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">Quick Studio Actions</h3>

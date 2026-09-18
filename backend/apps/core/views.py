@@ -90,13 +90,74 @@ def health_check(request):
     return JsonResponse({"status": "ok"}, status=200)
 
 
+import urllib.request
+import json
+from django.core.cache import cache
+
+
+def get_client_ip(request):
+    """Extract client IP from proxy/Cloudflare headers or remote address."""
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(",")[0].strip()
+    else:
+        ip = request.META.get("REMOTE_ADDR", "")
+    return ip
+
+
+def resolve_ip_location(ip, request=None):
+    """
+    Zero-prompt, privacy-preserving location resolution.
+    Never prompts or requests browser GPS permissions.
+    """
+    if not ip or ip in ("127.0.0.1", "::1", "localhost") or ip.startswith(("192.168.", "10.", "172.16.", "172.31.")):
+        return "Local / Direct", "Local"
+
+    # 1. Cloudflare country header (instant 0ms lookup on cPanel / Cloudflare deployments)
+    if request:
+        cf_country = request.META.get("HTTP_CF_IPCOUNTRY")
+        if cf_country and cf_country != "XX":
+            return cf_country, ""
+
+    # 2. In-memory cache lookup
+    cache_key = f"geoip_{ip}"
+    cached = cache.get(cache_key)
+    if cached:
+        return cached.get("country", "Unknown"), cached.get("city", "")
+
+    # 3. Fast non-intrusive server-side lookup with 1.2s timeout
+    try:
+        url = f"http://ip-api.com/json/{ip}?fields=status,country,city"
+        req = urllib.request.Request(url, headers={"User-Agent": "HijbullahHub-Analytics/1.0"})
+        with urllib.request.urlopen(req, timeout=1.2) as response:
+            data = json.loads(response.read().decode("utf-8"))
+            if data.get("status") == "success":
+                country = data.get("country", "Unknown")
+                city = data.get("city", "")
+                cache.set(cache_key, {"country": country, "city": city}, timeout=86400 * 7)
+                return country, city
+    except Exception:
+        pass
+
+    return "Unknown", ""
+
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def record_visit(request):
-    """Public endpoint — called by the frontend on each page load."""
+    """Public endpoint — called silently in background on page load."""
     page = request.data.get("page", "home")[:80]
     referrer = request.data.get("referrer", "")[:255]
-    PageVisit.objects.create(page=page, referrer=referrer)
+    ip = get_client_ip(request)
+    country, city = resolve_ip_location(ip, request)
+
+    PageVisit.objects.create(
+        page=page,
+        referrer=referrer,
+        ip_address=ip[:45],
+        country=country[:100],
+        city=city[:100]
+    )
     return Response({"ok": True}, status=201)
 
 

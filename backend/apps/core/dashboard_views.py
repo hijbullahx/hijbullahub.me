@@ -1,11 +1,16 @@
 import json
+import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib import messages
+from django.utils import timezone
+from django.db.models import Count
+from django.db.models.functions import TruncDate
 
+from apps.core.models import PageVisit
 from apps.hero.models import Hero
 from apps.about.models import About
 from apps.skills.models import Skill
@@ -64,6 +69,101 @@ def dashboard_view(request):
     feedbacks = Feedback.objects.all().order_by("-created_at")
     site_setting = SiteSetting.objects.first()
 
+    # ── Analytics Telemetry Aggregation (Privacy-safe, Zero browser prompts) ──
+    now = timezone.now()
+    today = now.date()
+
+    total_clicks = PageVisit.objects.count()
+    today_clicks = PageVisit.objects.filter(timestamp__date=today).count()
+    last_week_clicks = PageVisit.objects.filter(timestamp__gte=now - datetime.timedelta(days=7)).count()
+    last_year_clicks = PageVisit.objects.filter(timestamp__gte=now - datetime.timedelta(days=365)).count()
+
+    # Peak traffic day
+    peak_row = (
+        PageVisit.objects
+        .annotate(date=TruncDate("timestamp"))
+        .values("date")
+        .annotate(count=Count("id"))
+        .order_by("-count", "-date")
+        .first()
+    )
+    peak_day_formatted = peak_row["date"].strftime("%d %b %Y") if (peak_row and peak_row.get("date")) else "No data yet"
+    peak_day_count = peak_row["count"] if peak_row else 0
+
+    # Top location (Derived strictly from IP/headers - never requests browser GPS permission)
+    top_loc_row = (
+        PageVisit.objects
+        .exclude(country__in=["", "Unknown", None])
+        .values("country")
+        .annotate(count=Count("id"))
+        .order_by("-count")
+        .first()
+    )
+    if top_loc_row:
+        top_location = top_loc_row["country"]
+        top_location_count = top_loc_row["count"]
+    else:
+        first_loc = PageVisit.objects.values("country").annotate(count=Count("id")).order_by("-count").first()
+        top_location = "Local / Direct" if (first_loc and first_loc["country"] in ["Unknown", "Local / Direct", ""]) else (first_loc["country"] if first_loc else "Direct / Unspecified")
+        top_location_count = first_loc["count"] if first_loc else 0
+
+    # Top locations breakdown
+    top_locations_list = list(
+        PageVisit.objects
+        .values("country")
+        .annotate(count=Count("id"))
+        .order_by("-count")[:5]
+    )
+    for loc in top_locations_list:
+        if loc["country"] in ["", "Unknown"]:
+            loc["country_display"] = "Local / Direct"
+        else:
+            loc["country_display"] = loc["country"]
+        loc["percentage"] = round((loc["count"] / total_clicks * 100), 1) if total_clicks > 0 else 0
+
+    # Top pages visited
+    top_pages = list(
+        PageVisit.objects
+        .values("page")
+        .annotate(count=Count("id"))
+        .order_by("-count")[:6]
+    )
+
+    # 14-day daily chart data
+    days_14_ago = today - datetime.timedelta(days=13)
+    daily_qs = (
+        PageVisit.objects.filter(timestamp__date__gte=days_14_ago)
+        .annotate(date=TruncDate("timestamp"))
+        .values("date")
+        .annotate(count=Count("id"))
+        .order_by("date")
+    )
+    daily_map = {row["date"]: row["count"] for row in daily_qs}
+    max_daily = max(daily_map.values(), default=1) or 1
+    daily_trend = []
+    for i in range(14):
+        d = days_14_ago + datetime.timedelta(days=i)
+        c = daily_map.get(d, 0)
+        daily_trend.append({
+            "date_str": d.strftime("%d %b"),
+            "count": c,
+            "height_percent": max(8, int((c / max_daily) * 100)) if c > 0 else 4
+        })
+
+    analytics = {
+        "total_clicks": total_clicks,
+        "today_clicks": today_clicks,
+        "last_week_clicks": last_week_clicks,
+        "last_year_clicks": last_year_clicks,
+        "peak_day_formatted": peak_day_formatted,
+        "peak_day_count": peak_day_count,
+        "top_location": top_location,
+        "top_location_count": top_location_count,
+        "top_locations_list": top_locations_list,
+        "top_pages": top_pages,
+        "daily_trend": daily_trend,
+    }
+
     context = {
         "hero": hero,
         "about": about,
@@ -84,6 +184,7 @@ def dashboard_view(request):
         "feedbacks_count": feedbacks.count(),
         "research_count": research_list.count(),
         "ai_count": ai_list.count(),
+        "analytics": analytics,
     }
     return render(request, "dashboard/dashboard.html", context)
 
