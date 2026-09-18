@@ -1,4 +1,6 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -54,7 +56,7 @@ def dashboard_view(request):
     skills = Skill.objects.all().order_by("display_order", "name")
     projects = Project.objects.all().order_by("display_order", "-created_at")
     education_list = Education.objects.all().order_by("display_order", "-end_date")
-    experience_list = Experience.objects.all().order_by("-highlight", "-created_at")
+    experience_list = Experience.objects.all().order_by("display_order", "-highlight", "-created_at")
     ai_list = AILab.objects.all().order_by("-created_at")
     research_list = Research.objects.all().order_by("-created_at")
     contacts = Contact.objects.all().order_by("-timestamp")
@@ -427,3 +429,135 @@ def dashboard_delete_feedback_view(request, feedback_id):
     except Exception as e:
         messages.error(request, f"Failed to delete review: {str(e)}")
     return redirect("dashboard")
+
+
+# ── Drag-and-Drop Reorder API ──────────────────────────────────────────────────
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_reorder_view(request, item_type):
+    if not request.user.is_staff:
+        return JsonResponse({"status": "error", "message": "Administrative clearance required."}, status=403)
+
+    try:
+        data = json.loads(request.body)
+        order_ids = data.get("order", [])
+        if not isinstance(order_ids, list):
+            return JsonResponse({"status": "error", "message": "Invalid ordering payload."}, status=400)
+
+        model_map = {
+            "skills": Skill,
+            "projects": Project,
+            "education": Education,
+            "experience": Experience,
+        }
+
+        model = model_map.get(item_type)
+        if not model:
+            return JsonResponse({"status": "error", "message": f"Unsupported reorder type '{item_type}'."}, status=400)
+
+        for index, item_id in enumerate(order_ids):
+            model.objects.filter(id=item_id).update(display_order=index)
+
+        return JsonResponse({"status": "success", "message": f"{item_type.capitalize()} sequence updated successfully."})
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
+
+# ── Item Edit Handlers ─────────────────────────────────────────────────────────
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_edit_skill_view(request, skill_id):
+    skill = get_object_or_404(Skill, id=skill_id)
+    skill.name = request.POST.get("name", skill.name).strip()
+    skill.category = request.POST.get("category", skill.category).strip()
+    try:
+        skill.level = int(request.POST.get("level", skill.level))
+    except ValueError:
+        pass
+
+    if "icon" in request.FILES:
+        skill.icon = request.FILES["icon"]
+
+    skill.save()
+    messages.success(request, f"Skill '{skill.name}' updated.")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_edit_project_view(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    project.title = request.POST.get("title", project.title).strip()
+    project.status = request.POST.get("status", project.status)
+    project.short_description = request.POST.get("short_description", project.short_description).strip()
+    project.full_description = request.POST.get("full_description", project.full_description).strip()
+    project.github_link = request.POST.get("github_link", "").strip()
+    project.live_link = request.POST.get("live_link", "").strip()
+    project.demo_video_url = request.POST.get("demo_video_url", "").strip()
+    project.featured = request.POST.get("featured") in ["on", "true", "1"]
+
+    if "featured_image" in request.FILES:
+        project.featured_image = request.FILES["featured_image"]
+
+    project.save()
+
+    tags_str = request.POST.get("tech_stack", "")
+    if tags_str:
+        tag_names = [t.strip() for t in tags_str.split(",") if t.strip()]
+        tag_objs = []
+        for name in tag_names:
+            t, _ = Tag.objects.get_or_create(name=name)
+            tag_objs.append(t)
+        project.tech_stack.set(tag_objs)
+
+    messages.success(request, f"Project '{project.title}' updated.")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_edit_education_view(request, education_id):
+    edu = get_object_or_404(Education, id=education_id)
+    edu.degree_name = request.POST.get("degree_name", edu.degree_name).strip()
+    edu.institution_name = request.POST.get("institution_name", edu.institution_name).strip()
+    edu.institution_type = request.POST.get("institution_type", edu.institution_type).strip()
+    edu.result = request.POST.get("result", "").strip()
+    edu.location = request.POST.get("location", "").strip()
+    edu.is_current = request.POST.get("is_current") in ["on", "true", "1"]
+
+    start_date = request.POST.get("start_date")
+    if start_date:
+        edu.start_date = start_date
+    end_date = request.POST.get("end_date")
+    if end_date:
+        edu.end_date = end_date
+    elif "end_date" in request.POST and not end_date:
+        edu.end_date = None
+
+    if "institution_logo" in request.FILES:
+        edu.institution_logo = request.FILES["institution_logo"]
+    if "certificate" in request.FILES:
+        edu.certificate = request.FILES["certificate"]
+
+    edu.save()
+    messages.success(request, f"Academic credential '{edu.degree_name}' updated.")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_edit_experience_view(request, experience_id):
+    exp = get_object_or_404(Experience, id=experience_id)
+    exp.role = request.POST.get("role", exp.role).strip()
+    exp.organization = request.POST.get("organization", exp.organization).strip()
+    exp.duration = request.POST.get("duration", exp.duration).strip()
+    exp.description = request.POST.get("description", exp.description).strip()
+    exp.highlight = request.POST.get("highlight") in ["on", "true", "1"]
+
+    if "logo" in request.FILES:
+        exp.logo = request.FILES["logo"]
+
+    exp.save()
+    messages.success(request, f"Work experience '{exp.role}' updated.")
+    return redirect("dashboard")
+

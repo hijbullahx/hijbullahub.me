@@ -31,7 +31,7 @@ def home_view(request):
     about = About.objects.first()
     skills = Skill.objects.all().order_by("display_order", "name")
     education_list = Education.objects.filter(is_active=True).order_by("display_order", "-end_date")
-    experience_list = Experience.objects.all().order_by("-highlight", "-created_at")
+    experience_list = Experience.objects.all().order_by("display_order", "-highlight", "-created_at")
     achievements = Achievement.objects.all().order_by("-date")
     feedbacks = Feedback.objects.filter(is_visible=True).order_by("display_order", "-created_at")
     

@@ -10,9 +10,10 @@ class Experience(TimeStampedModel):
     duration = models.CharField(max_length=100, blank=True, default="")
     logo = models.ImageField(upload_to="experience/logos/", blank=True, null=True)
     highlight = models.BooleanField(default=False)
+    display_order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ["-highlight", "-created_at"]
+        ordering = ["display_order", "-highlight", "-created_at"]
 
     def __str__(self):
         return f"{self.role} @ {self.organization}"
