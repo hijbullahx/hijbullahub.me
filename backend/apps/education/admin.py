@@ -12,11 +12,13 @@ class EducationAdmin(admin.ModelAdmin):
         'degree_name',
         'institution_name',
         'institution_type',
+        'location',
         'start_date',
         'end_date',
         'is_current',
         'result',
         'institution_logo',
+        'certificate',
         'display_order',
         'is_active',
     )

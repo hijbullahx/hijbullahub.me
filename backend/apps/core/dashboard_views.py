@@ -208,16 +208,43 @@ def dashboard_add_education_view(request):
     institution_name = request.POST.get("institution_name", "").strip()
     result = request.POST.get("result", "").strip()
     location = request.POST.get("location", "").strip()
+    institution_type = request.POST.get("institution_type", "university").strip()
+    is_current = request.POST.get("is_current") in ["on", "true", "1"]
+    start_date = request.POST.get("start_date") or None
+    end_date = request.POST.get("end_date") or None
+    logo = request.FILES.get("institution_logo")
+    certificate = request.FILES.get("certificate")
 
     if degree_name and institution_name:
-        Education.objects.create(
+        edu = Education(
             degree_name=degree_name,
             institution_name=institution_name,
             result=result,
             location=location,
-            is_active=True
+            institution_type=institution_type,
+            is_current=is_current,
+            is_active=True,
         )
+        if start_date:
+            edu.start_date = start_date
+        if end_date:
+            edu.end_date = end_date
+        if logo:
+            edu.institution_logo = logo
+        if certificate:
+            edu.certificate = certificate
+        edu.save()
         messages.success(request, f"Academic credential '{degree_name}' added.")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_delete_education_view(request, education_id):
+    edu = get_object_or_404(Education, id=education_id)
+    name = edu.degree_name
+    edu.delete()
+    messages.success(request, f"Academic credential '{name}' removed.")
     return redirect("dashboard")
 
 
@@ -228,15 +255,31 @@ def dashboard_add_experience_view(request):
     organization = request.POST.get("organization", "").strip()
     duration = request.POST.get("duration", "").strip()
     description = request.POST.get("description", "").strip()
+    highlight = request.POST.get("highlight") in ["on", "true", "1"]
+    logo = request.FILES.get("logo")
 
     if role and organization:
-        Experience.objects.create(
+        exp = Experience(
             role=role,
             organization=organization,
             duration=duration,
-            description=description
+            description=description,
+            highlight=highlight,
         )
+        if logo:
+            exp.logo = logo
+        exp.save()
         messages.success(request, f"Work experience '{role}' added.")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_delete_experience_view(request, experience_id):
+    exp = get_object_or_404(Experience, id=experience_id)
+    role = exp.role
+    exp.delete()
+    messages.success(request, f"Work experience '{role}' removed.")
     return redirect("dashboard")
 
 
@@ -270,6 +313,16 @@ def dashboard_add_ai_lab_view(request):
 
 @login_required(login_url="dashboard_login")
 @require_POST
+def dashboard_delete_ai_lab_view(request, ai_id):
+    item = get_object_or_404(AILab, id=ai_id)
+    title = item.title
+    item.delete()
+    messages.success(request, f"AI/ML experiment '{title}' removed.")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
 def dashboard_add_research_view(request):
     try:
         title = request.POST.get("title", "").strip()
@@ -289,6 +342,16 @@ def dashboard_add_research_view(request):
             messages.success(request, f"Research paper '{title}' registered.")
     except Exception as e:
         messages.error(request, f"Failed to add research paper: {str(e)}")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_delete_research_view(request, research_id):
+    item = get_object_or_404(Research, id=research_id)
+    title = item.title
+    item.delete()
+    messages.success(request, f"Research publication '{title}' removed.")
     return redirect("dashboard")
 
 

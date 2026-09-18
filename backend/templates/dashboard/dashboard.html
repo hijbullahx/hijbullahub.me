@@ -434,19 +434,30 @@
                 <!-- Add Education -->
                 <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Add Academic Credential</h3>
-                    <form action="{% url 'dashboard_add_education' %}" method="POST" class="space-y-4 mt-4">
+                    <p class="text-xs text-slate-500 mb-4">Credentials added here will instantly appear in the Education section on the home page.</p>
+                    <form action="{% url 'dashboard_add_education' %}" method="POST" enctype="multipart/form-data" class="space-y-4">
                         {% csrf_token %}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Degree / Certification Name</label>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Degree / Certification Name *</label>
                                 <input type="text" name="degree_name" required placeholder="e.g. B.Sc. in Computer Science &amp; Engineering" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Institution Name</label>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Institution Name *</label>
                                 <input type="text" name="institution_name" required placeholder="e.g. University of Dhaka" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Institution Type</label>
+                                <select name="institution_type" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white text-sm">
+                                    <option value="university">University</option>
+                                    <option value="college">College</option>
+                                    <option value="school">School</option>
+                                    <option value="madrasah">Madrasah</option>
+                                    <option value="board">Board</option>
+                                </select>
+                            </div>
                             <div>
                                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Result / CGPA</label>
                                 <input type="text" name="result" placeholder="e.g. CGPA 3.90 / 4.00" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
@@ -456,35 +467,135 @@
                                 <input type="text" name="location" placeholder="e.g. Dhaka, Bangladesh" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
                             </div>
                         </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Start Date</label>
+                                <input type="date" name="start_date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">End Date</label>
+                                <input type="date" name="end_date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Institution Logo</label>
+                                <input type="file" name="institution_logo" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/10 file:text-cyan-600 dark:file:text-cyan-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Certificate (PDF or Image)</label>
+                                <input type="file" name="certificate" accept=".pdf,image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/10 file:text-cyan-600 dark:file:text-cyan-400">
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" name="is_current" id="is_current_edu" class="rounded border-slate-300 text-cyan-500 focus:ring-cyan-500">
+                            <label for="is_current_edu" class="text-xs text-slate-700 dark:text-slate-300">Currently studying here (Ongoing)</label>
+                        </div>
                         <button type="submit" class="glow-button px-6 py-2.5 rounded-xl text-white font-semibold text-xs">+ Add Academic Record</button>
                     </form>
+                </div>
+
+                <!-- Existing Education List -->
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Existing Academic Credentials ({{ education_list|length }})</h3>
+                    {% if education_list %}
+                    <div class="space-y-3">
+                        {% for edu in education_list %}
+                        <div class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                {% if edu.institution_logo %}
+                                    <img src="{{ edu.institution_logo.url }}" alt="{{ edu.institution_name }}" class="w-10 h-10 rounded-lg object-cover border border-slate-200 dark:border-white/10">
+                                {% else %}
+                                    <div class="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-lg">🎓</div>
+                                {% endif %}
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-900 dark:text-white">{{ edu.degree_name }}</h4>
+                                    <p class="text-xs text-slate-500">{{ edu.institution_name }} &bull; <span class="text-cyan-600 dark:text-cyan-400 font-medium">{{ edu.passing_year }}</span> {% if edu.result %}&bull; {{ edu.result }}{% endif %}</p>
+                                </div>
+                            </div>
+                            <form action="{% url 'dashboard_delete_education' edu.id %}" method="POST" onsubmit="return confirm('Delete credential: {{ edu.degree_name }}?')">
+                                {% csrf_token %}
+                                <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-red-500/30 text-red-500 hover:bg-red-500/10 transition-colors">Delete</button>
+                            </form>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-xs text-slate-400">No academic credentials currently registered.</p>
+                    {% endif %}
                 </div>
 
                 <!-- Add Experience -->
                 <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Add Work Experience</h3>
-                    <form action="{% url 'dashboard_add_experience' %}" method="POST" class="space-y-4 mt-4">
+                    <p class="text-xs text-slate-500 mb-4">Roles added here will instantly appear in the Experience section on the home page.</p>
+                    <form action="{% url 'dashboard_add_experience' %}" method="POST" enctype="multipart/form-data" class="space-y-4">
                         {% csrf_token %}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Role / Position Title</label>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Role / Position Title *</label>
                                 <input type="text" name="role" required placeholder="e.g. Autonomous Systems Lead" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Organization / Company</label>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Organization / Company *</label>
                                 <input type="text" name="organization" required placeholder="e.g. Robotics Innovation Lab" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Duration / Timeline</label>
-                            <input type="text" name="duration" placeholder="e.g. 2024 - Present" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Duration / Timeline</label>
+                                <input type="text" name="duration" placeholder="e.g. 2024 - Present" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Company Logo</label>
+                                <input type="file" name="logo" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/10 file:text-cyan-600 dark:file:text-cyan-400">
+                            </div>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Responsibilities &amp; Achievements</label>
                             <textarea name="description" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
                         </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" name="highlight" id="exp_highlight" class="rounded border-slate-300 text-amber-500 focus:ring-amber-500">
+                            <label for="exp_highlight" class="text-xs text-slate-700 dark:text-slate-300">Feature this position (Featured Badge)</label>
+                        </div>
                         <button type="submit" class="glow-button px-6 py-2.5 rounded-xl text-white font-semibold text-xs">+ Add Experience Record</button>
                     </form>
+                </div>
+
+                <!-- Existing Experience List -->
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Existing Work Experience ({{ experience_list|length }})</h3>
+                    {% if experience_list %}
+                    <div class="space-y-3">
+                        {% for exp in experience_list %}
+                        <div class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                {% if exp.logo %}
+                                    <img src="{{ exp.logo.url }}" alt="{{ exp.organization }}" class="w-10 h-10 rounded-lg object-cover border border-slate-200 dark:border-white/10">
+                                {% else %}
+                                    <div class="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-lg">💼</div>
+                                {% endif %}
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h4 class="text-sm font-bold text-slate-900 dark:text-white">{{ exp.role }}</h4>
+                                        {% if exp.highlight %}
+                                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold border border-amber-500/20">Featured</span>
+                                        {% endif %}
+                                    </div>
+                                    <p class="text-xs text-slate-500">{{ exp.organization }} &bull; {{ exp.duration }}</p>
+                                </div>
+                            </div>
+                            <form action="{% url 'dashboard_delete_experience' exp.id %}" method="POST" onsubmit="return confirm('Delete role: {{ exp.role }}?')">
+                                {% csrf_token %}
+                                <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-red-500/30 text-red-500 hover:bg-red-500/10 transition-colors">Delete</button>
+                            </form>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-xs text-slate-400">No work experience entries currently registered.</p>
+                    {% endif %}
                 </div>
             </div>
 
@@ -531,6 +642,29 @@
                     </form>
                 </div>
 
+                <!-- Existing AI Experiments List -->
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Existing AI/ML Models ({{ ai_list|length }})</h3>
+                    {% if ai_list %}
+                    <div class="space-y-3">
+                        {% for item in ai_list %}
+                        <div class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-900 dark:text-white">{{ item.title }}</h4>
+                                <p class="text-xs text-slate-500">{{ item.model_name|default:"Model" }} {% if item.accuracy %}&bull; Accuracy: {{ item.accuracy }}%{% endif %}</p>
+                            </div>
+                            <form action="{% url 'dashboard_delete_ai_lab' item.id %}" method="POST" onsubmit="return confirm('Delete AI experiment: {{ item.title }}?')">
+                                {% csrf_token %}
+                                <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-red-500/30 text-red-500 hover:bg-red-500/10 transition-colors">Delete</button>
+                            </form>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-xs text-slate-400">No AI/ML models currently loaded.</p>
+                    {% endif %}
+                </div>
+
                 <!-- Add Research Paper -->
                 <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Publish Research Paper</h3>
@@ -564,6 +698,29 @@
                         </div>
                         <button type="submit" class="glow-button px-6 py-2.5 rounded-xl text-white font-semibold text-xs">+ Save Research Publication</button>
                     </form>
+                </div>
+
+                <!-- Existing Research List -->
+                <div class="glass p-6 md:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Existing Research Publications ({{ research_list|length }})</h3>
+                    {% if research_list %}
+                    <div class="space-y-3">
+                        {% for r in research_list %}
+                        <div class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-900 dark:text-white">{{ r.title }}</h4>
+                                <p class="text-xs text-slate-500">{{ r.contributors|default:"Md. Taher Bin Omar Hijbullah" }} &bull; <span class="capitalize">{{ r.status }}</span></p>
+                            </div>
+                            <form action="{% url 'dashboard_delete_research' r.id %}" method="POST" onsubmit="return confirm('Delete publication: {{ r.title }}?')">
+                                {% csrf_token %}
+                                <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-red-500/30 text-red-500 hover:bg-red-500/10 transition-colors">Delete</button>
+                            </form>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-xs text-slate-400">No research publications registered.</p>
+                    {% endif %}
                 </div>
             </div>
 
