@@ -192,6 +192,7 @@ else:
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+WHITENOISE_USE_FINDERS = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

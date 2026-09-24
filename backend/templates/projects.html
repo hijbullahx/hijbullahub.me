@@ -92,129 +92,132 @@
           View Details
         </button>
       </div>
-
-      <!-- ── Project Details Modal ────────────────────────────── -->
-      <div id="project-modal-{{ project.id }}" class="modal-backdrop hidden">
-        <div class="modal-content relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
-          <div class="relative h-52 md:h-60 overflow-hidden bg-slate-900">
-            {% if project.featured_image %}
-              <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover">
-            {% elif project.images.first %}
-              <img src="{{ project.images.first.image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover">
-            {% else %}
-              <div class="w-full h-full flex items-center justify-center bg-gradient-to-tr from-cyan-500/20 to-emerald-500/20">
-                <span class="text-6xl font-extrabold gradient-text">{{ project.title|slice:":1" }}</span>
-              </div>
-            {% endif %}
-            <button type="button" data-modal-close class="absolute top-4 right-4 p-2.5 bg-black/50 hover:bg-black/80 rounded-full text-white transition-colors z-10">✕</button>
-          </div>
-
-          <div class="p-6 sm:p-8 space-y-5 overflow-y-auto flex-1">
-            <div>
-              <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">{{ project.title }}</h2>
-              <div class="flex flex-wrap gap-1.5 mb-3">
-                {% for tech in project.tech_stack.all %}
-                  <span class="px-2 py-0.5 rounded-md text-xs font-semibold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
-                    {{ tech.name }}
-                  </span>
-                {% endfor %}
-              </div>
-              {% if project.status %}
-                <span class="inline-block px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
-                  {{ project.status }}
-                </span>
-              {% endif %}
-            </div>
-
-            {% if project.problem_statement %}
-              <div>
-                <h3 class="text-sm font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider mb-1">Problem Statement</h3>
-                <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{{ project.problem_statement }}</p>
-              </div>
-            {% endif %}
-
-            {% if project.full_description %}
-              <div>
-                <h3 class="text-sm font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider mb-1">Overview</h3>
-                <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{{ project.full_description }}</p>
-              </div>
-            {% endif %}
-
-            {% if project.architecture_overview %}
-              <div>
-                <h3 class="text-sm font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider mb-1">Architecture</h3>
-                <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{{ project.architecture_overview }}</p>
-              </div>
-            {% endif %}
-
-            <!-- Gallery Images -->
-            {% if project.images.all %}
-              <div>
-                <h3 class="text-sm font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider mb-2">Gallery</h3>
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {% for img in project.images.all %}
-                    <a href="{{ img.image.url }}" target="_blank" class="block aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 hover:opacity-90 transition-opacity">
-                      <img src="{{ img.image.url }}" alt="{{ img.caption|default:project.title }}" class="w-full h-full object-cover">
-                    </a>
-                  {% endfor %}
-                </div>
-              </div>
-            {% endif %}
-
-            <!-- Actions -->
-            <div class="flex flex-wrap gap-3 pt-4 border-t border-slate-200 dark:border-white/10">
-              {% if project.github_link %}
-                <a href="{{ project.github_link }}" target="_blank" rel="noreferrer" class="px-5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20 transition-colors inline-flex items-center gap-1.5">
-                  GitHub Repository ↗
-                </a>
-              {% endif %}
-              {% if project.live_link %}
-                <a href="{{ project.live_link }}" target="_blank" rel="noreferrer" class="px-5 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-white shadow-md inline-flex items-center gap-1.5">
-                  Live Demo ↗
-                </a>
-              {% endif %}
-              <button type="button" data-modal-target="acquisition-modal-{{ project.id }}" class="px-5 py-2 rounded-xl text-xs font-semibold border border-cyan-500 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500/10 transition-colors">
-                Acquisition Inquiry
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── Project Acquisition Inquiry Modal ────────────────────────────── -->
-      <div id="acquisition-modal-{{ project.id }}" class="modal-backdrop hidden">
-        <div class="modal-content relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Project Acquisition</h3>
-            <button type="button" data-modal-close class="text-slate-400 hover:text-white text-lg">✕</button>
-          </div>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
-            Inquiring about: <strong class="text-slate-800 dark:text-white">{{ project.title }}</strong>
-          </p>
-          <form method="POST" action="{% url 'submit_acquisition' %}" class="space-y-3.5">
-            {% csrf_token %}
-            <input type="hidden" name="project_id" value="{{ project.id }}">
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Your Email *</label>
-              <input type="email" name="email" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500" placeholder="you@company.com">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Phone (Optional)</label>
-              <input type="tel" name="phone" class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500" placeholder="+1 (555) 000-0000">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Message / Scope</label>
-              <textarea name="message" rows="3" class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500" placeholder="Tell me about your team and acquisition interest..."></textarea>
-            </div>
-            <div class="flex gap-3 pt-2">
-              <button type="button" data-modal-close class="flex-1 py-2 rounded-xl text-sm font-semibold border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300">Cancel</button>
-              <button type="submit" class="flex-1 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-white shadow-md">Submit Inquiry</button>
-            </div>
-          </form>
-        </div>
-      </div>
     {% endfor %}
   </div>
+
+  <!-- ── Project Modals Container (Rendered outside grid to ensure full-screen overlay) ── -->
+  {% for project in projects %}
+    <!-- ── Project Details Modal ────────────────────────────── -->
+    <div id="project-modal-{{ project.id }}" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+      <div class="modal-content relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+        <div class="relative h-52 md:h-60 overflow-hidden bg-slate-900">
+          {% if project.featured_image %}
+            <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover">
+          {% elif project.images.first %}
+            <img src="{{ project.images.first.image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover">
+          {% else %}
+            <div class="w-full h-full flex items-center justify-center bg-gradient-to-tr from-cyan-500/20 to-emerald-500/20">
+              <span class="text-6xl font-extrabold gradient-text">{{ project.title|slice:":1" }}</span>
+            </div>
+          {% endif %}
+          <button type="button" data-modal-close class="absolute top-4 right-4 p-2.5 bg-black/50 hover:bg-black/80 rounded-full text-white transition-colors z-10">✕</button>
+        </div>
+
+        <div class="p-6 sm:p-8 space-y-5 overflow-y-auto flex-1">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">{{ project.title }}</h2>
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              {% for tech in project.tech_stack.all %}
+                <span class="px-2 py-0.5 rounded-md text-xs font-semibold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+                  {{ tech.name }}
+                </span>
+              {% endfor %}
+            </div>
+            {% if project.status %}
+              <span class="inline-block px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+                {{ project.status }}
+              </span>
+            {% endif %}
+          </div>
+
+          {% if project.problem_statement %}
+            <div>
+              <h3 class="text-sm font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider mb-1">Problem Statement</h3>
+              <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{{ project.problem_statement }}</p>
+            </div>
+          {% endif %}
+
+          {% if project.full_description %}
+            <div>
+              <h3 class="text-sm font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider mb-1">Overview</h3>
+              <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{{ project.full_description }}</p>
+            </div>
+          {% endif %}
+
+          {% if project.architecture_overview %}
+            <div>
+              <h3 class="text-sm font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider mb-1">Architecture</h3>
+              <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{{ project.architecture_overview }}</p>
+            </div>
+          {% endif %}
+
+          <!-- Gallery Images -->
+          {% if project.images.all %}
+            <div>
+              <h3 class="text-sm font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider mb-2">Gallery</h3>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {% for img in project.images.all %}
+                  <a href="{{ img.image.url }}" target="_blank" class="block aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 hover:opacity-90 transition-opacity">
+                    <img src="{{ img.image.url }}" alt="{{ img.caption|default:project.title }}" class="w-full h-full object-cover">
+                  </a>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+
+          <!-- Actions -->
+          <div class="flex flex-wrap gap-3 pt-4 border-t border-slate-200 dark:border-white/10">
+            {% if project.github_link %}
+              <a href="{{ project.github_link }}" target="_blank" rel="noreferrer" class="px-5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20 transition-colors inline-flex items-center gap-1.5">
+                GitHub Repository ↗
+              </a>
+            {% endif %}
+            {% if project.live_link %}
+              <a href="{{ project.live_link }}" target="_blank" rel="noreferrer" class="px-5 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-white shadow-md inline-flex items-center gap-1.5">
+                Live Demo ↗
+              </a>
+            {% endif %}
+            <button type="button" data-modal-target="acquisition-modal-{{ project.id }}" class="px-5 py-2 rounded-xl text-xs font-semibold border border-cyan-500 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500/10 transition-colors">
+              Acquisition Inquiry
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Project Acquisition Inquiry Modal ────────────────────────────── -->
+    <div id="acquisition-modal-{{ project.id }}" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+      <div class="modal-content relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white">Project Acquisition</h3>
+          <button type="button" data-modal-close class="text-slate-400 hover:text-white text-lg">✕</button>
+        </div>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
+          Inquiring about: <strong class="text-slate-800 dark:text-white">{{ project.title }}</strong>
+        </p>
+        <form method="POST" action="{% url 'submit_acquisition' %}" class="space-y-3.5">
+          {% csrf_token %}
+          <input type="hidden" name="project_id" value="{{ project.id }}">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Your Email *</label>
+            <input type="email" name="email" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500" placeholder="you@company.com">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Phone (Optional)</label>
+            <input type="tel" name="phone" class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500" placeholder="+1 (555) 000-0000">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Message / Scope</label>
+            <textarea name="message" rows="3" class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500" placeholder="Tell me about your team and acquisition interest..."></textarea>
+          </div>
+          <div class="flex gap-3 pt-2">
+            <button type="button" data-modal-close class="flex-1 py-2 rounded-xl text-sm font-semibold border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300">Cancel</button>
+            <button type="submit" class="flex-1 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-white shadow-md">Submit Inquiry</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  {% endfor %}
 
   <div id="no-projects-message" class="hidden text-center py-16 text-slate-500 dark:text-slate-400">
     No projects match your search criteria.
