@@ -216,66 +216,68 @@
             </div>
           </div>
         </div>
-
-        <!-- Detail Modal for this Education -->
-        <div id="edu-modal-{{ edu.id }}" class="modal-backdrop hidden">
-          <div class="modal-content relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-cyan-500/30 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
-            <div class="h-28 bg-gradient-to-r from-cyan-600/20 to-emerald-600/20 relative overflow-hidden shrink-0">
-              <button type="button" data-modal-close class="absolute top-4 right-4 p-2 bg-black/40 hover:bg-black/60 rounded-full text-white transition-colors">✕</button>
-            </div>
-            <div class="p-6 sm:p-8 -mt-10 relative flex-1 overflow-y-auto">
-              <div class="flex flex-col items-center text-center">
-                <div class="w-20 h-20 rounded-2xl bg-white dark:bg-slate-800 border-2 border-cyan-500/30 shadow-xl mb-4 relative overflow-hidden flex items-center justify-center">
-                  {% if edu.institution_logo %}
-                    <img src="{{ edu.institution_logo.url }}" alt="{{ edu.institution_name }}" class="w-full h-full object-cover">
-                  {% else %}
-                    <span class="text-3xl">🎓</span>
-                  {% endif %}
-                </div>
-                <h2 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-1">{{ edu.degree_name }}</h2>
-                <p class="text-base text-cyan-600 dark:text-cyan-400 font-semibold mb-2">{{ edu.institution_name }}</p>
-                {% if edu.location %}<p class="text-xs text-slate-500 dark:text-slate-400 mb-6">📍 {{ edu.location }}</p>{% endif %}
-
-                <div class="grid grid-cols-2 gap-4 w-full max-w-md mb-6">
-                  <div class="bg-slate-50 dark:bg-white/5 rounded-xl p-3 border border-slate-200 dark:border-white/10">
-                    <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Timeline</p>
-                    <p class="font-semibold text-slate-900 dark:text-white text-xs sm:text-sm">
-                      {% if edu.is_current %}
-                        {{ edu.start_date|date:"M Y" }} &mdash; Present
-                      {% elif edu.end_date %}
-                        {{ edu.start_date|date:"M Y" }} &mdash; {{ edu.end_date|date:"M Y" }}
-                      {% elif edu.passing_year %}
-                        {{ edu.passing_year }}
-                      {% else %}
-                        {{ edu.start_date|date:"M Y" }}
-                      {% endif %}
-                    </p>
-                  </div>
-                  {% if edu.result %}
-                    <div class="bg-emerald-500/10 rounded-xl p-3 border border-emerald-500/20">
-                      <p class="text-[10px] text-emerald-600/80 dark:text-emerald-400/80 uppercase tracking-wider mb-1">Result</p>
-                      <p class="font-semibold text-emerald-600 dark:text-emerald-400 text-xs sm:text-sm">{{ edu.result }}</p>
-                    </div>
-                  {% endif %}
-                </div>
-              </div>
-
-              {% if edu.description %}
-                <div class="mb-6 bg-slate-50 dark:bg-white/[0.02] p-5 rounded-xl border border-slate-200 dark:border-white/5 text-sm text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed">
-                  {{ edu.description }}
-                </div>
-              {% endif %}
-
-              {% if edu.certificate %}
-                <a href="{{ edu.certificate.url }}" download target="_blank" class="inline-flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-cyan-500 text-white font-semibold text-sm hover:bg-cyan-600 transition-colors shadow-md">
-                  Download Credential File
-                </a>
-              {% endif %}
-            </div>
-          </div>
-        </div>
       {% endfor %}
     </div>
+
+    <!-- Education Modals (Rendered outside glass cards to ensure viewport positioning) -->
+    {% for edu in education|default:education_list %}
+      <div id="edu-modal-{{ edu.id }}" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="modal-content relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-cyan-500/30 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+          <div class="h-28 bg-gradient-to-r from-cyan-600/20 to-emerald-600/20 relative overflow-hidden shrink-0">
+            <button type="button" data-modal-close class="absolute top-4 right-4 p-2 bg-black/40 hover:bg-black/60 rounded-full text-white transition-colors">✕</button>
+          </div>
+          <div class="p-6 sm:p-8 -mt-10 relative flex-1 overflow-y-auto">
+            <div class="flex flex-col items-center text-center">
+              <div class="w-20 h-20 rounded-2xl bg-white dark:bg-slate-800 border-2 border-cyan-500/30 shadow-xl mb-4 relative overflow-hidden flex items-center justify-center">
+                {% if edu.institution_logo %}
+                  <img src="{{ edu.institution_logo.url }}" alt="{{ edu.institution_name }}" class="w-full h-full object-cover">
+                {% else %}
+                  <span class="text-3xl">🎓</span>
+                {% endif %}
+              </div>
+              <h2 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-1">{{ edu.degree_name }}</h2>
+              <p class="text-base text-cyan-600 dark:text-cyan-400 font-semibold mb-2">{{ edu.institution_name }}</p>
+              {% if edu.location %}<p class="text-xs text-slate-500 dark:text-slate-400 mb-6">📍 {{ edu.location }}</p>{% endif %}
+
+              <div class="grid grid-cols-2 gap-4 w-full max-w-md mb-6">
+                <div class="bg-slate-50 dark:bg-white/5 rounded-xl p-3 border border-slate-200 dark:border-white/10">
+                  <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Timeline</p>
+                  <p class="font-semibold text-slate-900 dark:text-white text-xs sm:text-sm">
+                    {% if edu.is_current %}
+                      {{ edu.start_date|date:"M Y" }} &mdash; Present
+                    {% elif edu.end_date %}
+                      {{ edu.start_date|date:"M Y" }} &mdash; {{ edu.end_date|date:"M Y" }}
+                    {% elif edu.passing_year %}
+                      {{ edu.passing_year }}
+                    {% else %}
+                      {{ edu.start_date|date:"M Y" }}
+                    {% endif %}
+                  </p>
+                </div>
+                {% if edu.result %}
+                  <div class="bg-emerald-500/10 rounded-xl p-3 border border-emerald-500/20">
+                    <p class="text-[10px] text-emerald-600/80 dark:text-emerald-400/80 uppercase tracking-wider mb-1">Result</p>
+                    <p class="font-semibold text-emerald-600 dark:text-emerald-400 text-xs sm:text-sm">{{ edu.result }}</p>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            {% if edu.description %}
+              <div class="mb-6 bg-slate-50 dark:bg-white/[0.02] p-5 rounded-xl border border-slate-200 dark:border-white/5 text-sm text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed">
+                {{ edu.description }}
+              </div>
+            {% endif %}
+
+            {% if edu.certificate %}
+              <a href="{{ edu.certificate.url }}" download target="_blank" class="inline-flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-cyan-500 text-white font-semibold text-sm hover:bg-cyan-600 transition-colors shadow-md">
+                Download Credential File
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
   </section>
   {% endif %}
 
@@ -445,7 +447,7 @@
   </section>
 
   <!-- ── Leave a Review Modal ────────────────────────────── -->
-  <div id="leave-review-modal" class="modal-backdrop hidden">
+  <div id="leave-review-modal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
     <div class="modal-content relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-xl font-bold text-slate-900 dark:text-white">Leave Feedback</h3>
@@ -489,7 +491,7 @@
   </div>
 
   <!-- ── Hire Request Drawer ────────────────────────────── -->
-  <div id="hire-drawer" class="drawer hidden p-6 sm:p-8 overflow-y-auto">
+  <div id="hire-drawer" class="drawer hidden fixed top-0 right-0 h-full w-full max-w-md z-50 bg-white dark:bg-[#0B0F19] border-l border-slate-200 dark:border-white/10 shadow-2xl p-6 sm:p-8 overflow-y-auto">
     <div class="flex items-center justify-between pb-4 mb-6 border-b border-slate-200 dark:border-white/10">
       <h3 class="text-xl font-bold text-slate-900 dark:text-white">Engage My Expertise</h3>
       <button type="button" data-modal-close class="text-slate-400 hover:text-white text-lg">✕</button>
