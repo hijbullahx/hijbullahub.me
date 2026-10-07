@@ -16,8 +16,13 @@ def _send_clean_email(subject: str, text_content: str, html_content: str, to_ema
     - Sets appropriate Reply-To
     - Includes crisp plaintext fallback
     - Standard non-spam headers
+    - FQDN HELO identification to comply with strict SMTP servers
     """
     try:
+        from django.core.mail.utils import DNS_NAME
+        local_host = getattr(settings, "EMAIL_LOCAL_HOSTNAME", "hijbullah.me")
+        DNS_NAME._fqdn = local_host
+
         msg = EmailMultiAlternatives(
             subject=subject,
             body=text_content,
@@ -547,3 +552,143 @@ def send_monthly_analytics_report_email(to_email: str = None) -> bool:
         to_email=target,
         reply_to=ADMIN_EMAIL,
     )
+
+
+def send_proposal_custom_reply(
+    name: str,
+    to_email: str,
+    subject: str,
+    reply_message: str,
+    work_details: str = "",
+    rate_info: str = "",
+    duration: str = ""
+) -> bool:
+    """
+    Sends a direct reply from the admin/system email to a client's proposal.
+    Wraps the message in an executive, branded HTML email while keeping clean plaintext fallback.
+    """
+    if not to_email:
+        return False
+
+    ref_card = ""
+    if work_details:
+        meta_bits = []
+        if rate_info:
+            meta_bits.append(f"<strong>Budget / Rate:</strong> {rate_info}")
+        if duration:
+            meta_bits.append(f"<strong>Timeline:</strong> {duration}")
+        meta_html = f"<div style='font-size: 12px; color: #64748b; margin-top: 4px;'>{' &bull; '.join(meta_bits)}</div>" if meta_bits else ""
+
+        ref_card = f"""
+        <div style="background: #f8fafc; border-left: 3px solid #06b6d4; border-radius: 6px; padding: 12px 16px; margin-bottom: 20px;">
+          <div style="font-size: 11px; color: #0891b2; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;">In Reference To Proposal</div>
+          <div style="font-size: 13px; font-weight: 600; color: #0f172a;">{work_details}</div>
+          {meta_html}
+        </div>
+        """
+
+    import html as html_lib
+    paragraphs = [p.strip() for p in reply_message.split("\n") if p.strip()]
+    if not paragraphs:
+        paragraphs = [reply_message.strip()]
+    escaped_paragraphs = [html_lib.escape(p).replace("\n", "<br>") for p in paragraphs]
+    body_html = "".join([f"<p style='font-size: 14px; line-height: 1.7; color: #334155; margin: 0 0 14px 0;'>{p}</p>" for p in escaped_paragraphs])
+
+    card_content = f"{ref_card}{body_html}"
+
+    html = _wrap_html_email(
+        badge_text="Executive Response",
+        heading=subject,
+        lead_text=f"Dear {name or 'Colleague'},",
+        content_card_html=card_content,
+        cta_text="View Interactive Portfolio →",
+        cta_url="https://hijbullah.me"
+    )
+
+    plain = (
+        f"Dear {name},\n\n"
+        f"{reply_message}\n\n"
+        f"--- In Reference To Proposal ---\n"
+        f"Project / Scope: {work_details}\n"
+    )
+    if rate_info:
+        plain += f"Budget / Rate: {rate_info}\n"
+    if duration:
+        plain += f"Duration: {duration}\n"
+    plain += (
+        f"\nBest regards,\n"
+        f"Md. Taher Bin Omar Hijbullah\n"
+        f"AI & Robotics Researcher • Autonomous Systems Architect\n"
+        f"https://hijbullah.me\n"
+    )
+
+    return _send_clean_email(
+        subject=subject,
+        text_content=plain,
+        html_content=html,
+        to_email=to_email,
+        reply_to=ADMIN_EMAIL,
+    )
+
+
+def send_contact_custom_reply(
+    name: str,
+    to_email: str,
+    subject: str,
+    reply_message: str,
+    original_subject: str = "",
+    original_message: str = ""
+) -> bool:
+    """Sends a direct response email to a general inquiry transmission."""
+    if not to_email:
+        return False
+
+    import html as html_lib
+    ref_card = ""
+    if original_subject or original_message:
+        esc_orig_sub = html_lib.escape(original_subject)
+        esc_orig_msg = html_lib.escape(original_message)
+        ref_card = f"""
+        <div style="background: #f8fafc; border-left: 3px solid #06b6d4; border-radius: 6px; padding: 12px 16px; margin-bottom: 20px;">
+          <div style="font-size: 11px; color: #0891b2; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;">In Reference To Transmission: {esc_orig_sub}</div>
+          {f'<div style="font-size: 12px; color: #64748b; margin-top: 4px; font-style: italic;">&ldquo;{esc_orig_msg}&rdquo;</div>' if esc_orig_msg else ''}
+        </div>
+        """
+
+    paragraphs = [p.strip() for p in reply_message.split("\n") if p.strip()]
+    if not paragraphs:
+        paragraphs = [reply_message.strip()]
+    escaped_paragraphs = [html_lib.escape(p).replace("\n", "<br>") for p in paragraphs]
+    body_html = "".join([f"<p style='font-size: 14px; line-height: 1.7; color: #334155; margin: 0 0 14px 0;'>{p}</p>" for p in escaped_paragraphs])
+
+    card_content = f"{ref_card}{body_html}"
+
+    html = _wrap_html_email(
+        badge_text="Executive Response",
+        heading=subject,
+        lead_text=f"Dear {name or 'Colleague'},",
+        content_card_html=card_content,
+        cta_text="View Interactive Portfolio →",
+        cta_url="https://hijbullah.me"
+    )
+
+    plain = (
+        f"Dear {name},\n\n"
+        f"{reply_message}\n\n"
+        f"--- In Reference To Your Message ---\n"
+        f"Subject: {original_subject}\n"
+        f"{original_message}\n\n"
+        f"Best regards,\n"
+        f"Md. Taher Bin Omar Hijbullah\n"
+        f"AI & Robotics Researcher • Autonomous Systems Architect\n"
+        f"https://hijbullah.me\n"
+    )
+
+    return _send_clean_email(
+        subject=subject,
+        text_content=plain,
+        html_content=html,
+        to_email=to_email,
+        reply_to=ADMIN_EMAIL,
+    )
+
