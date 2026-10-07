@@ -1,117 +1,170 @@
 {% extends 'base.html' %}
 
-{% block title %}Custom Control Center | HijbullahHub{% endblock %}
+{% block title %}Executive Studio — HijbullahHub{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
 
-    <!-- Top Executive Header Bar -->
-    <div class="glass p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-lg mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 to-emerald-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-md shadow-cyan-500/20">
+    <!-- Top Executive Studio Header -->
+    <div class="card-technical p-5 sm:p-7 rounded-2xl border border-white/10 mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+        <div class="flex items-start sm:items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-[#171A1C] border border-white/10 flex items-center justify-center text-teal-400 font-mono text-lg font-bold shrink-0">
                 H
             </div>
             <div>
-                <div class="flex items-center gap-2">
-                    <h1 class="text-xl font-bold text-slate-900 dark:text-white">Custom Executive Studio</h1>
-                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 uppercase tracking-wider">Master Control</span>
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                    <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Executive Studio</h1>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-teal-500/10 text-teal-400 border border-teal-500/20 uppercase tracking-wider">Workspace</span>
                 </div>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Authenticated as <strong class="text-slate-700 dark:text-slate-200">{{ request.user.username }}</strong> • Live synchronized with portfolio</p>
+                <p class="text-xs text-slate-300">
+                    Manage your portfolio, research, projects, and professional inquiries.
+                </p>
+                <div class="flex flex-wrap items-center gap-2 mt-2 text-[11px] font-mono text-slate-400">
+                    <span class="text-slate-300 font-semibold">Md. Taher Bin Omar Hijbullah</span>
+                    <span class="text-slate-600">&bull;</span>
+                    <span>Python / Django Developer &bull; AI/ML Enthusiast &bull; Research Enthusiast</span>
+                    <span class="text-slate-600">&bull;</span>
+                    <span class="text-slate-400">User: <strong class="text-slate-200">{{ request.user.username }}</strong></span>
+                </div>
             </div>
         </div>
 
-        <div class="flex items-center gap-3 flex-wrap">
-            <a href="{% url 'home' %}" target="_blank" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:border-cyan-500/40 transition-all flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                <span>View Public Site</span>
+        <div class="flex items-center gap-2.5 flex-wrap self-stretch sm:self-auto justify-end">
+            <a href="{% url 'home' %}" target="_blank" class="px-3.5 py-2 rounded-lg text-xs font-mono font-medium bg-white/[0.04] text-slate-300 hover:text-white hover:bg-white/[0.08] border border-white/10 transition-colors flex items-center gap-1.5" title="Open public portfolio in new tab">
+                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                <span>Public Site &nearr;</span>
             </a>
-            <a href="/admin/" target="_blank" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:border-purple-500/40 transition-all flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                <span>Raw Database Admin</span>
+            <a href="/admin/" target="_blank" class="px-3.5 py-2 rounded-lg text-xs font-mono font-medium bg-white/[0.04] text-slate-300 hover:text-white hover:bg-white/[0.08] border border-white/10 transition-colors flex items-center gap-1.5" title="Access raw database admin">
+                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <span>Database Admin &nearr;</span>
             </a>
-            <a href="{% url 'dashboard_logout' %}" class="px-4 py-2 rounded-xl text-xs font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 hover:bg-rose-500/20 transition-all flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            <a href="{% url 'dashboard_logout' %}" class="px-3.5 py-2 rounded-lg text-xs font-mono font-medium bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 border border-rose-500/20 transition-colors flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                 <span>Logout</span>
             </a>
         </div>
     </div>
 
-    <!-- 100 KB Image Upload Directive Banner -->
-    <div class="mb-8 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-amber-600 dark:text-amber-300">
-        <div class="flex items-center gap-2.5">
-            <svg class="w-5 h-5 shrink-0 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <div>
-                <strong>Performance Directive:</strong> All uploaded images are limited to <strong>&le; 100 KB</strong> to maintain instantaneous page loads and low bandwidth consumption.
+    <!-- Image Performance Guideline (Preserved compact directive) -->
+    <div class="mb-6 p-3.5 rounded-xl bg-[#171A1C] border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-slate-300">
+        <div class="flex items-center gap-2.5 min-w-0">
+            <span class="w-2 h-2 rounded-full bg-teal-400 shrink-0"></span>
+            <div class="leading-relaxed">
+                <strong class="text-white font-semibold">Asset Optimization Guideline:</strong> Uploaded images are restricted to <strong class="text-teal-400">&le; 100 KB</strong> to sustain fast loading speeds.
             </div>
         </div>
-        <div class="flex items-center gap-2 shrink-0">
-            <span class="text-[11px] opacity-80">Free Compressors:</span>
-            <a href="https://tinyjpg.com" target="_blank" rel="noreferrer" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 font-bold transition-colors">TinyPNG ↗</a>
-            <a href="https://squoosh.app" target="_blank" rel="noreferrer" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 font-bold transition-colors">Squoosh ↗</a>
+        <div class="flex items-center gap-2 shrink-0 text-[11px] font-mono text-slate-400">
+            <span>Free Compressors:</span>
+            <a href="https://tinyjpg.com" target="_blank" rel="noreferrer" class="px-2 py-0.5 rounded bg-white/[0.04] hover:bg-white/[0.08] text-teal-400 hover:text-teal-300 border border-white/10 transition-colors">TinyPNG &nearr;</a>
+            <a href="https://squoosh.app" target="_blank" rel="noreferrer" class="px-2 py-0.5 rounded bg-white/[0.04] hover:bg-white/[0.08] text-teal-400 hover:text-teal-300 border border-white/10 transition-colors">Squoosh &nearr;</a>
         </div>
     </div>
 
+    <!-- Mobile Navigation Toggle (Visible on screens < lg) -->
+    <div class="lg:hidden mb-5">
+        <button type="button" onclick="toggleMobileDashNav()" class="w-full card-technical p-3.5 flex items-center justify-between text-xs font-medium text-slate-200 border border-white/10 rounded-xl" aria-expanded="false" aria-controls="dash-sidebar-nav">
+            <div class="flex items-center gap-2.5">
+                <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+                <span class="font-mono uppercase tracking-wider text-[11px] text-slate-400">Current Section:</span>
+                <span id="dash-mobile-current-tab" class="font-semibold text-white">Overview &amp; Stats</span>
+            </div>
+            <span id="dash-mobile-nav-arrow" class="text-teal-400 font-mono text-xs">Menu &darr;</span>
+        </button>
+    </div>
+
     <!-- Main Dashboard Grid Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
-        <!-- Sidebar Tabs -->
-        <div class="lg:col-span-3 glass p-4 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-1.5 sticky top-24">
-            <button onclick="switchTab('overview')" id="tab-btn-overview" class="dash-tab-btn active w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-                <span>Overview &amp; Stats</span>
-            </button>
+        <!-- Sidebar Navigation (Grouped Information Architecture) -->
+        <aside id="dash-sidebar-nav" class="hidden lg:block lg:col-span-3 card-technical p-3 sm:p-4 rounded-2xl border border-white/10 space-y-4 lg:sticky lg:top-20">
 
-            <button onclick="switchTab('hero')" id="tab-btn-hero" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span>Hero &amp; Profile</span>
-            </button>
+            <!-- ── GROUP: OVERVIEW ── -->
+            <div class="space-y-1">
+                <span class="text-[10px] font-mono uppercase tracking-widest text-slate-500 px-3 block mb-1">
+                    Overview
+                </span>
+                <button onclick="switchTab('overview')" id="tab-btn-overview" class="dash-tab-btn active w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-all">
+                    <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                    <span>Overview &amp; Stats</span>
+                </button>
+            </div>
 
-            <button onclick="switchTab('about')" id="tab-btn-about" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-                <span>About &amp; Mission</span>
-            </button>
+            <!-- ── GROUP: CONTENT ── -->
+            <div class="space-y-1 pt-3 border-t border-white/[0.06]">
+                <span class="text-[10px] font-mono uppercase tracking-widest text-slate-500 px-3 block mb-1">
+                    Content
+                </span>
+                <button onclick="switchTab('hero')" id="tab-btn-hero" class="dash-tab-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-all">
+                    <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Profile</span>
+                </button>
 
-            <button onclick="switchTab('skills')" id="tab-btn-skills" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-                <span>Skills &amp; Mastery</span>
-            </button>
+                <button onclick="switchTab('about')" id="tab-btn-about" class="dash-tab-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-all">
+                    <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                    <span>About &amp; Mission</span>
+                </button>
 
-            <button onclick="switchTab('projects')" id="tab-btn-projects" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
-                <span>Projects Portfolio</span>
-            </button>
+                <button onclick="switchTab('skills')" id="tab-btn-skills" class="dash-tab-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-all">
+                    <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                    <span>Skills &amp; Mastery</span>
+                </button>
 
-            <button onclick="switchTab('education')" id="tab-btn-education" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5"/></svg>
-                <span>Education &amp; Work</span>
-            </button>
+                <button onclick="switchTab('projects')" id="tab-btn-projects" class="dash-tab-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-all">
+                    <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+                    <span>Projects</span>
+                </button>
 
-            <button onclick="switchTab('ai-research')" id="tab-btn-ai-research" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
-                <span>AI Lab &amp; Research</span>
-            </button>
+                <button onclick="switchTab('education')" id="tab-btn-education" class="dash-tab-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-all">
+                    <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5"/></svg>
+                    <span>Education &amp; Experience</span>
+                </button>
 
-            <button onclick="switchTab('messages')" id="tab-btn-messages" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-                <span>Transmissions &amp; Leads</span>
-            </button>
+                <button onclick="switchTab('ai-research')" id="tab-btn-ai-research" class="dash-tab-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-all">
+                    <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                    <span>AI/ML Lab &amp; Research</span>
+                </button>
+            </div>
 
-            <button onclick="switchTab('feedbacks')" id="tab-btn-feedbacks" class="dash-tab-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
-                <div class="flex items-center gap-3">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
-                    <span>Feedback &amp; Reviews</span>
-                </div>
-                <span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-500/10 text-amber-500 border border-amber-500/20 font-bold">{{ feedbacks_count }}</span>
-            </button>
+            <!-- ── GROUP: COMMUNICATION ── -->
+            <div class="space-y-1 pt-3 border-t border-white/[0.06]">
+                <span class="text-[10px] font-mono uppercase tracking-widest text-slate-500 px-3 block mb-1">
+                    Communication
+                </span>
+                <button onclick="switchTab('messages')" id="tab-btn-messages" class="dash-tab-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-all">
+                    <div class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                        <span>Messages &amp; Inquiries</span>
+                    </div>
+                    {% if unread_contacts_count %}
+                        <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-teal-500/10 text-teal-400 border border-teal-500/20 font-semibold">{{ unread_contacts_count }}</span>
+                    {% endif %}
+                </button>
 
-            <button onclick="switchTab('settings')" id="tab-btn-settings" class="dash-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                <span>Site Configuration</span>
-            </button>
-        </div>
+                <button onclick="switchTab('feedbacks')" id="tab-btn-feedbacks" class="dash-tab-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-all">
+                    <div class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+                        <span>Feedback &amp; Reviews</span>
+                    </div>
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white/[0.04] text-slate-400 border border-white/[0.06]">{{ feedbacks_count }}</span>
+                </button>
+            </div>
+
+            <!-- ── GROUP: SYSTEM ── -->
+            <div class="space-y-1 pt-3 border-t border-white/[0.06]">
+                <span class="text-[10px] font-mono uppercase tracking-widest text-slate-500 px-3 block mb-1">
+                    System
+                </span>
+                <button onclick="switchTab('settings')" id="tab-btn-settings" class="dash-tab-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-all">
+                    <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <span>Site Configuration</span>
+                </button>
+            </div>
+
+        </aside>
 
         <!-- Main Content Panes -->
         <div class="lg:col-span-9 space-y-6">
+
 
             <!-- ── TAB 1: OVERVIEW ──────────────────────────────────────── -->
             <div id="pane-overview" class="dash-pane space-y-6">
@@ -1553,20 +1606,21 @@
 <style>
 /* ── Tab Switch Transitions ─────────────────────────────────────────── */
 .dash-tab-btn {
-    color: #94a3b8;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    color: #94A3B8;
+    transition: all 0.18s ease;
 }
 .dash-tab-btn:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    color: #38bdf8;
-    transform: translateX(4px);
+    background-color: rgba(255, 255, 255, 0.04);
+    color: #FFFFFF;
 }
 .dash-tab-btn.active {
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(16, 185, 129, 0.1));
-    border: 1px solid rgba(6, 182, 212, 0.3);
-    color: #38bdf8;
-    box-shadow: 0 4px 20px -5px rgba(6, 182, 212, 0.25);
-    transform: translateX(4px);
+    background-color: rgba(20, 184, 166, 0.12);
+    border: 1px solid rgba(20, 184, 166, 0.3);
+    color: #2DD4BF;
+    font-weight: 600;
+}
+.dash-tab-btn.active svg {
+    color: #2DD4BF;
 }
 
 @keyframes dashPaneEnter {
@@ -1588,8 +1642,8 @@
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .dash-item-card:hover {
-    border-color: rgba(6, 182, 212, 0.35);
-    box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.15);
+    border-color: rgba(20, 184, 166, 0.35);
+    box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.2);
     transform: translateY(-1px);
 }
 
@@ -1612,8 +1666,8 @@
 
 .sortable-ghost {
     opacity: 0.35;
-    background: rgba(6, 182, 212, 0.15) !important;
-    border: 1px dashed #06b6d4 !important;
+    background: rgba(20, 184, 166, 0.15) !important;
+    border: 1px dashed #14B8A6 !important;
 }
 </style>
 
@@ -1621,6 +1675,16 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
 <script>
+function toggleMobileDashNav() {
+    const nav = document.getElementById('dash-sidebar-nav');
+    const arrow = document.getElementById('dash-mobile-nav-arrow');
+    if (nav) {
+        const isHidden = nav.classList.contains('hidden');
+        nav.classList.toggle('hidden', !isHidden);
+        if (arrow) arrow.innerHTML = isHidden ? 'Menu &uarr;' : 'Menu &darr;';
+    }
+}
+
 function switchTab(tabId) {
     document.querySelectorAll('.dash-pane').forEach(p => p.classList.add('hidden'));
     document.querySelectorAll('.dash-tab-btn').forEach(b => b.classList.remove('active'));
@@ -1629,6 +1693,21 @@ function switchTab(tabId) {
     const targetBtn = document.getElementById('tab-btn-' + tabId);
     if (targetPane) targetPane.classList.remove('hidden');
     if (targetBtn) targetBtn.classList.add('active');
+
+    const mobileLabel = document.getElementById('dash-mobile-current-tab');
+    if (mobileLabel && targetBtn) {
+        const labelText = targetBtn.querySelector('span')?.textContent || tabId;
+        mobileLabel.textContent = labelText;
+    }
+
+    if (window.innerWidth < 1024) {
+        const nav = document.getElementById('dash-sidebar-nav');
+        if (nav && !nav.classList.contains('hidden')) {
+            nav.classList.add('hidden');
+            const arrow = document.getElementById('dash-mobile-nav-arrow');
+            if (arrow) arrow.innerHTML = 'Menu &darr;';
+        }
+    }
 
     sessionStorage.setItem('active_dash_tab', tabId);
 }
