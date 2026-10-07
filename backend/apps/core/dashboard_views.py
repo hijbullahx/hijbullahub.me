@@ -3,7 +3,7 @@ import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.utils import timezone
@@ -52,6 +52,7 @@ def dashboard_logout_view(request):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_send_monthly_report_view(request):
     """Admin endpoint to dispatch live 30-day analytics report email on demand."""
@@ -70,6 +71,7 @@ def dashboard_send_monthly_report_view(request):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 def dashboard_view(request):
     if not request.user.is_staff:
         messages.error(request, "Administrative clearance required.")
@@ -209,6 +211,7 @@ def dashboard_view(request):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_update_hero_view(request):
     try:
@@ -231,6 +234,7 @@ def dashboard_update_hero_view(request):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_update_about_view(request):
     try:
@@ -254,6 +258,7 @@ def dashboard_update_about_view(request):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_add_skill_view(request):
     name = request.POST.get("name", "").strip()
@@ -272,6 +277,7 @@ def dashboard_add_skill_view(request):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_delete_skill_view(request, skill_id):
     skill = get_object_or_404(Skill, id=skill_id)
@@ -282,6 +288,7 @@ def dashboard_delete_skill_view(request, skill_id):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_add_project_view(request):
     try:
@@ -316,6 +323,7 @@ def dashboard_add_project_view(request):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_delete_project_view(request, project_id):
     project = get_object_or_404(Project, id=project_id)
@@ -326,6 +334,7 @@ def dashboard_delete_project_view(request, project_id):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_add_education_view(request):
     degree_name = request.POST.get("degree_name", "").strip()
@@ -363,6 +372,7 @@ def dashboard_add_education_view(request):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_delete_education_view(request, education_id):
     edu = get_object_or_404(Education, id=education_id)
@@ -373,6 +383,7 @@ def dashboard_delete_education_view(request, education_id):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_add_experience_view(request):
     role = request.POST.get("role", "").strip()
@@ -398,6 +409,7 @@ def dashboard_add_experience_view(request):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_delete_experience_view(request, experience_id):
     exp = get_object_or_404(Experience, id=experience_id)
@@ -408,6 +420,7 @@ def dashboard_delete_experience_view(request, experience_id):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_add_ai_lab_view(request):
     title = request.POST.get("title", "").strip()
@@ -436,6 +449,7 @@ def dashboard_add_ai_lab_view(request):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_delete_ai_lab_view(request, ai_id):
     item = get_object_or_404(AILab, id=ai_id)
@@ -446,6 +460,7 @@ def dashboard_delete_ai_lab_view(request, ai_id):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_add_research_view(request):
     try:
@@ -470,6 +485,7 @@ def dashboard_add_research_view(request):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_delete_research_view(request, research_id):
     item = get_object_or_404(Research, id=research_id)
@@ -480,6 +496,7 @@ def dashboard_delete_research_view(request, research_id):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_delete_contact_view(request, contact_id):
     contact = get_object_or_404(Contact, id=contact_id)
@@ -489,6 +506,7 @@ def dashboard_delete_contact_view(request, contact_id):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_update_settings_view(request):
     try:
@@ -508,6 +526,7 @@ def dashboard_update_settings_view(request):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_toggle_feedback_view(request, feedback_id):
     try:
@@ -522,6 +541,7 @@ def dashboard_toggle_feedback_view(request, feedback_id):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_reply_feedback_view(request, feedback_id):
     try:
@@ -541,6 +561,7 @@ def dashboard_reply_feedback_view(request, feedback_id):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_delete_feedback_view(request, feedback_id):
     try:
@@ -555,6 +576,7 @@ def dashboard_delete_feedback_view(request, feedback_id):
 
 # ── Drag-and-Drop Reorder API ──────────────────────────────────────────────────
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_reorder_view(request, item_type):
     if not request.user.is_staff:
@@ -587,6 +609,7 @@ def dashboard_reorder_view(request, item_type):
 
 # ── Item Edit Handlers ─────────────────────────────────────────────────────────
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_edit_skill_view(request, skill_id):
     skill = get_object_or_404(Skill, id=skill_id)
@@ -606,6 +629,7 @@ def dashboard_edit_skill_view(request, skill_id):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_edit_project_view(request, project_id):
     project = get_object_or_404(Project, id=project_id)
@@ -641,6 +665,7 @@ def dashboard_edit_project_view(request, project_id):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_edit_education_view(request, education_id):
     edu = get_object_or_404(Education, id=education_id)
@@ -671,6 +696,7 @@ def dashboard_edit_education_view(request, education_id):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_edit_experience_view(request, experience_id):
     exp = get_object_or_404(Experience, id=experience_id)
@@ -689,6 +715,7 @@ def dashboard_edit_experience_view(request, experience_id):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_reply_hire_view(request, hire_id):
     if not request.user.is_staff:
@@ -733,6 +760,7 @@ def dashboard_reply_hire_view(request, hire_id):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_delete_hire_view(request, hire_id):
     if not request.user.is_staff:
@@ -747,6 +775,7 @@ def dashboard_delete_hire_view(request, hire_id):
 
 
 @login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
 @require_POST
 def dashboard_reply_contact_view(request, contact_id):
     if not request.user.is_staff:

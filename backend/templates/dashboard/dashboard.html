@@ -30,11 +30,11 @@
         </div>
 
         <div class="flex items-center gap-2.5 flex-wrap self-stretch sm:self-auto justify-end">
-            <a href="{% url 'home' %}" target="_blank" class="px-3.5 py-2 rounded-lg text-xs font-mono font-medium bg-white/[0.04] text-slate-300 hover:text-white hover:bg-white/[0.08] border border-white/10 transition-colors flex items-center gap-1.5" title="Open public portfolio in new tab">
+            <a href="{% url 'home' %}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-lg text-xs font-mono font-medium bg-white/[0.04] text-slate-300 hover:text-white hover:bg-white/[0.08] border border-white/10 transition-colors flex items-center gap-1.5" title="Open public portfolio in new tab">
                 <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                 <span>Public Site &nearr;</span>
             </a>
-            <a href="/admin/" target="_blank" class="px-3.5 py-2 rounded-lg text-xs font-mono font-medium bg-white/[0.04] text-slate-300 hover:text-white hover:bg-white/[0.08] border border-white/10 transition-colors flex items-center gap-1.5" title="Access raw database admin">
+            <a href="/admin/" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-lg text-xs font-mono font-medium bg-white/[0.04] text-slate-300 hover:text-white hover:bg-white/[0.08] border border-white/10 transition-colors flex items-center gap-1.5" title="Access raw database admin">
                 <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 <span>Database Admin &nearr;</span>
             </a>
@@ -55,8 +55,8 @@
         </div>
         <div class="flex items-center gap-2 shrink-0 text-[11px] font-mono text-slate-400">
             <span>Free Compressors:</span>
-            <a href="https://tinyjpg.com" target="_blank" rel="noreferrer" class="px-2 py-0.5 rounded bg-white/[0.04] hover:bg-white/[0.08] text-teal-400 hover:text-teal-300 border border-white/10 transition-colors">TinyPNG &nearr;</a>
-            <a href="https://squoosh.app" target="_blank" rel="noreferrer" class="px-2 py-0.5 rounded bg-white/[0.04] hover:bg-white/[0.08] text-teal-400 hover:text-teal-300 border border-white/10 transition-colors">Squoosh &nearr;</a>
+            <a href="https://tinyjpg.com" target="_blank" rel="noopener noreferrer" class="px-2 py-0.5 rounded bg-white/[0.04] hover:bg-white/[0.08] text-teal-400 hover:text-teal-300 border border-white/10 transition-colors">TinyPNG &nearr;</a>
+            <a href="https://squoosh.app" target="_blank" rel="noopener noreferrer" class="px-2 py-0.5 rounded bg-white/[0.04] hover:bg-white/[0.08] text-teal-400 hover:text-teal-300 border border-white/10 transition-colors">Squoosh &nearr;</a>
         </div>
     </div>
 
@@ -466,7 +466,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Professional Tagline *</label>
-                                        <input type="text" name="tagline" value="{{ hero.tagline|default:'Robotics Researcher • Autonomous Systems Architect' }}" required class="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.08] bg-[#171A1C] text-white text-sm focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30 transition-all placeholder:text-slate-600">
+                                        <input type="text" name="tagline" value="{{ hero.tagline|default:'Python / Django Developer • AI/ML Enthusiast • Research Enthusiast' }}" required class="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.08] bg-[#171A1C] text-white text-sm focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30 transition-all placeholder:text-slate-600">
                                         <span class="text-[11px] text-slate-500 mt-1 block">Animated or comma-separated specialties.</span>
                                     </div>
                                 </div>
@@ -574,7 +574,7 @@
                                     <h3 class="text-sm font-semibold text-white">Vision 2030 Strategic Trajectory</h3>
                                     <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20">Directive B</span>
                                 </div>
-                                <p class="text-xs text-slate-400 mb-3">Long-term vision outlining technological impact, robotics autonomy, and research aspirations.</p>
+                                <p class="text-xs text-slate-400 mb-3">Long-term vision outlining technological impact, software architecture, and research aspirations.</p>
 
                                 <div>
                                     <label class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Vision 2030 Roadmap *</label>
@@ -1120,7 +1120,7 @@
                                             {% endif %}
                                             {% if edu.certificate %}
                                             <span>&bull;</span>
-                                            <a href="{{ edu.certificate.url }}" target="_blank" class="text-teal-400 hover:text-teal-300 hover:underline inline-flex items-center gap-1 font-mono text-[11px]">
+                                            <a href="{{ edu.certificate.url }}" target="_blank" rel="noopener noreferrer" class="text-teal-400 hover:text-teal-300 hover:underline inline-flex items-center gap-1 font-mono text-[11px]">
                                                 <span>Certificate</span>
                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                             </a>
@@ -1178,11 +1178,11 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Role / Position Title *</label>
-                                    <input type="text" name="role" required placeholder="e.g. Autonomous Systems Lead" class="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.08] bg-[#171A1C] text-white text-sm focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30 transition-all placeholder:text-slate-600">
+                                    <input type="text" name="role" required placeholder="e.g. Python / Django Developer" class="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.08] bg-[#171A1C] text-white text-sm focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30 transition-all placeholder:text-slate-600">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Organization / Company *</label>
-                                    <input type="text" name="organization" required placeholder="e.g. Robotics Innovation Lab" class="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.08] bg-[#171A1C] text-white text-sm focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30 transition-all placeholder:text-slate-600">
+                                    <input type="text" name="organization" required placeholder="e.g. Software / Technology Company" class="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.08] bg-[#171A1C] text-white text-sm focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30 transition-all placeholder:text-slate-600">
                                 </div>
                             </div>
 
@@ -1780,7 +1780,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div>
                                 <label class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Executive Site Title *</label>
-                                <input type="text" name="site_title" value="{{ site_setting.site_title|default:'Md. Taher Bin Omar Hijbullah | AI & Robotics Executive Portfolio' }}" required class="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.08] bg-[#171A1C] text-white text-sm focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30 transition-all placeholder:text-slate-600">
+                                <input type="text" name="site_title" value="{{ site_setting.site_title|default:'Md. Taher Bin Omar Hijbullah | Developer & Research Portfolio' }}" required class="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.08] bg-[#171A1C] text-white text-sm focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30 transition-all placeholder:text-slate-600">
                                 <span class="text-[11px] text-slate-500 mt-1 block">Title tag displayed in browser tabs and search engine results.</span>
                             </div>
 
@@ -2589,7 +2589,7 @@ Could you let me know your availability for a brief technical alignment call thi
 
 Best regards,
 Md. Taher Bin Omar Hijbullah
-AI & Robotics Researcher • Autonomous Systems Architect
+Python / Django Developer • AI/ML Enthusiast • Research Enthusiast
 https://hijbullah.me`;
     }
 
@@ -2618,7 +2618,7 @@ Let's schedule a kickoff call to align on technical milestones, deliverables, an
 
 Best regards,
 Md. Taher Bin Omar Hijbullah
-AI & Robotics Researcher • Autonomous Systems Architect
+Python / Django Developer • AI/ML Enthusiast • Research Enthusiast
 https://hijbullah.me`;
         }
     } else if (type === 'clarify') {
@@ -2638,7 +2638,7 @@ Looking forward to your feedback so we can structure the next steps.
 
 Best regards,
 Md. Taher Bin Omar Hijbullah
-AI & Robotics Researcher • Autonomous Systems Architect
+Python / Django Developer • AI/ML Enthusiast • Research Enthusiast
 https://hijbullah.me`;
         }
     } else if (type === 'rate') {
@@ -2655,7 +2655,7 @@ Let me know if we can have a brief discussion or if you prefer detailing the sco
 
 Best regards,
 Md. Taher Bin Omar Hijbullah
-AI & Robotics Researcher • Autonomous Systems Architect
+Python / Django Developer • AI/ML Enthusiast • Research Enthusiast
 https://hijbullah.me`;
         }
     } else if (type === 'decline') {
@@ -2672,7 +2672,7 @@ I appreciate your interest in my work and hope we can collaborate on future engi
 
 Best regards,
 Md. Taher Bin Omar Hijbullah
-AI & Robotics Researcher • Autonomous Systems Architect
+Python / Django Developer • AI/ML Enthusiast • Research Enthusiast
 https://hijbullah.me`;
         }
     }
@@ -2700,7 +2700,7 @@ I have reviewed your message and would like to follow up directly.
 
 Best regards,
 Md. Taher Bin Omar Hijbullah
-AI & Robotics Researcher • Autonomous Systems Architect
+Python / Django Developer • AI/ML Enthusiast • Research Enthusiast
 https://hijbullah.me`;
     }
 
@@ -2804,7 +2804,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const file = this.files[0];
             const sizeKB = (file.size / 1024).toFixed(1);
             if (file.size > 100 * 1024) {
-                statusDiv.innerHTML = `<span class="text-rose-500 font-bold">⚠️ ${sizeKB} KB — Exceeds 100 KB limit! Compress at <a href="https://tinyjpg.com" target="_blank" class="underline font-black">tinyjpg.com</a> first.</span>`;
+                statusDiv.innerHTML = `<span class="text-rose-500 font-bold">⚠️ ${sizeKB} KB — Exceeds 100 KB limit! Compress at <a href="https://tinyjpg.com" target="_blank" rel="noopener noreferrer" class="underline font-black">tinyjpg.com</a> first.</span>`;
                 this.value = '';
             } else {
                 statusDiv.innerHTML = `<span class="text-emerald-500 font-semibold">✓ ${sizeKB} KB (Approved &le; 100 KB)</span>`;
