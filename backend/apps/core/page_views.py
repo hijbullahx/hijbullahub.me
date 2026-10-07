@@ -40,6 +40,14 @@ def home_view(request):
     ai_count = AILab.objects.count()
     research_count = Research.objects.count()
 
+    # Curated items for homepage storytelling preview
+    featured_projects = Project.objects.filter(featured=True).prefetch_related("tech_stack", "images")[:3]
+    if not featured_projects.exists():
+        featured_projects = Project.objects.all().prefetch_related("tech_stack", "images")[:3]
+    
+    featured_research = Research.objects.filter(status="published").first() or Research.objects.first()
+    featured_ai = AILab.objects.first()
+
     context = {
         "hero": hero,
         "about": about,
@@ -53,6 +61,9 @@ def home_view(request):
         "projects_count": projects_count,
         "ai_count": ai_count,
         "research_count": research_count,
+        "featured_projects": featured_projects,
+        "featured_research": featured_research,
+        "featured_ai": featured_ai,
     }
     return render(request, "home.html", context)
 
