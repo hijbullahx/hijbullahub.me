@@ -940,27 +940,56 @@
             <div id="pane-messages" class="dash-pane hidden space-y-6">
                 <!-- Transmissions -->
                 <div class="glass p-6 rounded-3xl border border-slate-200/80 dark:border-white/10">
-                    <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">Contact Transmissions ({{ contacts|length }})</h3>
+                    <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <span>📬</span> Contact Transmissions ({{ contacts|length }})
+                            </h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Direct inquiries received through the contact transmission portal.</p>
+                        </div>
+                    </div>
                     <div class="space-y-3">
                         {% for c in contacts %}
-                        <div class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-3">
-                            <div>
-                                <div class="flex items-center gap-2">
+                        <div class="dash-item-card p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex flex-col md:flex-row md:items-start justify-between gap-3">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap">
                                     <span class="font-bold text-sm text-slate-900 dark:text-white">{{ c.name }}</span>
-                                    <span class="text-xs text-cyan-500">&lt;{{ c.email }}&gt;</span>
+                                    <span class="text-xs text-cyan-500 font-mono">&lt;{{ c.email }}&gt;</span>
                                     {% if not c.is_read %}
-                                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" title="Unread"></span>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span> Unread
+                                    </span>
+                                    {% endif %}
+                                    {% if c.replied_at %}
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                        ✓ Replied
+                                    </span>
                                     {% endif %}
                                 </div>
-                                <div class="text-xs font-semibold text-slate-700 dark:text-slate-300 mt-1">{{ c.subject }}</div>
-                                <p class="text-xs text-slate-500 mt-1">{{ c.message }}</p>
+                                <div class="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-1">{{ c.subject }}</div>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-1 whitespace-pre-line">{{ c.message }}</p>
+                                
+                                {% if c.admin_reply %}
+                                <div class="mt-2.5 p-3 rounded-xl bg-cyan-500/5 border border-cyan-500/20 text-xs">
+                                    <div class="font-bold text-[10px] uppercase text-cyan-500 mb-1 flex items-center gap-1.5">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                        <span>Sent Reply ({{ c.replied_at|date:"M d, Y h:i A" }}):</span>
+                                    </div>
+                                    <p class="text-slate-700 dark:text-slate-300 whitespace-pre-line">{{ c.admin_reply }}</p>
+                                </div>
+                                {% endif %}
+
                                 <div class="text-[10px] text-slate-400 mt-2">{{ c.timestamp|date:"M d, Y, h:i A" }}</div>
                             </div>
-                            <div class="flex items-center gap-2 shrink-0">
-                                <a href="mailto:{{ c.email }}?subject=Re: {{ c.subject|urlencode }}" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors">Reply</a>
+                            <div class="flex items-center gap-2 shrink-0 flex-wrap">
+                                <button type="button" onclick="openReplyContactModal('{{ c.id }}', '{{ c.name|escapejs }}', '{{ c.email|escapejs }}', '{{ c.subject|escapejs }}', '{{ c.message|escapejs }}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-cyan-500 text-slate-950 hover:bg-cyan-400 shadow-sm transition-all flex items-center gap-1.5 cursor-pointer">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                    <span>Reply</span>
+                                </button>
+                                <a href="mailto:{{ c.email }}?subject=Re: {{ c.subject|urlencode }}" class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 transition-colors" title="Open in local mail client">Mailto</a>
                                 <form action="{% url 'dashboard_delete_contact' c.id %}" method="POST" onsubmit="return confirm('Delete transmission from {{ c.name }}?')">
                                     {% csrf_token %}
-                                    <button type="submit" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 transition-colors">Delete</button>
+                                    <button type="submit" class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 transition-colors">Delete</button>
                                 </form>
                             </div>
                         </div>
@@ -972,20 +1001,70 @@
 
                 <!-- Hire Requests -->
                 <div class="glass p-6 rounded-3xl border border-slate-200/80 dark:border-white/10">
-                    <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">Client Hire Proposals ({{ hire_requests|length }})</h3>
+                    <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <span>💼</span> Client Hire Proposals ({{ hire_requests|length }})
+                            </h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">High-value client proposals with custom scope, rate, and delivery timeline.</p>
+                        </div>
+                    </div>
                     <div class="space-y-3">
                         {% for h in hire_requests %}
-                        <div class="p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-3">
-                            <div>
-                                <div class="flex items-center gap-2">
+                        <div class="dash-item-card p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex flex-col md:flex-row md:items-start justify-between gap-3">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap">
                                     <span class="font-bold text-sm text-slate-900 dark:text-white">{{ h.name }}</span>
-                                    <span class="text-xs text-emerald-500">&lt;{{ h.email }}&gt;</span>
+                                    <span class="text-xs text-emerald-500 font-mono">&lt;{{ h.email }}&gt;</span>
                                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/10 text-purple-400 border border-purple-500/20">${{ h.proposed_rate }} / {{ h.rate_type }}</span>
+                                    {% if h.status == 'new' %}
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">New</span>
+                                    {% elif h.status == 'reviewed' %}
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Reviewed</span>
+                                    {% elif h.status == 'accepted' %}
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Accepted</span>
+                                    {% elif h.status == 'rejected' %}
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">Rejected</span>
+                                    {% endif %}
+                                    {% if h.replied_at %}
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                                        ✓ Replied
+                                    </span>
+                                    {% endif %}
                                 </div>
-                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">{{ h.work_details }}</p>
-                                <div class="text-[10px] text-slate-400 mt-1">Duration: {{ h.duration }} • Status: {{ h.get_status_display }}</div>
+                                <p class="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-1">{{ h.work_details }}</p>
+                                {% if h.message %}
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 italic bg-slate-100/60 dark:bg-white/5 p-2 rounded-xl">&ldquo;{{ h.message }}&rdquo;</p>
+                                {% endif %}
+                                
+                                {% if h.admin_reply %}
+                                <div class="mt-2.5 p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/20 text-xs">
+                                    <div class="font-bold text-[10px] uppercase text-emerald-500 mb-1 flex items-center gap-1.5">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                        <span>Sent System Reply ({{ h.replied_at|date:"M d, Y h:i A" }}):</span>
+                                    </div>
+                                    <p class="text-slate-700 dark:text-slate-300 whitespace-pre-line">{{ h.admin_reply }}</p>
+                                </div>
+                                {% endif %}
+
+                                <div class="text-[10px] text-slate-400 mt-2">Duration: {{ h.duration }} • Submitted: {{ h.created_at|date:"M d, Y, h:i A" }}</div>
                             </div>
-                            <a href="mailto:{{ h.email }}?subject=Re: Engagement Proposal" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-colors shrink-0">Engage</a>
+                            <div class="flex items-center gap-2 shrink-0 flex-wrap">
+                                <!-- Reply button opens modal to send official reply from system mail -->
+                                <button type="button" 
+                                        onclick="openReplyProposalModal('{{ h.id }}', '{{ h.name|escapejs }}', '{{ h.email|escapejs }}', '{{ h.work_details|escapejs }}', '{{ h.proposed_rate }}', '{{ h.rate_type|escapejs }}', '{{ h.duration|escapejs }}')" 
+                                        class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 hover:brightness-110 shadow-sm transition-all flex items-center gap-1.5 cursor-pointer">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                    <span>Reply (System Mail)</span>
+                                </button>
+                                <!-- Backup Engage mailto -->
+                                <a href="mailto:{{ h.email }}?subject=Re: Engagement Proposal" class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 transition-colors shrink-0" title="Open in local mail client">Engage</a>
+                                <!-- Delete proposal -->
+                                <form action="{% url 'dashboard_delete_hire' h.id %}" method="POST" onsubmit="return confirm('Delete proposal from {{ h.name }}?')">
+                                    {% csrf_token %}
+                                    <button type="submit" class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 transition-colors">Delete</button>
+                                </form>
+                            </div>
                         </div>
                         {% empty %}
                         <p class="text-xs text-slate-400 text-center py-4">No hire proposals logged yet.</p>
@@ -1352,20 +1431,185 @@
     </div>
 </div>
 
+<!-- ── REPLY PROPOSAL MODAL ────────────────────────────────────────── -->
+<div id="reply-proposal-modal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-content relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-emerald-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-y-auto max-h-[92vh]">
+        <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-200 dark:border-white/10">
+            <div>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span class="text-emerald-500">✉️</span> Reply to Client Hire Proposal
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Dispatches official email from system server (<strong class="text-emerald-500">{{ site_setting.email|default:"info@hijbullah.me" }}</strong>) directly to client inbox.</p>
+            </div>
+            <button type="button" data-modal-close class="text-slate-400 hover:text-white text-lg p-1">✕</button>
+        </div>
+
+        <form id="reply-proposal-form" method="POST" class="space-y-4">
+            {% csrf_token %}
+            <!-- Context summary badge -->
+            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+                <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-500 mb-1">Proposal Reference</div>
+                <div id="reply-prop-summary" class="text-xs font-semibold text-slate-800 dark:text-slate-200"></div>
+                <div id="reply-prop-client" class="text-[11px] text-slate-500 mt-0.5"></div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Email Subject *</label>
+                <input type="text" name="subject" id="reply-prop-subject" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+
+            <!-- Quick preset buttons -->
+            <div>
+                <div class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5">Quick Presets / Auto Responses:</div>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" onclick="setProposalTemplate('accept')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/20 transition-colors">
+                        ✓ Accept &amp; Schedule Call
+                    </button>
+                    <button type="button" onclick="setProposalTemplate('clarify')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/20 transition-colors">
+                        💬 Clarify Scope &amp; Tech Stack
+                    </button>
+                    <button type="button" onclick="setProposalTemplate('rate')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/20 transition-colors">
+                        💼 Discuss Timeline &amp; Budget
+                    </button>
+                    <button type="button" onclick="setProposalTemplate('decline')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-500/10 hover:bg-slate-500/20 text-slate-400 border border-slate-500/20 transition-colors">
+                        ✕ Polite Capacity Full
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Response Message *</label>
+                <textarea name="message" id="reply-prop-message" rows="6" required placeholder="Write your personalized reply here. Line breaks are preserved in the dispatched email." class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-sans"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Update Proposal Status</label>
+                    <select name="status" id="reply-prop-status" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="reviewed" selected>Reviewed</option>
+                        <option value="accepted">Accepted</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="new">Keep as New</option>
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <p class="text-[11px] text-slate-400 mb-2.5">Transmitted with high-priority headers directly from system SMTP.</p>
+                </div>
+            </div>
+
+            <div class="flex gap-3 pt-3">
+                <button type="button" data-modal-close class="flex-1 py-2.5 rounded-xl text-xs font-semibold border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">Cancel</button>
+                <button type="submit" id="btn-submit-reply-prop" class="flex-1 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold shadow-md hover:brightness-110 transition-all flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                    <span>Send Reply via System Mail</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── REPLY CONTACT MODAL ─────────────────────────────────────────── -->
+<div id="reply-contact-modal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-content relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-cyan-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-y-auto max-h-[92vh]">
+        <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-200 dark:border-white/10">
+            <div>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span class="text-cyan-500">✉️</span> Reply to Contact Transmission
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Dispatches official email from system server (<strong class="text-cyan-500">{{ site_setting.email|default:"info@hijbullah.me" }}</strong>) directly to sender.</p>
+            </div>
+            <button type="button" data-modal-close class="text-slate-400 hover:text-white text-lg p-1">✕</button>
+        </div>
+
+        <form id="reply-contact-form" method="POST" class="space-y-4">
+            {% csrf_token %}
+            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+                <div class="text-[11px] font-bold uppercase tracking-wider text-cyan-500 mb-1">Transmission Reference</div>
+                <div id="reply-contact-summary" class="text-xs font-semibold text-slate-800 dark:text-slate-200"></div>
+                <div id="reply-contact-sender" class="text-[11px] text-slate-500 mt-0.5"></div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Email Subject *</label>
+                <input type="text" name="subject" id="reply-contact-subject" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Response Message *</label>
+                <textarea name="message" id="reply-contact-message" rows="6" required placeholder="Write your personalized reply here..." class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 font-sans"></textarea>
+            </div>
+
+            <div class="flex gap-3 pt-3">
+                <button type="button" data-modal-close class="flex-1 py-2.5 rounded-xl text-xs font-semibold border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">Cancel</button>
+                <button type="submit" id="btn-submit-reply-contact" class="flex-1 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-bold shadow-md hover:brightness-110 transition-all flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                    <span>Send Reply via System Mail</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <style>
+/* ── Tab Switch Transitions ─────────────────────────────────────────── */
 .dash-tab-btn {
     color: #94a3b8;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .dash-tab-btn:hover {
     background-color: rgba(255, 255, 255, 0.05);
     color: #38bdf8;
+    transform: translateX(4px);
 }
 .dash-tab-btn.active {
     background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(16, 185, 129, 0.1));
     border: 1px solid rgba(6, 182, 212, 0.3);
     color: #38bdf8;
     box-shadow: 0 4px 20px -5px rgba(6, 182, 212, 0.25);
+    transform: translateX(4px);
 }
+
+@keyframes dashPaneEnter {
+    0% {
+        opacity: 0;
+        transform: translateY(8px) scale(0.998);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+.dash-pane:not(.hidden) {
+    animation: dashPaneEnter 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Interactive Leads & Cards ──────────────────────────────────────── */
+.dash-item-card {
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dash-item-card:hover {
+    border-color: rgba(6, 182, 212, 0.35);
+    box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+/* ── Modal Smooth Pop-in Transition ─────────────────────────────────── */
+.modal-backdrop {
+    transition: opacity 0.25s ease, backdrop-filter 0.25s ease;
+}
+.modal-backdrop.open {
+    opacity: 1 !important;
+}
+.modal-backdrop .modal-content {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+    transform: scale(0.96) translateY(10px);
+    opacity: 0;
+}
+.modal-backdrop.open .modal-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
 .sortable-ghost {
     opacity: 0.35;
     background: rgba(6, 182, 212, 0.15) !important;
@@ -1510,10 +1754,181 @@ function openEditExperienceModal(id, role, organization, duration, description, 
     openModal('edit-experience-modal');
 }
 
+// ── Proposal & Transmission Reply Modal Handlers ──────────────────────────────
+let currentProposalData = {};
+
+function openReplyProposalModal(id, name, email, workDetails, rate, rateType, duration) {
+    currentProposalData = { id, name, email, workDetails, rate, rateType, duration };
+    const form = document.getElementById('reply-proposal-form');
+    form.action = '/dashboard/hire/reply/' + id + '/';
+    
+    const summaryEl = document.getElementById('reply-prop-summary');
+    if (summaryEl) summaryEl.textContent = workDetails + ' ($' + rate + ' / ' + rateType + ' • ' + duration + ')';
+    const clientEl = document.getElementById('reply-prop-client');
+    if (clientEl) clientEl.textContent = 'Client: ' + name + ' <' + email + '>';
+    const subEl = document.getElementById('reply-prop-subject');
+    if (subEl) subEl.value = 'Re: Collaboration Proposal - ' + workDetails;
+    
+    const msgEl = document.getElementById('reply-prop-message');
+    if (msgEl) {
+        msgEl.value = 
+`Dear ${name},
+
+Thank you for your proposal regarding "${workDetails}".
+
+I have reviewed your scope and timeline requirements (${duration}). I would like to move forward and discuss next steps and milestones.
+
+Could you let me know your availability for a brief technical alignment call this week?
+
+Best regards,
+Md. Taher Bin Omar Hijbullah
+AI & Robotics Researcher • Autonomous Systems Architect
+https://hijbullah.me`;
+    }
+
+    openModal('reply-proposal-modal');
+}
+
+function setProposalTemplate(type) {
+    const name = currentProposalData.name || 'Colleague';
+    const work = currentProposalData.workDetails || 'your project';
+    const duration = currentProposalData.duration || 'the proposed timeline';
+    const rate = currentProposalData.rate ? ('$' + currentProposalData.rate + ' / ' + currentProposalData.rateType) : '';
+    const msgEl = document.getElementById('reply-prop-message');
+    const statusEl = document.getElementById('reply-prop-status');
+
+    if (type === 'accept') {
+        if (statusEl) statusEl.value = 'accepted';
+        if (msgEl) {
+            msgEl.value = 
+`Dear ${name},
+
+Thank you for reaching out with your proposal regarding "${work}".
+
+I am pleased to confirm that I am interested in collaborating with you on this initiative. The scope and timeline (${duration}) align well with my engineering pipeline.
+
+Let's schedule a kickoff call to align on technical milestones, deliverables, and repository setup. Please let me know what times work best for you.
+
+Best regards,
+Md. Taher Bin Omar Hijbullah
+AI & Robotics Researcher • Autonomous Systems Architect
+https://hijbullah.me`;
+        }
+    } else if (type === 'clarify') {
+        if (statusEl) statusEl.value = 'reviewed';
+        if (msgEl) {
+            msgEl.value = 
+`Dear ${name},
+
+Thank you for submitting your proposal regarding "${work}".
+
+To ensure high-precision architectural execution, could you provide some additional technical details:
+1. Preferred tech stack / frameworks (e.g. ROS2, PyTorch, microservices, cloud provider).
+2. Existing codebase / documentation availability.
+3. Target start date and sprint cadence.
+
+Looking forward to your feedback so we can structure the next steps.
+
+Best regards,
+Md. Taher Bin Omar Hijbullah
+AI & Robotics Researcher • Autonomous Systems Architect
+https://hijbullah.me`;
+        }
+    } else if (type === 'rate') {
+        if (statusEl) statusEl.value = 'reviewed';
+        if (msgEl) {
+            msgEl.value = 
+`Dear ${name},
+
+Thank you for your proposal regarding "${work}".
+
+I reviewed the proposed rate (${rate}) and duration (${duration}). Based on the complexity and system requirements, I would like to discuss whether we can adjust the milestones and terms for optimal results.
+
+Let me know if we can have a brief discussion or if you prefer detailing the scope further via email.
+
+Best regards,
+Md. Taher Bin Omar Hijbullah
+AI & Robotics Researcher • Autonomous Systems Architect
+https://hijbullah.me`;
+        }
+    } else if (type === 'decline') {
+        if (statusEl) statusEl.value = 'rejected';
+        if (msgEl) {
+            msgEl.value = 
+`Dear ${name},
+
+Thank you very much for considering me for "${work}".
+
+Due to current research commitments and ongoing client deliverables, my capacity is unfortunately fully booked for the requested timeline (${duration}).
+
+I appreciate your interest in my work and hope we can collaborate on future engineering challenges.
+
+Best regards,
+Md. Taher Bin Omar Hijbullah
+AI & Robotics Researcher • Autonomous Systems Architect
+https://hijbullah.me`;
+        }
+    }
+}
+
+function openReplyContactModal(id, name, email, subject, message) {
+    const form = document.getElementById('reply-contact-form');
+    form.action = '/dashboard/contact/reply/' + id + '/';
+    
+    const sumEl = document.getElementById('reply-contact-summary');
+    if (sumEl) sumEl.textContent = subject;
+    const sendEl = document.getElementById('reply-contact-sender');
+    if (sendEl) sendEl.textContent = 'From: ' + name + ' <' + email + '>';
+    const subEl = document.getElementById('reply-contact-subject');
+    if (subEl) subEl.value = 'Re: ' + subject;
+    
+    const msgEl = document.getElementById('reply-contact-message');
+    if (msgEl) {
+        msgEl.value = 
+`Dear ${name},
+
+Thank you for getting in touch regarding "${subject}".
+
+I have reviewed your message and would like to follow up directly.
+
+Best regards,
+Md. Taher Bin Omar Hijbullah
+AI & Robotics Researcher • Autonomous Systems Architect
+https://hijbullah.me`;
+    }
+
+    openModal('reply-contact-modal');
+}
+
 // Initialize Drag-and-Drop Sortables on page load
 document.addEventListener('DOMContentLoaded', () => {
     const saved = sessionStorage.getItem('active_dash_tab') || 'overview';
     switchTab(saved);
+
+    // Form submit handlers with loading feedback and tab persistence
+    const rPropForm = document.getElementById('reply-proposal-form');
+    if (rPropForm) {
+        rPropForm.addEventListener('submit', () => {
+            sessionStorage.setItem('active_dash_tab', 'messages');
+            const btn = document.getElementById('btn-submit-reply-prop');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span>⏳ Dispatching via SMTP...</span>';
+            }
+        });
+    }
+
+    const rContactForm = document.getElementById('reply-contact-form');
+    if (rContactForm) {
+        rContactForm.addEventListener('submit', () => {
+            sessionStorage.setItem('active_dash_tab', 'messages');
+            const btn = document.getElementById('btn-submit-reply-contact');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span>⏳ Dispatching via SMTP...</span>';
+            }
+        });
+    }
 
     // 1. Skills sortable
     const skillsContainer = document.getElementById('skills-sortable-container');

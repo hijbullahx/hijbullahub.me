@@ -47,6 +47,9 @@ from apps.core.dashboard_views import (
     dashboard_edit_experience_view,
     dashboard_delete_feedback_view,
     dashboard_send_monthly_report_view,
+    dashboard_reply_hire_view,
+    dashboard_delete_hire_view,
+    dashboard_reply_contact_view,
 )
 
 urlpatterns = [
@@ -89,7 +92,10 @@ urlpatterns = [
     path("dashboard/ai-lab/delete/<int:ai_id>/", dashboard_delete_ai_lab_view, name="dashboard_delete_ai_lab"),
     path("dashboard/research/add/", dashboard_add_research_view, name="dashboard_add_research"),
     path("dashboard/research/delete/<int:research_id>/", dashboard_delete_research_view, name="dashboard_delete_research"),
+    path("dashboard/contact/reply/<int:contact_id>/", dashboard_reply_contact_view, name="dashboard_reply_contact"),
     path("dashboard/contact/delete/<int:contact_id>/", dashboard_delete_contact_view, name="dashboard_delete_contact"),
+    path("dashboard/hire/reply/<int:hire_id>/", dashboard_reply_hire_view, name="dashboard_reply_hire"),
+    path("dashboard/hire/delete/<int:hire_id>/", dashboard_delete_hire_view, name="dashboard_delete_hire"),
     path("dashboard/settings/update/", dashboard_update_settings_view, name="dashboard_update_settings"),
     path("dashboard/feedback/toggle/<int:feedback_id>/", dashboard_toggle_feedback_view, name="dashboard_toggle_feedback"),
     path("dashboard/feedback/reply/<int:feedback_id>/", dashboard_reply_feedback_view, name="dashboard_reply_feedback"),

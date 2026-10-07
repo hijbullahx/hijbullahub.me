@@ -10,6 +10,8 @@ class Contact(TimeStampedModel):
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
+    admin_reply = models.TextField(blank=True, default="", help_text="Sent reply to sender")
+    replied_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["-timestamp"]

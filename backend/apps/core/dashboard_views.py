@@ -23,6 +23,7 @@ from apps.ai_lab.models import AILab
 from apps.research.models import Research
 from apps.hire.models import HireRequest
 from apps.site_settings.models import SiteSetting
+from apps.core.email_utils import send_proposal_custom_reply, send_contact_custom_reply
 
 
 def dashboard_login_view(request):
@@ -685,4 +686,100 @@ def dashboard_edit_experience_view(request, experience_id):
     exp.save()
     messages.success(request, f"Work experience '{exp.role}' updated.")
     return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_reply_hire_view(request, hire_id):
+    if not request.user.is_staff:
+        messages.error(request, "Administrative clearance required.")
+        return redirect("dashboard")
+
+    hire = get_object_or_404(HireRequest, id=hire_id)
+    subject = request.POST.get("subject", "").strip() or f"Re: Engagement Proposal - {hire.work_details}"
+    message = request.POST.get("message", "").strip()
+    status_choice = request.POST.get("status", "").strip()
+
+    if not message:
+        messages.error(request, "Reply message body cannot be empty.")
+        return redirect("dashboard")
+
+    rate_info = f"${hire.proposed_rate:,.2f} / {hire.rate_type}" if hire.proposed_rate > 0 else "Negotiable / Project-based"
+    sent = send_proposal_custom_reply(
+        name=hire.name,
+        to_email=hire.email,
+        subject=subject,
+        reply_message=message,
+        work_details=hire.work_details,
+        rate_info=rate_info,
+        duration=hire.duration
+    )
+
+    hire.admin_reply = message
+    hire.replied_at = timezone.now()
+    if status_choice in ["new", "reviewed", "accepted", "rejected"]:
+        hire.status = status_choice
+    elif hire.status == "new":
+        hire.status = "reviewed"
+    hire.is_read = True
+    hire.save()
+
+    if sent:
+        messages.success(request, f"Reply dispatched directly to {hire.name} <{hire.email}> from system email.")
+    else:
+        messages.warning(request, f"Reply saved in database, but system email dispatch encountered an issue. Check SMTP logs.")
+
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_delete_hire_view(request, hire_id):
+    if not request.user.is_staff:
+        messages.error(request, "Administrative clearance required.")
+        return redirect("dashboard")
+
+    hire = get_object_or_404(HireRequest, id=hire_id)
+    client_name = hire.name
+    hire.delete()
+    messages.success(request, f"Hire proposal from '{client_name}' permanently deleted.")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@require_POST
+def dashboard_reply_contact_view(request, contact_id):
+    if not request.user.is_staff:
+        messages.error(request, "Administrative clearance required.")
+        return redirect("dashboard")
+
+    contact = get_object_or_404(Contact, id=contact_id)
+    subject = request.POST.get("subject", "").strip() or f"Re: {contact.subject}"
+    message = request.POST.get("message", "").strip()
+
+    if not message:
+        messages.error(request, "Reply message body cannot be empty.")
+        return redirect("dashboard")
+
+    sent = send_contact_custom_reply(
+        name=contact.name,
+        to_email=contact.email,
+        subject=subject,
+        reply_message=message,
+        original_subject=contact.subject,
+        original_message=contact.message
+    )
+
+    contact.admin_reply = message
+    contact.replied_at = timezone.now()
+    contact.is_read = True
+    contact.save()
+
+    if sent:
+        messages.success(request, f"Reply dispatched directly to {contact.name} <{contact.email}> from system email.")
+    else:
+        messages.warning(request, f"Reply saved, but system email dispatch encountered an issue. Check SMTP logs.")
+
+    return redirect("dashboard")
+
 

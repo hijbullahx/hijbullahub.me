@@ -27,6 +27,8 @@ class HireRequest(TimeStampedModel):
     message = models.TextField(blank=True, help_text="Additional notes or context")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="new")
     is_read = models.BooleanField(default=False)
+    admin_reply = models.TextField(blank=True, default="", help_text="Sent reply to client")
+    replied_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["-created_at"]
