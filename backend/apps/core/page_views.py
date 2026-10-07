@@ -114,6 +114,7 @@ def contact_view(request):
     context = {
         "profiles": profiles,
         "primary_email": primary_email,
+        "site_setting": site_setting,
     }
     return render(request, "contact.html", context)
 
@@ -126,7 +127,7 @@ def submit_contact_view(request):
     message = request.POST.get("message", "").strip()
 
     if not name or not email or not message:
-        messages.error(request, "Please provide your name, email, and transmission message.")
+        messages.error(request, "Please provide your name, email, and message.")
         return redirect("contact")
 
     Contact.objects.create(
@@ -139,7 +140,7 @@ def submit_contact_view(request):
     # Dispatch transmission acknowledgment to visitor and notification to admin
     send_transmission_acknowledgment(name=name, email=email, subject=subject, message=message)
 
-    messages.success(request, "Transmission dispatched securely. You will receive a response within 24 hours.")
+    messages.success(request, "Message sent successfully. Thank you for reaching out.")
     return redirect("contact")
 
 
