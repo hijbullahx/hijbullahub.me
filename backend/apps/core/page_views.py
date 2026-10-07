@@ -88,9 +88,13 @@ def ai_lab_view(request):
 
 
 def research_view(request):
-    research_list = Research.objects.all().order_by("-created_at")
+    research_list = list(Research.objects.all().order_by("-created_at"))
+    published_research = [r for r in research_list if r.status == "published"]
+    other_research = [r for r in research_list if r.status != "published"]
     context = {
         "research_list": research_list,
+        "published_research": published_research,
+        "other_research": other_research,
     }
     return render(request, "research.html", context)
 
