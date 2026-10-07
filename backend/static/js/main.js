@@ -1,12 +1,10 @@
 /**
- * Hijbullah Portfolio - Vanilla JS Engine
- * High performance, zero React dependency, low data consumption.
+ * HijbullahHub.me — Core JavaScript Engine
+ * High-performance, zero heavy runtime, accessible, respects reduced motion.
  */
 
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
-  initCursor();
-  initParticles();
   initTyping();
   initModalsAndDrawers();
   initProjectFilters();
@@ -14,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initScrollToTop();
 });
 
-/* ── Theme Management ────────────────────────────── */
+/* ── Theme Management ────────────────────────────────────────────────────── */
 function initTheme() {
   const root = document.documentElement;
   const savedTheme = localStorage.getItem("portfolio_theme") || "dark";
@@ -49,141 +47,17 @@ function applyTheme(theme) {
   }
 }
 
-/* ── Precision Custom Cursor ────────────────────────────── */
-function initCursor() {
-  if (!window.matchMedia("(pointer: fine)").matches) return;
-
-  const dot = document.querySelector(".cursor-dot");
-  const ring = document.querySelector(".cursor-ring");
-  if (!dot || !ring) return;
-
-  let mouseX = -100;
-  let mouseY = -100;
-  let ringX = -100;
-  let ringY = -100;
-
-  window.addEventListener("mousemove", (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    dot.style.left = `${mouseX}px`;
-    dot.style.top = `${mouseY}px`;
-  }, { passive: true });
-
-  // Smooth lerp for outer ring
-  function animateRing() {
-    ringX += (mouseX - ringX) * 0.2;
-    ringY += (mouseY - ringY) * 0.2;
-    ring.style.left = `${ringX}px`;
-    ring.style.top = `${ringY}px`;
-    requestAnimationFrame(animateRing);
-  }
-  requestAnimationFrame(animateRing);
-
-  // Hover detection
-  const interactiveSelector = "a, button, [role='button'], input, textarea, select, .cursor-pointer";
-  document.addEventListener("mouseover", (e) => {
-    if (e.target.closest(interactiveSelector)) {
-      document.body.classList.add("hovered-interactive");
-    } else {
-      document.body.classList.remove("hovered-interactive");
-    }
-  }, { passive: true });
-}
-
-/* ── Optimized Particle Background ────────────────────────────── */
-function initParticles() {
-  const canvas = document.getElementById("particle-canvas");
-  if (!canvas) return;
-
-  const ctx = canvas.getContext("2d");
-  let particles = [];
-  let animId = null;
-  let inView = true;
-
-  const isMobile = window.innerWidth < 768;
-  const count = isMobile ? 16 : 32;
-
-  function resize() {
-    canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-    canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
-  }
-  resize();
-  window.addEventListener("resize", resize, { passive: true });
-
-  // Pause when scrolled out of view to save battery & data
-  const observer = new IntersectionObserver(([entry]) => {
-    inView = entry.isIntersecting;
-    if (inView && !animId) render();
-  }, { threshold: 0.05 });
-  observer.observe(canvas);
-
-  class Particle {
-    constructor() {
-      this.reset();
-    }
-    reset() {
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.vx = (Math.random() - 0.5) * 0.35;
-      this.vy = (Math.random() - 0.5) * 0.35;
-      this.size = Math.random() * 1.5 + 1;
-      this.opacity = Math.random() * 0.4 + 0.15;
-    }
-    update() {
-      this.x += this.vx;
-      this.y += this.vy;
-      if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-      if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-    }
-    draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(6, 182, 212, ${this.opacity})`;
-      ctx.fill();
-    }
-  }
-
-  for (let i = 0; i < count; i++) {
-    particles.push(new Particle());
-  }
-
-  function render() {
-    if (!inView) {
-      animId = null;
-      return;
-    }
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    for (let i = 0; i < particles.length; i++) {
-      particles[i].update();
-      particles[i].draw();
-    }
-
-    const maxDist = 120;
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.hypot(dx, dy);
-        if (dist < maxDist) {
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(6, 182, 212, ${0.12 * (1 - dist / maxDist)})`;
-          ctx.lineWidth = 0.5;
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.stroke();
-        }
-      }
-    }
-    animId = requestAnimationFrame(render);
-  }
-  render();
-}
-
-/* ── Typing Animation ────────────────────────────── */
+/* ── Typing Animation (Subtle & Resilient) ────────────────────────────────── */
 function initTyping() {
   const el = document.getElementById("typing-text");
   if (!el) return;
+
+  // Respect reduced motion
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const text = el.getAttribute("data-text") || el.innerText;
+    el.textContent = text;
+    return;
+  }
 
   const text = el.getAttribute("data-text") || el.innerText;
   el.innerText = "";
@@ -193,13 +67,13 @@ function initTyping() {
     if (idx < text.length) {
       el.textContent += text.charAt(idx);
       idx++;
-      setTimeout(typeNext, 60);
+      setTimeout(typeNext, 45);
     }
   }
-  setTimeout(typeNext, 400);
+  setTimeout(typeNext, 300);
 }
 
-/* ── Modals & Drawers ────────────────────────────── */
+/* ── Modals & Drawers Engine (100% Functionality Preserved) ───────────────── */
 function initModalsAndDrawers() {
   // Generic modal openers
   document.querySelectorAll("[data-modal-target]").forEach((trigger) => {
@@ -217,7 +91,7 @@ function initModalsAndDrawers() {
     });
   });
 
-  // Backdrop click
+  // Backdrop click dismissal
   document.querySelectorAll(".modal-backdrop").forEach((backdrop) => {
     backdrop.addEventListener("click", (e) => {
       if (e.target === backdrop) {
@@ -226,18 +100,20 @@ function initModalsAndDrawers() {
     });
   });
 
-  // Escape key
+  // Escape key listener
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       document.querySelectorAll(".modal-backdrop.open, .drawer.open").forEach(closeModal);
     }
   });
 
-  // Mobile menu drawer
+  // Mobile menu dropdown toggle
   const mobileToggle = document.getElementById("mobile-menu-toggle");
   const mobileMenu = document.getElementById("mobile-menu");
   if (mobileToggle && mobileMenu) {
     mobileToggle.addEventListener("click", () => {
+      const isExpanded = mobileToggle.getAttribute("aria-expanded") === "true";
+      mobileToggle.setAttribute("aria-expanded", !isExpanded);
       mobileMenu.classList.toggle("hidden");
     });
   }
@@ -261,11 +137,11 @@ function closeModal(modalElement) {
     if (!modalElement.classList.contains("open")) {
       modalElement.classList.add("hidden");
     }
-  }, 250);
+  }, 220);
   document.body.style.overflow = "";
 }
 
-/* ── Project Page Live Search & Filter ────────────────────────────── */
+/* ── Project Page Live Search & Category Filter ──────────────────────────── */
 function initProjectFilters() {
   const searchInput = document.getElementById("project-search");
   const filterBtns = document.querySelectorAll(".project-filter-btn");
@@ -318,11 +194,11 @@ function initProjectFilters() {
   filterBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
       filterBtns.forEach((b) => {
-        b.classList.remove("active", "bg-gradient-to-r", "from-cyan-500", "to-emerald-500", "text-white");
-        b.classList.add("bg-white/70", "dark:bg-white/5", "text-slate-600", "dark:text-slate-300");
+        b.classList.remove("active", "bg-teal-500", "text-slate-950", "border-teal-500");
+        b.classList.add("text-slate-400", "border-white/10");
       });
-      btn.classList.add("active", "bg-gradient-to-r", "from-cyan-500", "to-emerald-500", "text-white");
-      btn.classList.remove("bg-white/70", "dark:bg-white/5", "text-slate-600", "dark:text-slate-300");
+      btn.classList.add("active", "bg-teal-500", "text-slate-950", "border-teal-500");
+      btn.classList.remove("text-slate-400", "border-white/10");
 
       currentCategory = btn.getAttribute("data-category") || "All";
       applyFilters();
@@ -330,7 +206,7 @@ function initProjectFilters() {
   });
 }
 
-/* ── Copy to Clipboard ────────────────────────────── */
+/* ── Copy to Clipboard Helper ────────────────────────────────────────────── */
 function initCopyToClipboard() {
   document.querySelectorAll("[data-copy-text]").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -338,18 +214,33 @@ function initCopyToClipboard() {
       if (!text) return;
       navigator.clipboard.writeText(text).then(() => {
         const original = btn.innerHTML;
-        btn.innerHTML = "✓ Copied!";
-        btn.classList.add("bg-emerald-500", "text-white");
+        btn.innerHTML = "✓ Copied";
+        btn.classList.add("bg-teal-500", "text-slate-950");
         setTimeout(() => {
           btn.innerHTML = original;
-          btn.classList.remove("bg-emerald-500", "text-white");
+          btn.classList.remove("bg-teal-500", "text-slate-950");
         }, 2000);
       });
     });
   });
 }
 
-/* ── Scroll to Top ────────────────────────────── */
+// Global window helper for existing inline onclick handlers (e.g. in contact.html)
+window.copyToClipboard = function(text) {
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const notifyEl = document.getElementById("primaryEmailText");
+    if (notifyEl) {
+      const original = notifyEl.innerText;
+      notifyEl.innerText = "✓ Copied to clipboard!";
+      setTimeout(() => {
+        notifyEl.innerText = original;
+      }, 2000);
+    }
+  });
+};
+
+/* ── Scroll to Top (Clean Floating Button) ───────────────────────────────── */
 function initScrollToTop() {
   const scrollBtn = document.getElementById("scroll-top-btn");
   if (!scrollBtn) return;

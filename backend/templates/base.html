@@ -4,8 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}HijbullahHub{% endblock %}</title>
-  <!-- Dynamic Browser Tab Favicon (Circular Hero picture) -->
+  <title>{% block title %}Md. Taher Bin Omar Hijbullah — Developer &amp; Researcher{% endblock %}</title>
+
+  <!-- Dynamic Browser Tab Favicon -->
   {% if dynamic_favicon_url %}
     <link rel="icon" type="image/png" href="{{ dynamic_favicon_url }}?v={{ global_hero.updated_at|date:'U'|default:'1' }}">
     <link rel="shortcut icon" type="image/png" href="{{ dynamic_favicon_url }}?v={{ global_hero.updated_at|date:'U'|default:'1' }}">
@@ -19,12 +20,12 @@
     <link rel="shortcut icon" href="{% static 'images/favicon.svg' %}">
   {% endif %}
 
-  <!-- Modern Typography -->
+  <!-- Typography: Plus Jakarta Sans, Inter, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <!-- Tailwind CSS via CDN with custom configuration -->
+  <!-- Tailwind CSS CDN with Curated Dark Charcoal & Restrained Teal Configuration -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -32,24 +33,24 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
             mono: ['"JetBrains Mono"', 'monospace'],
           },
           colors: {
-            cyan: {
-              400: '#22d3ee',
-              500: '#06b6d4',
-              600: '#0891b2',
+            teal: {
+              300: '#5EEAD4',
+              400: '#2DD4BF',
+              500: '#14B8A6',
+              600: '#0D9488',
+              700: '#0F766E',
             },
-            emerald: {
-              400: '#34d399',
-              500: '#10b981',
-              600: '#059669',
-            },
-            dark: {
-              base: '#0B0F19',
-              card: '#131825',
-              surface: '#181f30',
+            charcoal: {
+              950: '#0B0D0E',
+              900: '#111315',
+              850: '#141718',
+              800: '#171A1C',
+              750: '#1D2124',
+              700: '#262A2E',
             }
           }
         }
@@ -57,541 +58,176 @@
     }
   </script>
 
-  <!-- Custom Stylesheet (with cache-busting version) -->
-  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=4.0">
+  <!-- Custom Design System Stylesheet -->
+  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=5.0">
 
-  <!-- Core Navbar, UI & Modal Engine Styles (Embedded for 100% instant server-render without CDN/cache delay) -->
+  <!-- Core Inlined Tokens (Guarantees zero-FOUC instant paint on all devices) -->
   <style id="navbar-core-styles">
-    /* ── Core Button & Gradient Engine ── */
-    .glow-button {
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      gap: 0.5rem !important;
-      padding: 0.75rem 1.5rem !important;
-      border-radius: 0.75rem !important;
-      font-weight: 600 !important;
-      color: #ffffff !important;
-      background: linear-gradient(135deg, #06b6d4, #10b981) !important;
-      box-shadow: 0 4px 20px -2px rgba(6, 182, 212, 0.4) !important;
-      transition: transform 0.25s ease, box-shadow 0.25s ease !important;
-      text-decoration: none !important;
-      cursor: pointer !important;
+    /* Essential reset for instant render */
+    body {
+      background-color: #0B0D0E;
+      color: #F5F7F8;
     }
-    .glow-button:hover {
-      transform: translateY(-2px) !important;
-      box-shadow: 0 8px 28px -2px rgba(6, 182, 212, 0.6) !important;
-    }
-    .glow-button:active {
-      transform: translateY(0) !important;
-    }
-
-    .gradient-text {
-      background-clip: text !important;
-      -webkit-background-clip: text !important;
-      color: transparent !important;
-      background-image: linear-gradient(135deg, #06b6d4 0%, #10b981 100%) !important;
-    }
-    html.light .gradient-text, html:not(.dark) .gradient-text {
-      background-image: linear-gradient(135deg, #0891b2 0%, #059669 100%) !important;
-    }
-
-    /* ── Rock-Solid Universal Modal & Drawer Engine ── */
-    .modal-backdrop {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      background: rgba(0, 0, 0, 0.8) !important;
-      backdrop-filter: blur(10px) !important;
-      -webkit-backdrop-filter: blur(10px) !important;
-      z-index: 99999 !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      padding: 1rem !important;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.25s ease;
-    }
-    .modal-backdrop.open {
-      opacity: 1 !important;
-      pointer-events: auto !important;
-      display: flex !important;
-    }
-    .modal-backdrop.hidden {
-      display: none !important;
-    }
-
-    .modal-content {
-      transform: scale(0.95);
-      transition: transform 0.25s ease;
-      z-index: 100000 !important;
-    }
-    .modal-backdrop.open .modal-content {
-      transform: scale(1) !important;
-    }
-
-    .drawer {
-      position: fixed !important;
-      top: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      height: 100vh !important;
-      width: 100% !important;
-      max-width: 28rem !important;
-      z-index: 100001 !important;
-      background-color: #0B0F19 !important;
-      border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
-      transform: translateX(100%) !important;
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    }
-    html.light .drawer, html:not(.dark) .drawer {
-      background-color: #ffffff !important;
-      border-left: 1px solid rgba(15, 23, 42, 0.1) !important;
-    }
-    .drawer.open {
-      transform: translateX(0) !important;
-    }
-    .drawer.hidden {
-      display: none !important;
-    }
-
-    /* ── Glassmorphism Fallback ── */
-    .glass {
-      position: relative;
-      border-radius: 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(19, 24, 37, 0.7);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    }
-    html.light .glass, html:not(.dark) .glass {
-      border: 1px solid rgba(0, 0, 0, 0.08);
-      background: rgba(255, 255, 255, 0.85);
-      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
-    }
-    /* ── Ultra-Glossy Executive Navbar & Robotic Nav System ── */
-    .navbar-gloss {
-      background: rgba(11, 15, 25, 0.85) !important;
-      backdrop-filter: blur(28px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
-      border-bottom: 1px solid rgba(34, 211, 238, 0.25) !important;
-      box-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.8), 0 0 25px -5px rgba(6, 182, 212, 0.2) !important;
-    }
-
-    html.light .navbar-gloss,
-    html:not(.dark) .navbar-gloss {
-      background: rgba(255, 255, 255, 0.95) !important;
-      backdrop-filter: blur(28px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
-      border-bottom: 1px solid rgba(15, 23, 42, 0.1) !important;
-      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 0 20px -5px rgba(6, 182, 212, 0.12) !important;
-    }
-
-    .nav-glow-line-top {
-      position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.9), rgba(16, 185, 129, 0.9), rgba(34, 211, 238, 0.9), transparent);
-      background-size: 200% 100%;
-      animation: navGlowMove 4s linear infinite;
-      filter: blur(0.5px);
-      z-index: 60;
-    }
-    .nav-glow-line-bottom {
-      position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.5), rgba(16, 185, 129, 0.5), rgba(34, 211, 238, 0.5), transparent);
-      background-size: 200% 100%;
-      animation: navGlowMove 6s linear infinite reverse;
-    }
-    @keyframes navGlowMove {
-      0% { background-position: 0% 0%; }
-      100% { background-position: 200% 0%; }
-    }
-
-    .brand-shimmer {
-      background: linear-gradient(90deg, #22d3ee, #10b981, #38bdf8, #22d3ee);
-      background-size: 300% 100%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: brandShimmer 5s ease infinite;
-      transition: letter-spacing 0.3s ease, filter 0.3s ease;
-    }
-    .brand-shimmer:hover {
-      letter-spacing: 0.03em;
-      filter: drop-shadow(0 0 12px rgba(34, 211, 238, 0.8));
-    }
-    @keyframes brandShimmer {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .nav-robotic-link {
-      position: relative;
-      display: inline-block;
-      padding: 0.65rem 1.4rem;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    .nav-robotic-frame {
-      position: absolute;
-      inset: 0;
-      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .nav-robotic-link:hover .nav-robotic-frame,
-    .nav-robotic-link.active .nav-robotic-frame {
-      background: linear-gradient(135deg, rgba(34, 211, 238, 0.22), rgba(16, 185, 129, 0.18)) !important;
-      border: 1px solid rgba(34, 211, 238, 0.75) !important;
-      box-shadow: 0 0 28px rgba(34, 211, 238, 0.5), inset 0 0 20px rgba(16, 185, 129, 0.25) !important;
-      transform: translateY(-2px) scale(1.06);
-    }
-    .nav-corner-tl {
-      position: absolute; top: 0; left: 0; width: 9px; height: 9px;
-      border-top: 2px solid #22d3ee; border-left: 2px solid #22d3ee; opacity: 0.45;
-      transition: all 0.3s ease; pointer-events: none;
-    }
-    .nav-corner-br {
-      position: absolute; bottom: 0; right: 0; width: 9px; height: 9px;
-      border-bottom: 2px solid #10b981; border-right: 2px solid #10b981; opacity: 0.45;
-      transition: all 0.3s ease; pointer-events: none;
-    }
-    .nav-robotic-link:hover .nav-corner-tl, .nav-robotic-link.active .nav-corner-tl {
-      opacity: 1; transform: scale(1.25) translate(-1px, -1px); filter: drop-shadow(0 0 8px #22d3ee);
-    }
-    .nav-robotic-link:hover .nav-corner-br, .nav-robotic-link.active .nav-corner-br {
-      opacity: 1; transform: scale(1.25) translate(1px, 1px); filter: drop-shadow(0 0 8px #10b981);
-    }
-    .nav-robotic-scanline {
-      position: absolute; inset: 0; opacity: 0; pointer-events: none;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(34, 211, 238, 0.2) 2px, rgba(34, 211, 238, 0.2) 4px);
-      transition: opacity 0.3s ease;
-    }
-    .nav-robotic-link:hover .nav-robotic-scanline {
-      opacity: 0.6; animation: scanlinePass 1.8s linear infinite;
-    }
-    @keyframes scanlinePass {
-      0% { transform: translateY(-100%); }
-      100% { transform: translateY(100%); }
-    }
-    .nav-robotic-text {
-      position: relative; z-index: 10;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.85rem; font-weight: 700; letter-spacing: 0.16em;
-      text-transform: uppercase; color: #cbd5e1; transition: all 0.3s ease;
-      display: flex; align-items: center; gap: 0.5rem;
-    }
-    .nav-robotic-link:hover .nav-robotic-text {
-      color: #ffffff; letter-spacing: 0.22em;
-      text-shadow: 0 0 14px rgba(34, 211, 238, 0.9), 0 0 25px rgba(6, 182, 212, 0.6);
-      transform: translateY(-2px);
-    }
-    .nav-robotic-link.active .nav-robotic-text {
-      color: #22d3ee; letter-spacing: 0.2em;
-      background: linear-gradient(90deg, #22d3ee, #10b981);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.7));
-    }
-    .nav-robotic-underline {
-      position: absolute; bottom: -2px; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, #22d3ee, #10b981);
-      clip-path: polygon(0 50%, 5px 0, calc(100% - 5px) 0, 100% 50%, calc(100% - 5px) 100%, 5px 100%);
-      transform: scaleX(0); opacity: 0;
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
-      box-shadow: 0 0 16px rgba(34, 211, 238, 0.9);
-    }
-    .nav-robotic-link:hover .nav-robotic-underline,
-    .nav-robotic-link.active .nav-robotic-underline {
-      transform: scaleX(1); opacity: 1;
-    }
-    .nav-robotic-cta {
-      position: relative; display: inline-flex; align-items: center; gap: 0.6rem;
-      padding: 0.65rem 1.6rem;
-      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
-      background: linear-gradient(135deg, #06b6d4, #10b981);
-      font-family: "JetBrains Mono", monospace; font-size: 0.85rem; font-weight: 800;
-      letter-spacing: 0.15em; text-transform: uppercase; color: #ffffff !important;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      box-shadow: 0 0 25px rgba(6, 182, 212, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.3);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      text-decoration: none;
-    }
-    .nav-robotic-cta:hover {
-      transform: translateY(-2px) scale(1.06); letter-spacing: 0.2em;
-      box-shadow: 0 0 35px rgba(6, 182, 212, 0.9), 0 0 20px rgba(16, 185, 129, 0.6);
-    }
-
-    /* ── Light Mode High-Contrast Overrides ── */
-    html.light body, html:not(.dark) body {
-      background-color: #f8fafc !important;
-      color: #0f172a !important;
-    }
-    html.light .nav-robotic-frame, html:not(.dark) .nav-robotic-frame {
-      background: rgba(15, 23, 42, 0.03) !important;
-      border: 1px solid rgba(15, 23, 42, 0.12) !important;
-    }
-    html.light .nav-robotic-link:hover .nav-robotic-frame,
-    html.light .nav-robotic-link.active .nav-robotic-frame,
-    html:not(.dark) .nav-robotic-link:hover .nav-robotic-frame,
-    html:not(.dark) .nav-robotic-link.active .nav-robotic-frame {
-      background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(16, 185, 129, 0.12)) !important;
-      border: 1px solid rgba(8, 145, 178, 0.7) !important;
-      box-shadow: 0 4px 20px rgba(6, 182, 212, 0.22), inset 0 0 15px rgba(16, 185, 129, 0.12) !important;
-    }
-    html.light .nav-robotic-text, html:not(.dark) .nav-robotic-text {
-      color: #0f172a !important;
-      font-weight: 800 !important;
-    }
-    html.light .nav-robotic-link:hover .nav-robotic-text,
-    html:not(.dark) .nav-robotic-link:hover .nav-robotic-text {
-      color: #0284c7 !important;
-      text-shadow: 0 0 12px rgba(6, 182, 212, 0.3) !important;
-    }
-    html.light .nav-robotic-link.active .nav-robotic-text,
-    html:not(.dark) .nav-robotic-link.active .nav-robotic-text {
-      color: #0891b2 !important;
-      background: linear-gradient(90deg, #0891b2, #059669) !important;
-      -webkit-background-clip: text !important;
-      -webkit-text-fill-color: transparent !important;
-      filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.3)) !important;
-    }
-    html.light .nav-corner-tl, html:not(.dark) .nav-corner-tl {
-      border-color: #0891b2 !important; opacity: 0.6 !important;
-    }
-    html.light .nav-corner-br, html:not(.dark) .nav-corner-br {
-      border-color: #059669 !important; opacity: 0.6 !important;
-    }
-
-    /* ── Mobile Menu Dropdown Precision Theme Adaptation ── */
-    #mobile-menu {
-      background: rgba(11, 15, 25, 0.96) !important;
-      border-top: 1px solid rgba(34, 211, 238, 0.25) !important;
-      backdrop-filter: blur(28px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
-    }
-    html.light #mobile-menu,
-    html:not(.dark) #mobile-menu {
-      background: rgba(255, 255, 255, 0.98) !important;
-      border-top: 1px solid rgba(15, 23, 42, 0.1) !important;
-      box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.08) !important;
-    }
-    #mobile-menu .nav-robotic-link {
-      display: flex !important;
-      align-items: center;
-      width: 100% !important;
-      margin-bottom: 0.4rem;
-    }
-    #mobile-menu .nav-robotic-link:hover .nav-robotic-frame,
-    #mobile-menu .nav-robotic-link.active .nav-robotic-frame {
-      transform: translateY(-1px) !important;
-    }
-    html.dark #mobile-menu .nav-robotic-frame {
-      background: rgba(255, 255, 255, 0.03) !important;
-      border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    }
-    html.dark #mobile-menu .nav-robotic-text {
-      color: #cbd5e1 !important;
-    }
-    html.dark #mobile-menu .nav-robotic-link:hover .nav-robotic-text,
-    html.dark #mobile-menu .nav-robotic-link.active .nav-robotic-text {
-      color: #22d3ee !important;
-    }
-    html.light #mobile-menu .nav-robotic-frame,
-    html:not(.dark) #mobile-menu .nav-robotic-frame {
-      background: rgba(15, 23, 42, 0.03) !important;
-      border: 1px solid rgba(15, 23, 42, 0.1) !important;
-    }
-    html.light #mobile-menu .nav-robotic-text,
-    html:not(.dark) #mobile-menu .nav-robotic-text {
-      color: #0f172a !important;
+    html.light body {
+      background-color: #F8FAFC;
+      color: #0F172A;
     }
   </style>
 
   {% block extra_css %}{% endblock %}
 </head>
-<body class="bg-slate-50 text-slate-900 dark:bg-[#0B0F19] dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-300">
+<body class="bg-[#0B0D0E] text-[#F5F7F8] dark:bg-[#0B0D0E] dark:text-[#F5F7F8] min-h-screen flex flex-col font-sans transition-colors duration-200">
 
-  <!-- Precision Custom Cursor Elements (Desktop only) -->
-  <div class="cursor-dot"></div>
-  <div class="cursor-ring"></div>
+  <!-- Subtle Technical Background Ambient Layer -->
+  <div class="technical-bg" aria-hidden="true"></div>
 
-  <!-- ── Executive Glassmorphic Header ────────────────────────────── -->
-  <header class="navbar-gloss fixed top-0 left-0 right-0 z-50 py-3.5 transition-all duration-300">
-    <div class="nav-glow-line-top"></div>
-    <div class="nav-glow-line-bottom"></div>
-
-    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between relative">
-      <!-- Logo -->
-      <a href="{% url 'home' %}" class="flex items-center gap-3 group focus:outline-none relative">
-        <div class="absolute -inset-2 rounded-full bg-gradient-to-r from-cyan-500/30 to-emerald-500/30 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-        <div class="relative w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 via-emerald-500 to-cyan-400 p-[1.5px] shadow-lg shadow-cyan-500/25 group-hover:scale-110 transition-transform overflow-hidden">
+  <!-- ── Minimalist Sticky Engineering Header ───────────────────────────── -->
+  <header class="fixed top-0 left-0 right-0 z-50 h-16 bg-[#0B0D0E]/85 dark:bg-[#0B0D0E]/85 backdrop-blur-md border-b border-white/[0.07] transition-all">
+    <nav class="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between" aria-label="Main Navigation">
+      
+      <!-- Brand Logo / Identity -->
+      <a href="{% url 'home' %}" class="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 rounded-lg p-1 -ml-1">
+        <div class="w-9 h-9 rounded-full bg-[#171A1C] border border-white/10 flex items-center justify-center overflow-hidden shrink-0 group-hover:border-teal-500/50 transition-colors">
           {% if dynamic_favicon_url %}
-            <img src="{{ dynamic_favicon_url }}" alt="Logo" class="w-full h-full object-cover rounded-full">
+            <img src="{{ dynamic_favicon_url }}" alt="Md. Taher Bin Omar Hijbullah" class="w-full h-full object-cover">
           {% elif hero.profile_image %}
-            <img src="{{ hero.profile_image.url }}" alt="Logo" class="w-full h-full object-cover rounded-full">
+            <img src="{{ hero.profile_image.url }}" alt="Md. Taher Bin Omar Hijbullah" class="w-full h-full object-cover">
           {% else %}
-            <div class="w-full h-full rounded-full bg-slate-950 flex items-center justify-center">
-              <span class="text-white font-black text-xl gradient-text">H</span>
-            </div>
+            <span class="text-sm font-bold text-teal-400 font-mono">H</span>
           {% endif %}
         </div>
-        <div class="relative flex items-center">
-          <span class="font-extrabold text-2xl tracking-tight brand-shimmer">Hijbullah</span>
-          <span class="font-extrabold text-2xl tracking-tight text-slate-900 dark:text-white">Hub</span>
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-base tracking-tight text-white group-hover:text-teal-400 transition-colors">
+            Hijbullah<span class="text-slate-400 font-normal">Hub</span>
+          </span>
+          <span class="hidden sm:inline-flex items-center text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.04] text-slate-400 border border-white/[0.06]">
+            dev &bull; research
+          </span>
         </div>
       </a>
 
-      <!-- Desktop Nav Links (Robotic Cyber Chamfered Links) -->
-      <div class="hidden md:flex items-center gap-3">
-        <a href="{% url 'home' %}" class="nav-robotic-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
-          <div class="nav-robotic-frame"></div>
-          <div class="nav-corner-tl"></div>
-          <div class="nav-corner-br"></div>
-          <div class="nav-robotic-scanline"></div>
-          <span class="nav-robotic-text">Home</span>
-          <div class="nav-robotic-underline"></div>
+      <!-- Desktop Navigation Links -->
+      <div class="hidden md:flex items-center gap-1">
+        <a href="{% url 'home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+          Home
         </a>
-
-        <a href="{% url 'projects' %}" class="nav-robotic-link {% if request.resolver_match.url_name == 'projects' %}active{% endif %}">
-          <div class="nav-robotic-frame"></div>
-          <div class="nav-corner-tl"></div>
-          <div class="nav-corner-br"></div>
-          <div class="nav-robotic-scanline"></div>
-          <span class="nav-robotic-text">Projects</span>
-          <div class="nav-robotic-underline"></div>
+        <a href="{% url 'projects' %}" class="nav-link {% if request.resolver_match.url_name == 'projects' %}active{% endif %}">
+          Projects
         </a>
-
-        <a href="{% url 'ai_lab' %}" class="nav-robotic-link {% if request.resolver_match.url_name == 'ai_lab' %}active{% endif %}">
-          <div class="nav-robotic-frame"></div>
-          <div class="nav-corner-tl"></div>
-          <div class="nav-corner-br"></div>
-          <div class="nav-robotic-scanline"></div>
-          <span class="nav-robotic-text">AI/ML Lab</span>
-          <div class="nav-robotic-underline"></div>
+        <a href="{% url 'ai_lab' %}" class="nav-link {% if request.resolver_match.url_name == 'ai_lab' %}active{% endif %}">
+          AI/ML Lab
         </a>
-
-        <a href="{% url 'research' %}" class="nav-robotic-link {% if request.resolver_match.url_name == 'research' %}active{% endif %}">
-          <div class="nav-robotic-frame"></div>
-          <div class="nav-corner-tl"></div>
-          <div class="nav-corner-br"></div>
-          <div class="nav-robotic-scanline"></div>
-          <span class="nav-robotic-text">Research</span>
-          <div class="nav-robotic-underline"></div>
+        <a href="{% url 'research' %}" class="nav-link {% if request.resolver_match.url_name == 'research' %}active{% endif %}">
+          Research
+        </a>
+        <a href="{% url 'contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">
+          Contact
         </a>
       </div>
 
-      <!-- Action: Theme Toggle & Get in Touch Button & Mobile Toggle -->
-      <div class="flex items-center gap-3">
-        <!-- Header Theme Toggle -->
-        <button type="button" class="theme-toggle-btn w-10 h-10 rounded-xl bg-white/80 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-cyan-500/40 transition-all flex items-center justify-center text-slate-700 dark:text-slate-200 shadow-sm focus:outline-none" aria-label="Toggle theme">
-          <svg class="theme-icon-sun w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+      <!-- Header Actions: Theme Toggle + CTA + Mobile Toggle -->
+      <div class="flex items-center gap-2.5">
+        <!-- Theme Toggle -->
+        <button type="button" class="theme-toggle-btn w-9 h-9 rounded-lg bg-white/[0.04] border border-white/[0.08] hover:border-white/20 hover:bg-white/[0.08] transition-all flex items-center justify-center text-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500" aria-label="Toggle visual theme">
+          <svg class="theme-icon-sun w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
           </svg>
-          <svg class="theme-icon-moon hidden w-4 h-4 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          <svg class="theme-icon-moon hidden w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
           </svg>
         </button>
 
-        <a href="{% url 'contact' %}" class="hidden sm:inline-flex nav-robotic-cta">
+        <!-- Direct Contact CTA -->
+        <a href="{% url 'contact' %}" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-900 bg-teal-400 hover:bg-teal-300 transition-all shadow-sm">
           <span>Get in Touch</span>
-          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+          </svg>
         </a>
 
-        <button id="mobile-menu-toggle" type="button" class="md:hidden w-10 h-10 rounded-xl flex items-center justify-center text-slate-700 dark:text-slate-200 bg-white/80 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-cyan-500/40 transition-colors" aria-label="Toggle menu">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7"/>
+        <!-- Mobile Menu Hamburger Button -->
+        <button id="mobile-menu-toggle" type="button" class="md:hidden w-9 h-9 rounded-lg flex items-center justify-center text-slate-300 bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500" aria-label="Toggle navigation menu" aria-expanded="false">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7"/>
           </svg>
         </button>
       </div>
     </nav>
 
-    <!-- Mobile Menu Dropdown -->
-    <div id="mobile-menu" class="hidden md:hidden border-t border-cyan-500/20 bg-white/95 dark:bg-[#0B0F19]/95 backdrop-blur-2xl px-6 py-5 shadow-2xl space-y-2">
-      <a href="{% url 'home' %}" class="block nav-robotic-link w-full {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
-        <div class="nav-robotic-frame"></div>
-        <div class="nav-corner-tl"></div>
-        <div class="nav-corner-br"></div>
-        <span class="nav-robotic-text">Home</span>
+    <!-- Mobile Dropdown Navigation -->
+    <div id="mobile-menu" class="hidden md:hidden border-b border-white/[0.08] bg-[#111315]/98 backdrop-blur-xl px-5 py-4 space-y-1 shadow-2xl">
+      <a href="{% url 'home' %}" class="block px-3 py-2 rounded-lg text-sm font-medium {% if request.resolver_match.url_name == 'home' %}text-teal-400 bg-white/[0.05]{% else %}text-slate-300 hover:text-white hover:bg-white/[0.03]{% endif %} transition-colors">
+        Home
       </a>
-      <a href="{% url 'projects' %}" class="block nav-robotic-link w-full {% if request.resolver_match.url_name == 'projects' %}active{% endif %}">
-        <div class="nav-robotic-frame"></div>
-        <div class="nav-corner-tl"></div>
-        <div class="nav-corner-br"></div>
-        <span class="nav-robotic-text">Projects</span>
+      <a href="{% url 'projects' %}" class="block px-3 py-2 rounded-lg text-sm font-medium {% if request.resolver_match.url_name == 'projects' %}text-teal-400 bg-white/[0.05]{% else %}text-slate-300 hover:text-white hover:bg-white/[0.03]{% endif %} transition-colors">
+        Projects
       </a>
-      <a href="{% url 'ai_lab' %}" class="block nav-robotic-link w-full {% if request.resolver_match.url_name == 'ai_lab' %}active{% endif %}">
-        <div class="nav-robotic-frame"></div>
-        <div class="nav-corner-tl"></div>
-        <div class="nav-corner-br"></div>
-        <span class="nav-robotic-text">AI/ML Lab</span>
+      <a href="{% url 'ai_lab' %}" class="block px-3 py-2 rounded-lg text-sm font-medium {% if request.resolver_match.url_name == 'ai_lab' %}text-teal-400 bg-white/[0.05]{% else %}text-slate-300 hover:text-white hover:bg-white/[0.03]{% endif %} transition-colors">
+        AI/ML Lab
       </a>
-      <a href="{% url 'research' %}" class="block nav-robotic-link w-full {% if request.resolver_match.url_name == 'research' %}active{% endif %}">
-        <div class="nav-robotic-frame"></div>
-        <div class="nav-corner-tl"></div>
-        <div class="nav-corner-br"></div>
-        <span class="nav-robotic-text">Research</span>
+      <a href="{% url 'research' %}" class="block px-3 py-2 rounded-lg text-sm font-medium {% if request.resolver_match.url_name == 'research' %}text-teal-400 bg-white/[0.05]{% else %}text-slate-300 hover:text-white hover:bg-white/[0.03]{% endif %} transition-colors">
+        Research
       </a>
-      <div class="pt-2">
-        <a href="{% url 'contact' %}" class="block text-center nav-robotic-cta w-full justify-center">Get in Touch</a>
+      <a href="{% url 'contact' %}" class="block px-3 py-2 rounded-lg text-sm font-medium {% if request.resolver_match.url_name == 'contact' %}text-teal-400 bg-white/[0.05]{% else %}text-slate-300 hover:text-white hover:bg-white/[0.03]{% endif %} transition-colors">
+        Contact
+      </a>
+      <div class="pt-2 border-t border-white/[0.06]">
+        <a href="{% url 'contact' %}" class="block w-full text-center py-2 rounded-lg text-xs font-semibold text-slate-900 bg-teal-400 hover:bg-teal-300 transition-colors">
+          Get in Touch
+        </a>
       </div>
     </div>
   </header>
 
-  <!-- ── Django Messages Framework Alert ────────────────────────────── -->
+  <!-- ── Django Messages Alerts ─────────────────────────────────────────── -->
   {% if messages %}
-    <div class="fixed top-20 right-4 z-50 max-w-md w-full px-4 space-y-2">
+    <div class="fixed top-20 right-4 z-50 max-w-md w-full px-4 space-y-2 pointer-events-none">
       {% for message in messages %}
-        <div class="p-4 rounded-xl shadow-xl backdrop-blur-md border flex items-center justify-between {% if message.tags == 'success' %}bg-emerald-500/20 border-emerald-500/40 text-emerald-200{% elif message.tags == 'error' %}bg-rose-500/20 border-rose-500/40 text-rose-200{% else %}bg-cyan-500/20 border-cyan-500/40 text-cyan-200{% endif %}">
+        <div class="pointer-events-auto p-4 rounded-xl shadow-xl backdrop-blur-md border flex items-center justify-between {% if message.tags == 'success' %}bg-emerald-950/80 border-emerald-500/40 text-emerald-200{% elif message.tags == 'error' %}bg-rose-950/80 border-rose-500/40 text-rose-200{% else %}bg-[#171A1C] border-teal-500/40 text-teal-200{% endif %}">
           <span class="text-sm font-medium">{{ message }}</span>
-          <button type="button" onclick="this.parentElement.remove()" class="text-xs opacity-70 hover:opacity-100 ml-3">✕</button>
+          <button type="button" onclick="this.parentElement.remove()" class="text-xs opacity-70 hover:opacity-100 ml-3 focus:outline-none" aria-label="Close notification">✕</button>
         </div>
       {% endfor %}
     </div>
   {% endif %}
 
-  <!-- ── Main Page Content Block ────────────────────────────── -->
-  <main class="flex-grow pt-20">
+  <!-- ── Main Page Content Block ────────────────────────────────────────── -->
+  <main class="flex-grow pt-16">
     {% block content %}{% endblock %}
   </main>
 
-  <!-- ── Executive Footer ────────────────────────────── -->
-  <footer class="mt-auto border-t border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-950/70 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-        <div>
-          <p class="text-sm font-bold text-slate-800 dark:text-slate-200">
-            Hijbullah<span class="text-cyan-500">Hub</span>
-          </p>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Md. Taher Bin Omar Hijbullah
-          </p>
-        </div>
+  <!-- ── Clean Engineering Footer ───────────────────────────────────────── -->
+  <footer class="mt-auto border-t border-white/[0.07] bg-[#0B0D0E] text-slate-400 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+      <div>
+        <p class="text-sm font-semibold text-slate-200">
+          Hijbullah<span class="text-teal-400">Hub</span>
+        </p>
+        <p class="text-xs text-slate-500 mt-0.5">
+          Md. Taher Bin Omar Hijbullah &bull; Python / Django Developer &bull; AI/ML &amp; Research Enthusiast
+        </p>
+      </div>
 
-        <div class="text-xs text-slate-500 dark:text-slate-500">
-          &copy; {% now "Y" %} All rights reserved.
-        </div>
+      <div class="flex items-center gap-6 text-xs text-slate-500">
+        <a href="{% url 'projects' %}" class="hover:text-slate-300 transition-colors">Projects</a>
+        <a href="{% url 'research' %}" class="hover:text-slate-300 transition-colors">Research</a>
+        <a href="{% url 'contact' %}" class="hover:text-slate-300 transition-colors">Contact</a>
+        <span>&copy; {% now "Y" %}</span>
       </div>
     </div>
   </footer>
 
-  <!-- ── Floating Scroll to Top Button ────────────────────────────── -->
-  <button id="scroll-top-btn" type="button" class="fixed bottom-4 right-4 z-40 opacity-0 pointer-events-none translate-y-2 w-10 h-10 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-white/10 shadow-lg flex items-center justify-center text-slate-700 dark:text-slate-200 hover:text-cyan-500 transition-all focus:outline-none" aria-label="Scroll to top">
-    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+  <!-- ── Scroll to Top Floating Button ──────────────────────────────────── -->
+  <button id="scroll-top-btn" type="button" class="fixed bottom-5 right-5 z-40 opacity-0 pointer-events-none translate-y-2 w-9 h-9 rounded-lg bg-[#171A1C] border border-white/10 hover:border-teal-500/50 shadow-lg flex items-center justify-center text-slate-300 hover:text-teal-400 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500" aria-label="Scroll back to top">
+    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
     </svg>
   </button>
 
-  <!-- Main JavaScript Engine -->
+  <!-- Core JavaScript Engine -->
   <script src="{% static 'js/main.js' %}"></script>
 
-  <!-- Privacy-Respecting Silent Analytics Beacon (Zero Browser Location Prompts) -->
+  <!-- Privacy-Respecting Silent Analytics Beacon -->
   <script>
     (function() {
       try {
