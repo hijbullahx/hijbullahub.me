@@ -1,9 +1,12 @@
+import logging
 from django.db import models
 from rest_framework import permissions, viewsets, status
 from rest_framework.response import Response
 
 from .models import Contact, ContactProfile, Feedback
 from .serializers import ContactSerializer, ContactProfileSerializer, FeedbackSerializer
+
+logger = logging.getLogger(__name__)
 
 
 class ContactViewSet(viewsets.ModelViewSet):
@@ -47,15 +50,15 @@ class FeedbackViewSet(viewsets.ModelViewSet):
         serializer.save(display_order=max_order + 1)
 
     def destroy(self, request, *args, **kwargs):
-        print("Destroy called for ID:", kwargs.get('pk'))
         try:
             instance = self.get_object()
-            print("Deleting feedback instance:", instance)
+            feedback_id = instance.pk
             self.perform_destroy(instance)
-            return Response(status=204)
-        except Exception as e:
-            print("Error deleting:", e)
-            return Response({"error": str(e)}, status=400)
+            logger.info("Feedback instance %s deleted by user %s", feedback_id, request.user)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception:
+            logger.exception("Error deleting feedback instance %s", kwargs.get("pk"))
+            return Response({"error": "Failed to delete feedback entry."}, status=status.HTTP_400_BAD_REQUEST)
             
     def perform_destroy(self, instance):
         instance.delete()

@@ -24,6 +24,7 @@ from apps.research.models import Research
 from apps.hire.models import HireRequest
 from apps.site_settings.models import SiteSetting
 from apps.core.email_utils import send_proposal_custom_reply, send_contact_custom_reply
+from apps.core.validators import validate_uploaded_image, validate_uploaded_document
 
 
 def dashboard_login_view(request):
@@ -224,6 +225,10 @@ def dashboard_update_hero_view(request):
         hero.short_bio = request.POST.get("short_bio", hero.short_bio).strip()
 
         if "profile_image" in request.FILES:
+            is_valid, err = validate_uploaded_image(request.FILES["profile_image"], field_name="Profile image")
+            if not is_valid:
+                messages.error(request, err)
+                return redirect("dashboard")
             hero.profile_image = request.FILES["profile_image"]
 
         hero.save()
@@ -248,6 +253,10 @@ def dashboard_update_about_view(request):
         about.quote = request.POST.get("quote", "").strip()
 
         if "image" in request.FILES:
+            is_valid, err = validate_uploaded_image(request.FILES["image"], field_name="About image")
+            if not is_valid:
+                messages.error(request, err)
+                return redirect("dashboard")
             about.image = request.FILES["image"]
 
         about.save()
@@ -303,6 +312,12 @@ def dashboard_add_project_view(request):
         featured = request.POST.get("featured") == "on"
 
         if title:
+            if "featured_image" in request.FILES:
+                is_valid, err = validate_uploaded_image(request.FILES["featured_image"], field_name="Project featured image")
+                if not is_valid:
+                    messages.error(request, err)
+                    return redirect("dashboard")
+
             project = Project.objects.create(
                 title=title,
                 status=status,
@@ -348,6 +363,18 @@ def dashboard_add_education_view(request):
     logo = request.FILES.get("institution_logo")
     certificate = request.FILES.get("certificate")
 
+    if logo:
+        is_valid, err = validate_uploaded_image(logo, field_name="Institution logo")
+        if not is_valid:
+            messages.error(request, err)
+            return redirect("dashboard")
+
+    if certificate:
+        is_valid, err = validate_uploaded_document(certificate, field_name="Certificate")
+        if not is_valid:
+            messages.error(request, err)
+            return redirect("dashboard")
+
     if degree_name and institution_name:
         edu = Education(
             degree_name=degree_name,
@@ -392,6 +419,12 @@ def dashboard_add_experience_view(request):
     description = request.POST.get("description", "").strip()
     highlight = request.POST.get("highlight") in ["on", "true", "1"]
     logo = request.FILES.get("logo")
+
+    if logo:
+        is_valid, err = validate_uploaded_image(logo, field_name="Organization logo")
+        if not is_valid:
+            messages.error(request, err)
+            return redirect("dashboard")
 
     if role and organization:
         exp = Experience(
@@ -621,6 +654,10 @@ def dashboard_edit_skill_view(request, skill_id):
         pass
 
     if "icon" in request.FILES:
+        is_valid, err = validate_uploaded_image(request.FILES["icon"], field_name="Skill icon")
+        if not is_valid:
+            messages.error(request, err)
+            return redirect("dashboard")
         skill.icon = request.FILES["icon"]
 
     skill.save()
@@ -647,6 +684,10 @@ def dashboard_edit_project_view(request, project_id):
     project.featured = request.POST.get("featured") in ["on", "true", "1"]
 
     if "featured_image" in request.FILES:
+        is_valid, err = validate_uploaded_image(request.FILES["featured_image"], field_name="Project featured image")
+        if not is_valid:
+            messages.error(request, err)
+            return redirect("dashboard")
         project.featured_image = request.FILES["featured_image"]
 
     project.save()
@@ -686,8 +727,16 @@ def dashboard_edit_education_view(request, education_id):
         edu.end_date = None
 
     if "institution_logo" in request.FILES:
+        is_valid, err = validate_uploaded_image(request.FILES["institution_logo"], field_name="Institution logo")
+        if not is_valid:
+            messages.error(request, err)
+            return redirect("dashboard")
         edu.institution_logo = request.FILES["institution_logo"]
     if "certificate" in request.FILES:
+        is_valid, err = validate_uploaded_document(request.FILES["certificate"], field_name="Certificate")
+        if not is_valid:
+            messages.error(request, err)
+            return redirect("dashboard")
         edu.certificate = request.FILES["certificate"]
 
     edu.save()
@@ -707,6 +756,10 @@ def dashboard_edit_experience_view(request, experience_id):
     exp.highlight = request.POST.get("highlight") in ["on", "true", "1"]
 
     if "logo" in request.FILES:
+        is_valid, err = validate_uploaded_image(request.FILES["logo"], field_name="Organization logo")
+        if not is_valid:
+            messages.error(request, err)
+            return redirect("dashboard")
         exp.logo = request.FILES["logo"]
 
     exp.save()

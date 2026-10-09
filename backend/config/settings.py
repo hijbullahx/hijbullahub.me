@@ -10,16 +10,41 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY") or os.getenv("DJANGO_SECRET_KEY", "unsafe-dev-key-change-me")
-DEBUG = os.getenv("DEBUG", "True").lower() == "true"
+from django.core.exceptions import ImproperlyConfigured
+
+DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "t")
+
+_dev_default_secret = "unsafe-dev-key-change-me"
+SECRET_KEY = os.getenv("SECRET_KEY") or os.getenv("DJANGO_SECRET_KEY")
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = _dev_default_secret
+    else:
+        raise ImproperlyConfigured(
+            "SECRET_KEY must be set to a secure, private string in production (DEBUG=False)."
+        )
+elif not DEBUG and (SECRET_KEY == _dev_default_secret or SECRET_KEY.startswith("django-insecure-")):
+    raise ImproperlyConfigured(
+        "Insecure default or development SECRET_KEY detected in production (DEBUG=False). Please configure a unique, secure SECRET_KEY."
+    )
 
 # Host configuration
-_raw_hosts = os.getenv("ALLOWED_HOSTS", "*")
-ALLOWED_HOSTS = [host.strip() for host in _raw_hosts.split(",") if host.strip()]
-if DEBUG:
-    for _local in ["127.0.0.1", "localhost", "testserver"]:
-        if _local not in ALLOWED_HOSTS:
-            ALLOWED_HOSTS.append(_local)
+_raw_hosts = os.getenv("ALLOWED_HOSTS", "").strip()
+if not DEBUG:
+    if not _raw_hosts or _raw_hosts == "*":
+        raise ImproperlyConfigured(
+            "ALLOWED_HOSTS must be explicitly configured in production (DEBUG=False). "
+            "Wildcard '*' or empty values are not allowed."
+        )
+    ALLOWED_HOSTS = [host.strip() for host in _raw_hosts.split(",") if host.strip() and host.strip() != "*"]
+else:
+    if not _raw_hosts or _raw_hosts == "*":
+        ALLOWED_HOSTS = ["127.0.0.1", "localhost", "testserver"]
+    else:
+        ALLOWED_HOSTS = [host.strip() for host in _raw_hosts.split(",") if host.strip()]
+        for _local in ["127.0.0.1", "localhost", "testserver"]:
+            if _local not in ALLOWED_HOSTS:
+                ALLOWED_HOSTS.append(_local)
 
 INSTALLED_APPS = [
     "jazzmin",
@@ -59,8 +84,11 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    # "django.middleware.clickjacking.XFrameOptionsMiddleware",  # Allow iframes for PDF viewing
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+# Defend against clickjacking while permitting same-origin frames if needed
+X_FRAME_OPTIONS = "SAMEORIGIN"
 
 ROOT_URLCONF = "config.urls"
 
@@ -220,20 +248,40 @@ CACHES = {
 }
 
 # CORS Settings
-CORS_ALLOW_ALL_ORIGINS = os.getenv("CORS_ALLOW_ALL_ORIGINS", "True").lower() == "true"
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = os.getenv("CORS_ALLOW_ALL_ORIGINS", "True").lower() in ("true", "1")
+else:
+    CORS_ALLOW_ALL_ORIGINS = os.getenv("CORS_ALLOW_ALL_ORIGINS", "False").lower() in ("true", "1")
 
 # For production, use specific origins
-if not CORS_ALLOW_ALL_ORIGINS:
+_raw_cors = os.getenv("CORS_ALLOWED_ORIGINS", "").strip()
+if _raw_cors:
     CORS_ALLOWED_ORIGINS = [
-        origin.strip() 
-        for origin in os.getenv("CORS_ALLOWED_ORIGINS", "").split(",") 
+        origin.strip()
+        for origin in _raw_cors.split(",")
         if origin.strip()
+    ]
+elif not CORS_ALLOW_ALL_ORIGINS:
+    CORS_ALLOWED_ORIGINS = [
+        "https://hijbullah.me",
+        "https://www.hijbullah.me",
     ]
 
 # Allow browser preflight for clients that include cache-control header.
 CORS_ALLOW_HEADERS = (*default_headers, "cache-control")
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# Production Cookie & Transport Security
+if not DEBUG:
+    SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "True").lower() in ("true", "1")
+    CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE", "True").lower() in ("true", "1")
+    SESSION_COOKIE_HTTPONLY = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# File Upload Limits (configurable via environment variables)
+MAX_IMAGE_UPLOAD_SIZE = int(os.getenv("MAX_IMAGE_UPLOAD_SIZE", 5 * 1024 * 1024))         # Default 5 MB
+MAX_DOCUMENT_UPLOAD_SIZE = int(os.getenv("MAX_DOCUMENT_UPLOAD_SIZE", 10 * 1024 * 1024)) # Default 10 MB
 
 # CSRF Trusted Origins for live domain forms and dashboard
 _raw_csrf = os.getenv("CSRF_TRUSTED_ORIGINS", "")
@@ -243,8 +291,6 @@ else:
     CSRF_TRUSTED_ORIGINS = [
         "https://hijbullah.me",
         "https://www.hijbullah.me",
-        "http://hijbullah.me",
-        "http://www.hijbullah.me",
     ]
 
 # ===========================

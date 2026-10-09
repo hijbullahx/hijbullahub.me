@@ -140,7 +140,7 @@
                     {% endif %}
 
                     {% if item.pdf_upload %}
-                      <a href="{{ item.pdf_upload.url }}" target="_blank" download class="btn-secondary text-xs py-2 px-3 font-mono">
+                      <a href="{{ item.pdf_upload.url }}" target="_blank" rel="noopener noreferrer" download class="btn-secondary text-xs py-2 px-3 font-mono">
                         <span>Download PDF</span>
                         <span class="text-[10px]">&darr;</span>
                       </a>
