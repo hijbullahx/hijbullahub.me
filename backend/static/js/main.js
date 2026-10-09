@@ -15,7 +15,12 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ── Theme Management ────────────────────────────────────────────────────── */
 function initTheme() {
   const root = document.documentElement;
-  const savedTheme = localStorage.getItem("portfolio_theme") || "dark";
+  let savedTheme = "dark";
+  try {
+    savedTheme = localStorage.getItem("portfolio_theme") || "dark";
+  } catch (e) {
+    savedTheme = "dark";
+  }
   applyTheme(savedTheme);
 
   const toggleBtns = document.querySelectorAll(".theme-toggle-btn");
@@ -24,7 +29,9 @@ function initTheme() {
       const current = root.classList.contains("light") ? "light" : "dark";
       const next = current === "dark" ? "light" : "dark";
       applyTheme(next);
-      localStorage.setItem("portfolio_theme", next);
+      try {
+        localStorage.setItem("portfolio_theme", next);
+      } catch (e) {}
     });
   });
 }

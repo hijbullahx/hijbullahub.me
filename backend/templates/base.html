@@ -58,8 +58,27 @@
     }
   </script>
 
+  <!-- Immediate Theme Initialization (Prevents FOUC on reload/navigation) -->
+  <script>
+    (function() {
+      try {
+        var saved = localStorage.getItem('portfolio_theme');
+        if (saved === 'light') {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.add('light');
+        } else {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light');
+        }
+      } catch (e) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+      }
+    })();
+  </script>
+
   <!-- Custom Design System Stylesheet -->
-  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=5.0">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=5.1">
 
   <!-- Core Inlined Tokens (Guarantees zero-FOUC instant paint on all devices) -->
   <style id="navbar-core-styles">
@@ -76,31 +95,31 @@
 
   {% block extra_css %}{% endblock %}
 </head>
-<body class="bg-[#0B0D0E] text-[#F5F7F8] dark:bg-[#0B0D0E] dark:text-[#F5F7F8] min-h-screen flex flex-col font-sans transition-colors duration-200">
+<body class="bg-slate-50 text-slate-900 dark:bg-[#0B0D0E] dark:text-[#F5F7F8] min-h-screen flex flex-col font-sans transition-colors duration-200">
 
   <!-- Subtle Technical Background Ambient Layer -->
   <div class="technical-bg" aria-hidden="true"></div>
 
   <!-- ── Minimalist Sticky Engineering Header ───────────────────────────── -->
-  <header class="fixed top-0 left-0 right-0 z-50 h-16 bg-[#0B0D0E]/85 dark:bg-[#0B0D0E]/85 backdrop-blur-md border-b border-white/[0.07] transition-all">
+  <header class="fixed top-0 left-0 right-0 z-50 h-16 bg-white/90 dark:bg-[#0B0D0E]/85 backdrop-blur-md border-b border-slate-200 dark:border-white/[0.07] transition-all">
     <nav class="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between" aria-label="Main Navigation">
       
       <!-- Brand Logo / Identity -->
       <a href="{% url 'home' %}" class="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 rounded-lg p-1 -ml-1">
-        <div class="w-9 h-9 rounded-full bg-[#171A1C] border border-white/10 flex items-center justify-center overflow-hidden shrink-0 group-hover:border-teal-500/50 transition-colors">
+        <div class="w-9 h-9 rounded-full bg-slate-100 dark:bg-[#171A1C] border border-slate-200 dark:border-white/10 flex items-center justify-center overflow-hidden shrink-0 group-hover:border-teal-500/50 transition-colors">
           {% if dynamic_favicon_url %}
             <img src="{{ dynamic_favicon_url }}" alt="Md. Taher Bin Omar Hijbullah" class="w-full h-full object-cover">
           {% elif hero.profile_image %}
             <img src="{{ hero.profile_image.url }}" alt="Md. Taher Bin Omar Hijbullah" class="w-full h-full object-cover">
           {% else %}
-            <span class="text-sm font-bold text-teal-400 font-mono">H</span>
+            <span class="text-sm font-bold text-teal-600 dark:text-teal-400 font-mono">H</span>
           {% endif %}
         </div>
         <div class="flex items-center gap-2">
-          <span class="font-bold text-base tracking-tight text-white group-hover:text-teal-400 transition-colors">
-            Hijbullah<span class="text-slate-400 font-normal">Hub</span>
+          <span class="font-bold text-base tracking-tight text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+            Hijbullah<span class="text-slate-500 dark:text-slate-400 font-normal">Hub</span>
           </span>
-          <span class="hidden sm:inline-flex items-center text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.04] text-slate-400 border border-white/[0.06]">
+          <span class="hidden sm:inline-flex items-center text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-white/[0.04] text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-white/[0.06]">
             dev &bull; research
           </span>
         </div>
@@ -128,11 +147,11 @@
       <!-- Header Actions: Theme Toggle + CTA + Mobile Toggle -->
       <div class="flex items-center gap-2.5">
         <!-- Theme Toggle -->
-        <button type="button" class="theme-toggle-btn w-9 h-9 rounded-lg bg-white/[0.04] border border-white/[0.08] hover:border-white/20 hover:bg-white/[0.08] transition-all flex items-center justify-center text-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500" aria-label="Toggle visual theme">
-          <svg class="theme-icon-sun w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <button type="button" class="theme-toggle-btn w-9 h-9 rounded-lg bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/20 hover:bg-slate-200/60 dark:hover:bg-white/[0.08] transition-all flex items-center justify-center text-slate-600 dark:text-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500" aria-label="Toggle visual theme">
+          <svg class="theme-icon-sun w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
           </svg>
-          <svg class="theme-icon-moon hidden w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg class="theme-icon-moon hidden w-4 h-4 text-slate-600 dark:text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
           </svg>
         </button>
@@ -146,7 +165,7 @@
         </a>
 
         <!-- Mobile Menu Hamburger Button -->
-        <button id="mobile-menu-toggle" type="button" class="md:hidden w-9 h-9 rounded-lg flex items-center justify-center text-slate-300 bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500" aria-label="Toggle navigation menu" aria-expanded="false">
+        <button id="mobile-menu-toggle" type="button" class="md:hidden w-9 h-9 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] hover:bg-slate-200/60 dark:hover:bg-white/[0.08] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500" aria-label="Toggle navigation menu" aria-expanded="false">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7"/>
           </svg>
@@ -155,23 +174,23 @@
     </nav>
 
     <!-- Mobile Dropdown Navigation -->
-    <div id="mobile-menu" class="hidden md:hidden border-b border-white/[0.08] bg-[#111315]/98 backdrop-blur-xl px-5 py-4 space-y-1 shadow-2xl">
-      <a href="{% url 'home' %}" class="block px-3 py-2 rounded-lg text-sm font-medium {% if request.resolver_match.url_name == 'home' %}text-teal-400 bg-white/[0.05]{% else %}text-slate-300 hover:text-white hover:bg-white/[0.03]{% endif %} transition-colors">
+    <div id="mobile-menu" class="hidden md:hidden border-b border-slate-200 dark:border-white/[0.08] bg-white/98 dark:bg-[#111315]/98 backdrop-blur-xl px-5 py-4 space-y-1 shadow-2xl">
+      <a href="{% url 'home' %}" class="block px-3 py-2 rounded-lg text-sm font-medium {% if request.resolver_match.url_name == 'home' %}text-teal-600 dark:text-teal-400 bg-slate-100 dark:bg-white/[0.05]{% else %}text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/[0.03]{% endif %} transition-colors">
         Home
       </a>
-      <a href="{% url 'projects' %}" class="block px-3 py-2 rounded-lg text-sm font-medium {% if request.resolver_match.url_name == 'projects' %}text-teal-400 bg-white/[0.05]{% else %}text-slate-300 hover:text-white hover:bg-white/[0.03]{% endif %} transition-colors">
+      <a href="{% url 'projects' %}" class="block px-3 py-2 rounded-lg text-sm font-medium {% if request.resolver_match.url_name == 'projects' %}text-teal-600 dark:text-teal-400 bg-slate-100 dark:bg-white/[0.05]{% else %}text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/[0.03]{% endif %} transition-colors">
         Projects
       </a>
-      <a href="{% url 'ai_lab' %}" class="block px-3 py-2 rounded-lg text-sm font-medium {% if request.resolver_match.url_name == 'ai_lab' %}text-teal-400 bg-white/[0.05]{% else %}text-slate-300 hover:text-white hover:bg-white/[0.03]{% endif %} transition-colors">
+      <a href="{% url 'ai_lab' %}" class="block px-3 py-2 rounded-lg text-sm font-medium {% if request.resolver_match.url_name == 'ai_lab' %}text-teal-600 dark:text-teal-400 bg-slate-100 dark:bg-white/[0.05]{% else %}text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/[0.03]{% endif %} transition-colors">
         AI/ML Lab
       </a>
-      <a href="{% url 'research' %}" class="block px-3 py-2 rounded-lg text-sm font-medium {% if request.resolver_match.url_name == 'research' %}text-teal-400 bg-white/[0.05]{% else %}text-slate-300 hover:text-white hover:bg-white/[0.03]{% endif %} transition-colors">
+      <a href="{% url 'research' %}" class="block px-3 py-2 rounded-lg text-sm font-medium {% if request.resolver_match.url_name == 'research' %}text-teal-600 dark:text-teal-400 bg-slate-100 dark:bg-white/[0.05]{% else %}text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/[0.03]{% endif %} transition-colors">
         Research
       </a>
-      <a href="{% url 'contact' %}" class="block px-3 py-2 rounded-lg text-sm font-medium {% if request.resolver_match.url_name == 'contact' %}text-teal-400 bg-white/[0.05]{% else %}text-slate-300 hover:text-white hover:bg-white/[0.03]{% endif %} transition-colors">
+      <a href="{% url 'contact' %}" class="block px-3 py-2 rounded-lg text-sm font-medium {% if request.resolver_match.url_name == 'contact' %}text-teal-600 dark:text-teal-400 bg-slate-100 dark:bg-white/[0.05]{% else %}text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/[0.03]{% endif %} transition-colors">
         Contact
       </a>
-      <div class="pt-2 border-t border-white/[0.06]">
+      <div class="pt-2 border-t border-slate-200 dark:border-white/[0.06]">
         <a href="{% url 'contact' %}" class="block w-full text-center py-2 rounded-lg text-xs font-semibold text-slate-900 bg-teal-400 hover:bg-teal-300 transition-colors">
           Get in Touch
         </a>
@@ -183,7 +202,7 @@
   {% if messages %}
     <div class="fixed top-20 right-4 z-50 max-w-md w-full px-4 space-y-2 pointer-events-none">
       {% for message in messages %}
-        <div class="pointer-events-auto p-4 rounded-xl shadow-xl backdrop-blur-md border flex items-center justify-between {% if message.tags == 'success' %}bg-emerald-950/80 border-emerald-500/40 text-emerald-200{% elif message.tags == 'error' %}bg-rose-950/80 border-rose-500/40 text-rose-200{% else %}bg-[#171A1C] border-teal-500/40 text-teal-200{% endif %}">
+        <div class="pointer-events-auto p-4 rounded-xl shadow-xl backdrop-blur-md border flex items-center justify-between {% if message.tags == 'success' %}bg-emerald-950/80 border-emerald-500/40 text-emerald-200{% elif message.tags == 'error' %}bg-rose-950/80 border-rose-500/40 text-rose-200{% else %}bg-slate-900/90 dark:bg-[#171A1C] border-teal-500/40 text-teal-200{% endif %}">
           <span class="text-sm font-medium">{{ message }}</span>
           <button type="button" onclick="this.parentElement.remove()" class="text-xs opacity-70 hover:opacity-100 ml-3 focus:outline-none" aria-label="Close notification">✕</button>
         </div>
@@ -197,11 +216,11 @@
   </main>
 
   <!-- ── Clean Engineering Footer ───────────────────────────────────────── -->
-  <footer class="mt-auto border-t border-white/[0.07] bg-[#0B0D0E] text-slate-400 py-10">
+  <footer class="mt-auto border-t border-slate-200 dark:border-white/[0.07] bg-slate-50 dark:bg-[#0B0D0E] text-slate-600 dark:text-slate-400 py-10 transition-colors">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
       <div>
-        <p class="text-sm font-semibold text-slate-200">
-          Hijbullah<span class="text-teal-400">Hub</span>
+        <p class="text-sm font-semibold text-slate-900 dark:text-slate-200">
+          Hijbullah<span class="text-teal-600 dark:text-teal-400">Hub</span>
         </p>
         <p class="text-xs text-slate-500 mt-0.5">
           Md. Taher Bin Omar Hijbullah &bull; Python / Django Developer &bull; AI/ML &amp; Research Enthusiast
@@ -209,16 +228,16 @@
       </div>
 
       <div class="flex items-center gap-6 text-xs text-slate-500">
-        <a href="{% url 'projects' %}" class="hover:text-slate-300 transition-colors">Projects</a>
-        <a href="{% url 'research' %}" class="hover:text-slate-300 transition-colors">Research</a>
-        <a href="{% url 'contact' %}" class="hover:text-slate-300 transition-colors">Contact</a>
+        <a href="{% url 'projects' %}" class="hover:text-slate-900 dark:hover:text-slate-300 transition-colors">Projects</a>
+        <a href="{% url 'research' %}" class="hover:text-slate-900 dark:hover:text-slate-300 transition-colors">Research</a>
+        <a href="{% url 'contact' %}" class="hover:text-slate-900 dark:hover:text-slate-300 transition-colors">Contact</a>
         <span>&copy; {% now "Y" %}</span>
       </div>
     </div>
   </footer>
 
   <!-- ── Scroll to Top Floating Button ──────────────────────────────────── -->
-  <button id="scroll-top-btn" type="button" class="fixed bottom-5 right-5 z-40 opacity-0 pointer-events-none translate-y-2 w-9 h-9 rounded-lg bg-[#171A1C] border border-white/10 hover:border-teal-500/50 shadow-lg flex items-center justify-center text-slate-300 hover:text-teal-400 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500" aria-label="Scroll back to top">
+  <button id="scroll-top-btn" type="button" class="fixed bottom-5 right-5 z-40 opacity-0 pointer-events-none translate-y-2 w-9 h-9 rounded-lg bg-white dark:bg-[#171A1C] border border-slate-200 dark:border-white/10 hover:border-teal-500/50 shadow-md flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500" aria-label="Scroll back to top">
     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
     </svg>

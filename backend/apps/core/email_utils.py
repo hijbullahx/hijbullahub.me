@@ -101,7 +101,7 @@ def _wrap_html_email(badge_text: str, heading: str, lead_text: str, content_card
               <!-- Sign-off & Direct Contact -->
               <div style="border-top: 1px solid #e2e8f0; padding-top: 20px; margin-top: 24px;">
                 <div style="font-size: 14px; font-weight: 700; color: #0f172a;">Md. Taher Bin Omar Hijbullah</div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 2px;">AI &amp; Robotics Researcher &bull; Autonomous Systems Architect</div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 2px;">Python / Django Developer &bull; AI/ML Enthusiast &bull; Research Enthusiast</div>
                 <div style="font-size: 12px; color: #0284c7; margin-top: 4px;">
                   <a href="mailto:info@hijbullah.me" style="color: #0284c7; text-decoration: none;">info@hijbullah.me</a> &bull; 
                   <a href="https://hijbullah.me" style="color: #0284c7; text-decoration: none;">hijbullah.me</a>
@@ -618,7 +618,7 @@ def send_proposal_custom_reply(
     plain += (
         f"\nBest regards,\n"
         f"Md. Taher Bin Omar Hijbullah\n"
-        f"AI & Robotics Researcher • Autonomous Systems Architect\n"
+        f"Python / Django Developer • AI/ML Enthusiast • Research Enthusiast\n"
         f"https://hijbullah.me\n"
     )
 
@@ -680,7 +680,7 @@ def send_contact_custom_reply(
         f"{original_message}\n\n"
         f"Best regards,\n"
         f"Md. Taher Bin Omar Hijbullah\n"
-        f"AI & Robotics Researcher • Autonomous Systems Architect\n"
+        f"Python / Django Developer • AI/ML Enthusiast • Research Enthusiast\n"
         f"https://hijbullah.me\n"
     )
 
