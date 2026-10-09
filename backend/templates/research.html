@@ -9,17 +9,17 @@
   <!-- ── 1. Page Header ─────────────────────────────────────────────────── -->
   <div class="max-w-3xl mb-12 sm:mb-16">
     <div class="flex items-center gap-2 mb-3">
-      <span class="text-xs font-mono uppercase tracking-widest text-teal-400">Scientific Investigations</span>
+      <span class="text-xs font-mono uppercase tracking-widest text-teal-600 dark:text-teal-400">Scientific Investigations</span>
       {% if research_list %}
-        <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-white/[0.04] text-slate-400 border border-white/[0.06]">
+        <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-white/[0.04] text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-white/[0.06]">
           {{ research_list|length }} Cataloged
         </span>
       {% endif %}
     </div>
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-4">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight mb-4">
       Research
     </h1>
-    <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+    <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
       Research projects, publications, and technical investigations focused on practical computing and intelligent systems.
     </p>
   </div>
@@ -30,61 +30,61 @@
       <!-- ── 2. Featured / Peer-Reviewed Publications ──────────────────────── -->
       {% if published_research %}
         <section aria-labelledby="heading-publications" class="space-y-6">
-          <div class="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/[0.06]">
             <div>
-              <h2 id="heading-publications" class="text-lg sm:text-xl font-bold text-white tracking-tight">
+              <h2 id="heading-publications" class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
                 Peer-Reviewed Publications
               </h2>
-              <p class="text-xs text-slate-400 mt-0.5">
+              <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
                 Formally accepted and indexed scientific conference papers.
               </p>
             </div>
-            <span class="text-xs font-mono px-2.5 py-1 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20 font-semibold uppercase tracking-wider">
+            <span class="text-xs font-mono px-2.5 py-1 rounded bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20 font-semibold uppercase tracking-wider">
               {{ published_research|length }} Published
             </span>
           </div>
 
           <div class="space-y-8">
             {% for item in published_research %}
-              <article class="card-technical p-6 sm:p-10 border-l-2 border-l-teal-400 relative">
+              <article class="card-technical p-6 sm:p-10 border-l-2 border-l-teal-600 dark:border-l-teal-400 relative">
                 <!-- Top Citation / Status Meta -->
-                <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-6 border-b border-white/[0.06]">
+                <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-6 border-b border-slate-200 dark:border-white/[0.06]">
                   <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
-                    <span class="px-2.5 py-1 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20 font-semibold uppercase tracking-wider">
+                    <span class="px-2.5 py-1 rounded bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20 font-semibold uppercase tracking-wider">
                       {% if "QuickTap" in item.title or "PECCII" in item.title %}
                         IEEE &bull; PECCII 2026 &bull; Published
                       {% else %}
                         {{ item.get_status_display }} Publication
                       {% endif %}
                     </span>
-                    <span class="text-slate-500">ID: RES-{{ item.id }}</span>
+                    <span class="text-slate-400 dark:text-slate-500">ID: RES-{{ item.id }}</span>
                   </div>
 
-                  <span class="text-xs font-mono text-slate-400">
+                  <span class="text-xs font-mono text-slate-500 dark:text-slate-400">
                     Peer-Reviewed
                   </span>
                 </div>
 
                 <!-- Paper Title -->
-                <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight mb-4 leading-snug">
+                <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 dark:text-white tracking-tight mb-4 leading-snug">
                   {{ item.title }}
                 </h3>
 
                 <!-- Authors List -->
                 {% if item.contributors %}
-                  <div class="mb-6 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-xs font-mono bg-[#171A1C] p-3.5 rounded-lg border border-white/[0.04]">
-                    <span class="text-teal-400 font-semibold shrink-0">Authors:</span>
-                    <span class="leading-relaxed text-slate-300">{{ item.contributors }}</span>
+                  <div class="mb-6 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-xs font-mono bg-slate-50 dark:bg-[#171A1C] p-3.5 rounded-lg border border-slate-200 dark:border-white/[0.04]">
+                    <span class="text-teal-600 dark:text-teal-400 font-semibold shrink-0">Authors:</span>
+                    <span class="leading-relaxed text-slate-700 dark:text-slate-300">{{ item.contributors }}</span>
                   </div>
                 {% endif %}
 
                 <!-- Abstract -->
                 {% if item.abstract %}
                   <div class="mb-6">
-                    <h4 class="text-xs font-mono font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                    <h4 class="text-xs font-mono font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
                       Abstract
                     </h4>
-                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                       {{ item.abstract }}
                     </p>
                   </div>
@@ -92,13 +92,13 @@
 
                 <!-- Methodology & Scope Grid -->
                 {% if item.methodology or item.future_scope %}
-                  <div class="grid md:grid-cols-2 gap-6 pt-5 border-t border-white/[0.06] text-xs">
+                  <div class="grid md:grid-cols-2 gap-6 pt-5 border-t border-slate-200 dark:border-white/[0.06] text-xs">
                     {% if item.methodology %}
                       <div>
-                        <h4 class="font-mono font-semibold text-teal-400 uppercase tracking-wider mb-2">
+                        <h4 class="font-mono font-semibold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-2">
                           Methodology &amp; System Design
                         </h4>
-                        <p class="text-slate-300 leading-relaxed whitespace-pre-line">
+                        <p class="text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
                           {{ item.methodology }}
                         </p>
                       </div>
@@ -106,10 +106,10 @@
 
                     {% if item.future_scope %}
                       <div>
-                        <h4 class="font-mono font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                        <h4 class="font-mono font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
                           Findings &amp; Future Scope
                         </h4>
-                        <p class="text-slate-300 leading-relaxed whitespace-pre-line">
+                        <p class="text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
                           {{ item.future_scope }}
                         </p>
                       </div>
@@ -119,10 +119,10 @@
 
                 <!-- Technologies / Keywords -->
                 {% if item.technologies %}
-                  <div class="mt-6 pt-4 border-t border-white/[0.06] flex flex-wrap items-center gap-2">
-                    <span class="text-[11px] font-mono text-slate-500 uppercase tracking-wider">Keywords:</span>
+                  <div class="mt-6 pt-4 border-t border-slate-200 dark:border-white/[0.06] flex flex-wrap items-center gap-2">
+                    <span class="text-[11px] font-mono text-slate-400 dark:text-slate-500 uppercase tracking-wider">Keywords:</span>
                     {% for tech in item.technologies.split %}
-                      <span class="px-2.5 py-0.5 rounded text-[11px] font-mono bg-white/[0.04] text-slate-300 border border-white/[0.06]">
+                      <span class="px-2.5 py-0.5 rounded text-[11px] font-mono bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/[0.06]">
                         {{ tech }}
                       </span>
                     {% endfor %}
@@ -130,7 +130,7 @@
                 {% endif %}
 
                 <!-- Actions / Links -->
-                <div class="mt-6 pt-5 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-3">
+                <div class="mt-6 pt-5 border-t border-slate-200 dark:border-white/[0.06] flex flex-wrap items-center justify-between gap-3">
                   <div class="flex flex-wrap items-center gap-2.5">
                     {% if item.paper_link %}
                       <a href="{{ item.paper_link }}" target="_blank" rel="noopener noreferrer" class="btn-primary text-xs py-2 px-4 font-mono">
@@ -147,7 +147,7 @@
                     {% endif %}
                   </div>
 
-                  <button type="button" onclick="openContributeModal('{{ item.id }}', '{{ item.title|escapejs }}')" class="px-3.5 py-2 rounded-lg text-xs font-mono font-medium text-slate-300 hover:text-white bg-white/[0.04] border border-white/10 hover:border-white/20 transition-colors">
+                  <button type="button" onclick="openContributeModal('{{ item.id }}', '{{ item.title|escapejs }}')" class="px-3.5 py-2 rounded-lg text-xs font-mono font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 transition-colors">
                     Collaborate / Inquire &rarr;
                   </button>
                 </div>
@@ -160,16 +160,16 @@
       <!-- ── 3. Research Projects & Ongoing Investigations ──────────────────── -->
       {% if other_research %}
         <section aria-labelledby="heading-investigations" class="space-y-6">
-          <div class="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/[0.06]">
             <div>
-              <h2 id="heading-investigations" class="text-lg sm:text-xl font-bold text-white tracking-tight">
+              <h2 id="heading-investigations" class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
                 Research Projects &amp; Investigations
               </h2>
-              <p class="text-xs text-slate-400 mt-0.5">
+              <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
                 Applied engineering investigations, active prototypes, and manuscripts in progress.
               </p>
             </div>
-            <span class="text-xs font-mono px-2 py-0.5 rounded bg-white/[0.04] text-slate-400 border border-white/[0.06]">
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-white/[0.04] text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-white/[0.06]">
               {{ other_research|length }} Works
             </span>
           </div>
@@ -178,44 +178,44 @@
             {% for item in other_research %}
               <article class="card-technical p-6 flex flex-col justify-between">
                 <div>
-                  <div class="flex items-center justify-between gap-2 pb-3 mb-4 border-b border-white/[0.06] font-mono text-xs">
+                  <div class="flex items-center justify-between gap-2 pb-3 mb-4 border-b border-slate-200 dark:border-white/[0.06] font-mono text-xs">
                     <span class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider
-                      {% if item.status == 'active' %}bg-teal-500/10 text-teal-400 border border-teal-500/20
-                      {% else %}bg-slate-500/10 text-slate-400 border border-white/10{% endif %}">
+                      {% if item.status == 'active' %}bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20
+                      {% else %}bg-slate-100 dark:bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-white/10{% endif %}">
                       {{ item.get_status_display|default:item.status }}
                     </span>
-                    <span class="text-slate-500">ID: RES-{{ item.id }}</span>
+                    <span class="text-slate-400 dark:text-slate-500">ID: RES-{{ item.id }}</span>
                   </div>
 
-                  <h3 class="text-lg font-bold text-white mb-2 leading-snug">
+                  <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 leading-snug">
                     {{ item.title }}
                   </h3>
 
                   {% if item.contributors %}
-                    <p class="text-xs font-mono text-slate-400 mb-3">
-                      <strong class="text-slate-300 font-semibold">Investigators:</strong> {{ item.contributors }}
+                    <p class="text-xs font-mono text-slate-500 dark:text-slate-400 mb-3">
+                      <strong class="text-slate-800 dark:text-slate-300 font-semibold">Investigators:</strong> {{ item.contributors }}
                     </p>
                   {% endif %}
 
                   {% if item.abstract %}
-                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                       {{ item.abstract }}
                     </p>
                   {% endif %}
 
                   {% if item.methodology %}
-                    <div class="bg-[#171A1C] p-3 rounded-lg border border-white/[0.04] text-xs text-slate-300 leading-relaxed mb-4">
-                      <strong class="text-teal-400 font-mono block text-[11px] mb-1">Methodology &amp; Approach:</strong>
+                    <div class="bg-slate-50 dark:bg-[#171A1C] p-3 rounded-lg border border-slate-200 dark:border-white/[0.04] text-xs text-slate-700 dark:text-slate-300 leading-relaxed mb-4">
+                      <strong class="text-teal-600 dark:text-teal-400 font-mono block text-[11px] mb-1">Methodology &amp; Approach:</strong>
                       {{ item.methodology }}
                     </div>
                   {% endif %}
                 </div>
 
-                <div class="pt-4 mt-2 border-t border-white/[0.06]">
+                <div class="pt-4 mt-2 border-t border-slate-200 dark:border-white/[0.06]">
                   {% if item.technologies %}
                     <div class="flex flex-wrap gap-1.5 mb-4">
                       {% for tech in item.technologies.split %}
-                        <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-white/[0.04] text-slate-300 border border-white/[0.06]">
+                        <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/[0.06]">
                           {{ tech }}
                         </span>
                       {% endfor %}
@@ -224,7 +224,7 @@
 
                   <div class="flex items-center justify-between gap-3 pt-2">
                     {% if item.paper_link %}
-                      <a href="{{ item.paper_link }}" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-teal-400 hover:text-teal-300 flex items-center gap-1">
+                      <a href="{{ item.paper_link }}" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 flex items-center gap-1">
                         <span>Working Paper</span>
                         <span class="text-[10px]">&nearr;</span>
                       </a>
@@ -232,7 +232,7 @@
                       <span></span>
                     {% endif %}
 
-                    <button type="button" onclick="openContributeModal('{{ item.id }}', '{{ item.title|escapejs }}')" class="px-3 py-1.5 rounded-lg text-xs font-mono text-slate-300 hover:text-white bg-white/[0.04] border border-white/10 hover:border-white/20 transition-colors">
+                    <button type="button" onclick="openContributeModal('{{ item.id }}', '{{ item.title|escapejs }}')" class="px-3 py-1.5 rounded-lg text-xs font-mono text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 transition-colors">
                       Collaborate
                     </button>
                   </div>
@@ -248,11 +248,11 @@
   {% else %}
     <!-- Clean Professional Empty State -->
     <div class="card-technical p-12 text-center max-w-md mx-auto">
-      <div class="w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center font-mono text-lg font-bold mx-auto mb-4">
+      <div class="w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-600 dark:text-teal-400 flex items-center justify-center font-mono text-lg font-bold mx-auto mb-4">
         &sect;
       </div>
-      <h3 class="text-base font-bold text-white mb-2">Research Catalog in Preparation</h3>
-      <p class="text-xs text-slate-400 leading-relaxed mb-4">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">Research Catalog in Preparation</h3>
+      <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
         Peer-reviewed publications and technical investigation manuscripts are currently being prepared and indexed.
       </p>
       <a href="{% url 'contact' %}" class="btn-secondary text-xs">
@@ -265,33 +265,33 @@
 
 <!-- ── Research Contribution / Collaboration Modal (100% Preserved) ────── -->
 <div id="contributeModal" class="modal-backdrop hidden fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="contributeModalTitle">
-  <div class="modal-content relative w-full max-w-lg p-6 sm:p-8 bg-[#111315] border border-white/10 rounded-2xl shadow-2xl">
-    <div class="flex items-center justify-between pb-3 mb-5 border-b border-white/[0.06]">
+  <div class="modal-content relative w-full max-w-lg p-6 sm:p-8 bg-white dark:bg-[#111315] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl">
+    <div class="flex items-center justify-between pb-3 mb-5 border-b border-slate-200 dark:border-white/[0.06]">
       <div>
-        <span class="text-[10px] font-mono uppercase tracking-widest text-teal-400 block mb-0.5">Academic Collaboration</span>
-        <h3 id="contributeModalTitle" class="text-base sm:text-lg font-bold text-white">Research Contribution Inquiry</h3>
+        <span class="text-[10px] font-mono uppercase tracking-widest text-teal-600 dark:text-teal-400 block mb-0.5">Academic Collaboration</span>
+        <h3 id="contributeModalTitle" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Research Contribution Inquiry</h3>
       </div>
-      <button type="button" onclick="closeContributeModal()" class="text-slate-400 hover:text-white text-base focus:outline-none p-1" aria-label="Close modal">✕</button>
+      <button type="button" onclick="closeContributeModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-white text-base focus:outline-none p-1" aria-label="Close modal">✕</button>
     </div>
 
-    <p id="contributeTargetTitle" class="text-xs font-mono text-slate-300 bg-[#171A1C] p-2.5 rounded-lg border border-white/[0.04] mb-4 truncate"></p>
+    <p id="contributeTargetTitle" class="text-xs font-mono text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-[#171A1C] p-2.5 rounded-lg border border-slate-200 dark:border-white/[0.04] mb-4 truncate"></p>
 
     <form action="{% url 'submit_research_contribution' %}" method="POST" class="space-y-4">
       {% csrf_token %}
       <input type="hidden" name="research_id" id="contributeResearchId">
 
       <div>
-        <label for="contributeEmail" class="block text-xs font-semibold text-slate-300 mb-1">Your Email *</label>
-        <input type="email" id="contributeEmail" name="email" required placeholder="scholar@institution.edu" class="w-full px-3.5 py-2 text-xs rounded-lg bg-[#171A1C] border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-teal-500">
+        <label for="contributeEmail" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Your Email *</label>
+        <input type="email" id="contributeEmail" name="email" required placeholder="scholar@institution.edu" class="w-full px-3.5 py-2 text-xs rounded-lg bg-white dark:bg-[#171A1C] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-teal-600 dark:focus:border-teal-500">
       </div>
 
       <div>
-        <label for="contributeMessage" class="block text-xs font-semibold text-slate-300 mb-1">Proposed Contribution / Scope *</label>
-        <textarea id="contributeMessage" name="message" rows="4" required placeholder="Describe your background, proposed co-authorship scope, dataset, or review notes..." class="w-full px-3.5 py-2 text-xs rounded-lg bg-[#171A1C] border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-teal-500"></textarea>
+        <label for="contributeMessage" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Proposed Contribution / Scope *</label>
+        <textarea id="contributeMessage" name="message" rows="4" required placeholder="Describe your background, proposed co-authorship scope, dataset, or review notes..." class="w-full px-3.5 py-2 text-xs rounded-lg bg-white dark:bg-[#171A1C] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-teal-600 dark:focus:border-teal-500"></textarea>
       </div>
 
       <div class="flex gap-3 pt-2">
-        <button type="button" onclick="closeContributeModal()" class="flex-1 py-2 rounded-lg text-xs font-semibold text-slate-400 bg-white/[0.04] border border-white/10 hover:text-white transition-colors">
+        <button type="button" onclick="closeContributeModal()" class="flex-1 py-2 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 hover:text-slate-900 dark:hover:text-white transition-colors">
           Cancel
         </button>
         <button type="submit" class="flex-1 btn-primary text-xs py-2">

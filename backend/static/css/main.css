@@ -32,14 +32,19 @@
   --accent-teal-subtle: rgba(20, 184, 166, 0.08);
   --accent-teal-border: rgba(20, 184, 166, 0.2);
 
-  /* Light Mode Fallbacks */
+  /* Light Mode Design Tokens */
   --bg-light: #F8FAFC;
   --bg-light-surface: #FFFFFF;
+  --bg-light-elevated: #F1F5F5;
   --bg-light-card: #FFFFFF;
   --border-light: rgba(15, 23, 42, 0.08);
+  --border-light-subtle: rgba(15, 23, 42, 0.05);
+  --border-light-hover: rgba(15, 23, 42, 0.16);
   --text-light-primary: #0F172A;
   --text-light-secondary: #334155;
   --text-light-muted: #64748B;
+  --text-light-dim: #94A3B8;
+  --accent-teal-readable: #0F766E;
 }
 
 /* ── Base Setup ─────────────────────────────────────────────────────────── */
@@ -475,4 +480,164 @@ html.light ::-webkit-scrollbar-thumb:hover {
 :focus-visible {
   outline: 2px solid var(--accent-teal);
   outline-offset: 2px;
+}
+
+/* ── Unified Light Theme System ─────────────────────────────────────────── */
+
+/* 1. Global Typography & Headings within Light Mode Cards & Surfaces */
+html.light .card-technical h1,
+html.light .card-technical h2,
+html.light .card-technical h3,
+html.light .card-technical h4,
+html.light .card-technical h5,
+html.light .modal-content h1,
+html.light .modal-content h2,
+html.light .modal-content h3,
+html.light .modal-content h4,
+html.light .drawer h1,
+html.light .drawer h2,
+html.light .drawer h3,
+html.light .drawer h4 {
+  color: var(--text-light-primary) !important;
+}
+
+html.light .card-technical p,
+html.light .modal-content p,
+html.light .drawer p {
+  color: var(--text-light-secondary);
+}
+
+html.light .card-technical label,
+html.light .modal-content label,
+html.light .drawer label {
+  color: var(--text-light-secondary) !important;
+}
+
+/* 2. Form Inputs, Selects, and Textareas in Light Mode */
+html.light input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="reset"]),
+html.light select,
+html.light textarea {
+  background-color: var(--bg-light-surface) !important;
+  border-color: #CBD5E1 !important;
+  color: var(--text-light-primary) !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+html.light input:focus,
+html.light select:focus,
+html.light textarea:focus {
+  border-color: var(--accent-teal-readable) !important;
+  box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.15) !important;
+}
+
+/* 3. Surface & Elevated Chips Adaptations */
+html.light .bg-\[\#171A1C\],
+html.light .bg-\[\#141718\],
+html.light .bg-\[\#111315\],
+html.light .bg-\[\#0E1012\] {
+  background-color: var(--bg-light-elevated) !important;
+  border-color: var(--border-light) !important;
+  color: var(--text-light-primary) !important;
+}
+
+/* 4. Adaptive Borders in Light Mode */
+html.light .border-white\/\[0\.04\],
+html.light .border-white\/\[0\.05\],
+html.light .border-white\/\[0\.06\],
+html.light .border-white\/\[0\.07\],
+html.light .border-white\/\[0\.08\],
+html.light .border-white\/10,
+html.light .border-white\/20 {
+  border-color: var(--border-light) !important;
+}
+
+/* 5. Adaptive Badges, Chips & Tags */
+html.light .mono-tag,
+html.light .bg-white\/\[0\.04\],
+html.light .bg-white\/\[0\.03\] {
+  background-color: rgba(15, 23, 42, 0.04) !important;
+  border-color: var(--border-light) !important;
+  color: var(--text-light-secondary) !important;
+}
+
+html.light .subtle-badge {
+  background: rgba(15, 118, 110, 0.08);
+  color: var(--accent-teal-readable);
+  border-color: rgba(15, 118, 110, 0.2);
+}
+
+/* 6. Dashboard (Executive Studio) Consistency */
+html.light .dash-pane,
+html.light #dash-sidebar-nav {
+  color: var(--text-light-primary);
+}
+
+html.light .dash-pane .text-white:not(.btn-primary):not([class*="bg-teal"]):not([class*="bg-rose"]):not([class*="bg-emerald"]):not([class*="bg-amber"]):not([class*="bg-sky"]):not([class*="bg-blue"]):not([class*="bg-slate-900"]),
+html.light #dash-sidebar-nav .text-white:not(.btn-primary),
+html.light .card-technical .text-white:not(.btn-primary):not([class*="bg-teal"]):not([class*="bg-rose"]):not([class*="bg-emerald"]):not([class*="bg-amber"]):not([class*="bg-sky"]):not([class*="bg-blue"]):not([class*="bg-slate-900"]),
+html.light .modal-content .text-white:not(.btn-primary):not([class*="bg-teal"]):not([class*="bg-rose"]):not([class*="bg-emerald"]),
+html.light .drawer .text-white:not(.btn-primary):not([class*="bg-teal"]):not([class*="bg-rose"]) {
+  color: var(--text-light-primary) !important;
+}
+
+html.light .dash-pane .text-slate-200:not(.btn-primary):not([class*="bg-teal"]):not([class*="bg-rose"]),
+html.light #dash-sidebar-nav .text-slate-200:not(.btn-primary),
+html.light .card-technical .text-slate-200:not(.btn-primary) {
+  color: var(--text-light-primary) !important;
+}
+
+html.light .dash-pane .text-slate-300,
+html.light #dash-sidebar-nav .text-slate-300,
+html.light .card-technical .text-slate-300,
+html.light .modal-content .text-slate-300,
+html.light .drawer .text-slate-300 {
+  color: var(--text-light-secondary) !important;
+}
+
+html.light .dash-pane .text-slate-400,
+html.light #dash-sidebar-nav .text-slate-400,
+html.light .card-technical .text-slate-400,
+html.light .modal-content .text-slate-400,
+html.light .drawer .text-slate-400 {
+  color: var(--text-light-muted) !important;
+}
+
+html.light .dash-pane .text-slate-500,
+html.light #dash-sidebar-nav .text-slate-500,
+html.light .card-technical .text-slate-500 {
+  color: #64748B !important;
+}
+
+html.light .dash-tab-btn {
+  color: var(--text-light-secondary) !important;
+}
+
+html.light .dash-tab-btn:hover {
+  color: var(--text-light-primary) !important;
+  background-color: rgba(15, 23, 42, 0.04) !important;
+}
+
+html.light .dash-tab-btn.active {
+  color: var(--accent-teal-readable) !important;
+  background-color: rgba(15, 118, 110, 0.1) !important;
+  font-weight: 600;
+}
+
+html.light table th {
+  color: var(--text-light-secondary) !important;
+  background-color: var(--bg-light-elevated) !important;
+  border-color: var(--border-light) !important;
+}
+
+html.light table td {
+  color: var(--text-light-primary) !important;
+  border-color: var(--border-light) !important;
+}
+
+html.light table tr:hover td {
+  background-color: rgba(15, 23, 42, 0.02) !important;
 }
