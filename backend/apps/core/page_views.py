@@ -263,3 +263,37 @@ def submit_research_contribution_view(request):
 
     messages.success(request, f"Contribution request for '{research.title}' submitted successfully.")
     return redirect("research")
+
+
+@require_POST
+def submit_ai_lab_collaboration_view(request):
+    ai_id = request.POST.get("ai_id")
+    name = request.POST.get("name", "").strip()
+    email = request.POST.get("email", "").strip()
+    message = request.POST.get("message", "").strip()
+
+    model = get_object_or_404(AILab, id=ai_id)
+    if not email or not message or not name:
+        messages.error(request, "Name, email, and proposed collaboration details are required.")
+        return redirect("ai_lab")
+
+    subject = f"[AI/ML Lab Collaboration] {model.title}"
+    formatted_message = f"Proposed collaboration regarding AI/ML Experiment: {model.title}\n\nScope:\n{message}"
+
+    Contact.objects.create(
+        name=name,
+        email=email,
+        subject=subject,
+        message=formatted_message,
+    )
+
+    # Dispatch transmission acknowledgment to visitor and notification to admin
+    send_transmission_acknowledgment(
+        name=name,
+        email=email,
+        subject=subject,
+        message=formatted_message,
+    )
+
+    messages.success(request, f"Collaboration inquiry for '{model.title}' submitted successfully. Thank you for reaching out.")
+    return redirect("ai_lab")

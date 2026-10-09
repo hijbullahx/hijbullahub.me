@@ -16,6 +16,7 @@ from apps.core.page_views import (
     submit_hire_request_view,
     submit_acquisition_view,
     submit_research_contribution_view,
+    submit_ai_lab_collaboration_view,
 )
 
 from apps.core.dashboard_views import (
@@ -69,6 +70,7 @@ urlpatterns = [
     path("hire/submit/", submit_hire_request_view, name="submit_hire_request"),
     path("projects/acquire/", submit_acquisition_view, name="submit_acquisition"),
     path("research/contribute/", submit_research_contribution_view, name="submit_research_contribution"),
+    path("ai-ml/collaborate/", submit_ai_lab_collaboration_view, name="submit_ai_lab_collaboration"),
 
     # Custom In-Site Executive Dashboard & Studio
     path("admin/", RedirectView.as_view(url="/dashboard/", permanent=False)),

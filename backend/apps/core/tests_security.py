@@ -16,7 +16,8 @@ from apps.core.validators import (
 )
 from apps.hero.models import Hero
 from apps.education.models import Education
-from apps.contact.models import ContactProfile
+from apps.contact.models import Contact, ContactProfile
+from apps.ai_lab.models import AILab
 
 User = get_user_model()
 
@@ -408,3 +409,48 @@ class DashboardUploadIntegrationTests(TestCase):
         res_del = client.post(del_url, follow=True)
         self.assertEqual(res_del.status_code, 200)
         self.assertFalse(ContactProfile.objects.filter(id=profile.id).exists())
+
+    def test_ai_lab_collaboration_submission_creates_contact(self):
+        client = Client()
+        experiment = AILab.objects.create(
+            title="Transformer Sentiment Analysis",
+            status="active",
+        )
+        url = reverse("submit_ai_lab_collaboration")
+        response = client.post(url, {
+            "ai_id": experiment.id,
+            "name": "Dr. Alan Turing",
+            "email": "alan@cambridge.ac.uk",
+            "message": "Interested in evaluating self-attention mechanisms on multilingual datasets.",
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse("ai_lab"))
+
+        inquiry = Contact.objects.filter(email="alan@cambridge.ac.uk").first()
+        self.assertIsNotNone(inquiry)
+        self.assertEqual(inquiry.name, "Dr. Alan Turing")
+        self.assertIn("Transformer Sentiment Analysis", inquiry.subject)
+        self.assertIn("multilingual datasets", inquiry.message)
+
+    def test_ai_lab_collaboration_requires_post_and_required_fields(self):
+        client = Client()
+        experiment = AILab.objects.create(
+            title="Vision Classifier",
+            status="active",
+        )
+        url = reverse("submit_ai_lab_collaboration")
+
+        # GET should be rejected with 405 Method Not Allowed
+        get_res = client.get(url)
+        self.assertEqual(get_res.status_code, 405)
+
+        # Missing required fields should redirect to ai_lab and not create Contact
+        missing_res = client.post(url, {
+            "ai_id": experiment.id,
+            "name": "",
+            "email": "test@domain.com",
+            "message": "",
+        }, follow=True)
+        self.assertEqual(missing_res.status_code, 200)
+        self.assertRedirects(missing_res, reverse("ai_lab"))
+        self.assertFalse(Contact.objects.filter(email="test@domain.com").exists())
