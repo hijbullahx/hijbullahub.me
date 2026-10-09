@@ -90,6 +90,7 @@ def dashboard_view(request):
     hire_requests = HireRequest.objects.all().order_by("-created_at")
     feedbacks = Feedback.objects.all().order_by("-created_at")
     site_setting = SiteSetting.objects.first()
+    contact_profiles = ContactProfile.objects.all().order_by("display_order", "id")
 
     # ── Analytics Telemetry Aggregation (Privacy-safe, Zero browser prompts) ──
     now = timezone.now()
@@ -199,6 +200,7 @@ def dashboard_view(request):
         "hire_requests": hire_requests,
         "feedbacks": feedbacks,
         "site_setting": site_setting,
+        "contact_profiles": contact_profiles,
         "projects_count": projects.count(),
         "contacts_count": contacts.count(),
         "unread_contacts_count": contacts.filter(is_read=False).count(),
@@ -626,6 +628,7 @@ def dashboard_reorder_view(request, item_type):
             "projects": Project,
             "education": Education,
             "experience": Experience,
+            "channels": ContactProfile,
         }
 
         model = model_map.get(item_type)
@@ -862,6 +865,86 @@ def dashboard_reply_contact_view(request, contact_id):
     else:
         messages.warning(request, f"Reply saved, but system email dispatch encountered an issue. Check SMTP logs.")
 
+    return redirect("dashboard")
+
+
+# ── Professional Channels (ContactProfile) Handlers ───────────────────────────
+@login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
+@require_POST
+def dashboard_add_contact_profile_view(request):
+    title = request.POST.get("title", "").strip()
+    icon_type = request.POST.get("icon_type", "custom").strip()
+    link = request.POST.get("link", "").strip()
+    order_val = request.POST.get("display_order", "0").strip()
+    is_active = request.POST.get("is_active") in ("on", "true", "1")
+
+    if not title or not link:
+        messages.error(request, "Channel title and link are required.")
+        return redirect("dashboard")
+
+    try:
+        display_order = int(order_val)
+    except ValueError:
+        display_order = 0
+
+    profile = ContactProfile(
+        title=title,
+        icon_type=icon_type,
+        link=link,
+        display_order=display_order,
+        is_active=is_active,
+    )
+
+    if "profile_image" in request.FILES:
+        is_valid, err = validate_uploaded_image(request.FILES["profile_image"], field_name="Channel background image")
+        if not is_valid:
+            messages.error(request, err)
+            return redirect("dashboard")
+        profile.profile_image = request.FILES["profile_image"]
+
+    profile.save()
+    messages.success(request, f"Professional channel '{title}' added successfully.")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
+@require_POST
+def dashboard_edit_contact_profile_view(request, profile_id):
+    profile = get_object_or_404(ContactProfile, id=profile_id)
+    profile.title = request.POST.get("title", profile.title).strip()
+    profile.icon_type = request.POST.get("icon_type", profile.icon_type).strip()
+    profile.link = request.POST.get("link", profile.link).strip()
+
+    order_val = request.POST.get("display_order", str(profile.display_order)).strip()
+    try:
+        profile.display_order = int(order_val)
+    except ValueError:
+        pass
+
+    profile.is_active = request.POST.get("is_active") in ("on", "true", "1")
+
+    if "profile_image" in request.FILES:
+        is_valid, err = validate_uploaded_image(request.FILES["profile_image"], field_name="Channel background image")
+        if not is_valid:
+            messages.error(request, err)
+            return redirect("dashboard")
+        profile.profile_image = request.FILES["profile_image"]
+
+    profile.save()
+    messages.success(request, f"Professional channel '{profile.title}' updated successfully.")
+    return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
+@require_POST
+def dashboard_delete_contact_profile_view(request, profile_id):
+    profile = get_object_or_404(ContactProfile, id=profile_id)
+    title = profile.title
+    profile.delete()
+    messages.success(request, f"Professional channel '{title}' deleted successfully.")
     return redirect("dashboard")
 
 

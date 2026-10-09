@@ -50,6 +50,9 @@ from apps.core.dashboard_views import (
     dashboard_reply_hire_view,
     dashboard_delete_hire_view,
     dashboard_reply_contact_view,
+    dashboard_add_contact_profile_view,
+    dashboard_edit_contact_profile_view,
+    dashboard_delete_contact_profile_view,
 )
 
 urlpatterns = [
@@ -100,6 +103,9 @@ urlpatterns = [
     path("dashboard/feedback/toggle/<int:feedback_id>/", dashboard_toggle_feedback_view, name="dashboard_toggle_feedback"),
     path("dashboard/feedback/reply/<int:feedback_id>/", dashboard_reply_feedback_view, name="dashboard_reply_feedback"),
     path("dashboard/feedback/delete/<int:feedback_id>/", dashboard_delete_feedback_view, name="dashboard_delete_feedback"),
+    path("dashboard/contact-profiles/add/", dashboard_add_contact_profile_view, name="dashboard_add_contact_profile"),
+    path("dashboard/contact-profiles/edit/<int:profile_id>/", dashboard_edit_contact_profile_view, name="dashboard_edit_contact_profile"),
+    path("dashboard/contact-profiles/delete/<int:profile_id>/", dashboard_delete_contact_profile_view, name="dashboard_delete_contact_profile"),
 
     # Raw Django Admin
     path("django-admin/", admin.site.urls),

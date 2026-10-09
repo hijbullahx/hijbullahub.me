@@ -16,6 +16,7 @@ from apps.core.validators import (
 )
 from apps.hero.models import Hero
 from apps.education.models import Education
+from apps.contact.models import ContactProfile
 
 User = get_user_model()
 
@@ -351,3 +352,59 @@ class DashboardUploadIntegrationTests(TestCase):
         messages_list = list(response.context["messages"])
         self.assertTrue(any("Invalid file format" in str(m) for m in messages_list))
         self.assertFalse(Education.objects.filter(degree_name="B.Sc. CS").exists())
+
+    def test_contact_profile_mutation_blocked_for_anonymous_and_regular_user(self):
+        client = Client()
+        add_url = reverse("dashboard_add_contact_profile")
+        # Anonymous post should redirect to login
+        res_anon = client.post(add_url, {"title": "X Profile", "link": "https://x.com/profile"})
+        self.assertEqual(res_anon.status_code, 302)
+        self.assertIn(reverse("dashboard_login"), res_anon.url)
+
+        # Regular user should also be blocked and redirected
+        reg_user = User.objects.create_user(username="anon_viewer", password="password123", is_staff=False)
+        client.login(username="anon_viewer", password="password123")
+        res_user = client.post(add_url, {"title": "X Profile", "link": "https://x.com/profile"})
+        self.assertEqual(res_user.status_code, 302)
+        self.assertIn(reverse("dashboard_login"), res_user.url)
+        self.assertFalse(ContactProfile.objects.filter(title="X Profile").exists())
+
+    def test_contact_profile_add_edit_delete_flow_staff(self):
+        client = Client()
+        client.login(username="staff_editor", password="testpassword123")
+
+        # 1. Add
+        add_url = reverse("dashboard_add_contact_profile")
+        res_add = client.post(add_url, {
+            "title": "Mastodon",
+            "icon_type": "custom",
+            "link": "https://mastodon.social/@test",
+            "display_order": 5,
+            "is_active": "on",
+        }, follow=True)
+        self.assertEqual(res_add.status_code, 200)
+        profile = ContactProfile.objects.filter(title="Mastodon").first()
+        self.assertIsNotNone(profile)
+        self.assertEqual(profile.link, "https://mastodon.social/@test")
+        self.assertTrue(profile.is_active)
+
+        # 2. Edit
+        edit_url = reverse("dashboard_edit_contact_profile", kwargs={"profile_id": profile.id})
+        res_edit = client.post(edit_url, {
+            "title": "Mastodon Official",
+            "icon_type": "website",
+            "link": "https://mastodon.social/@official",
+            "display_order": 2,
+            "is_active": "on",
+        }, follow=True)
+        self.assertEqual(res_edit.status_code, 200)
+        profile.refresh_from_db()
+        self.assertEqual(profile.title, "Mastodon Official")
+        self.assertEqual(profile.icon_type, "website")
+        self.assertEqual(profile.link, "https://mastodon.social/@official")
+
+        # 3. Delete
+        del_url = reverse("dashboard_delete_contact_profile", kwargs={"profile_id": profile.id})
+        res_del = client.post(del_url, follow=True)
+        self.assertEqual(res_del.status_code, 200)
+        self.assertFalse(ContactProfile.objects.filter(id=profile.id).exists())
