@@ -18,7 +18,7 @@ from apps.skills.models import Skill
 from apps.education.models import Education
 from apps.experience.models import Experience
 from apps.achievements.models import Achievement
-from apps.contact.models import Contact, ContactProfile, Feedback
+from apps.contact.models import Contact, ContactProfile, Feedback, get_active_primary_email
 from apps.projects.models import Project, Tag, ProjectAcquisition
 from apps.ai_lab.models import AILab
 from apps.research.models import Research, ResearchContribution
@@ -102,14 +102,7 @@ def research_view(request):
 def contact_view(request):
     profiles = ContactProfile.objects.filter(is_active=True).order_by("display_order", "title")
     site_setting = SiteSetting.objects.first()
-    primary_email = ""
-    if site_setting and site_setting.email:
-        primary_email = site_setting.email
-    elif profiles.filter(icon_type="gmail").exists():
-        gmail_prof = profiles.filter(icon_type="gmail").first()
-        primary_email = gmail_prof.link.replace("mailto:", "")
-    elif profiles.exists():
-        primary_email = "hijbullah@example.com"
+    primary_email = get_active_primary_email()
 
     context = {
         "profiles": profiles,

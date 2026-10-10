@@ -79,6 +79,18 @@ class ContactProfile(TimeStampedModel):
         return digits
 
     @property
+    def extracted_email(self):
+        """Extracts clean email address if this profile represents an email channel."""
+        raw = (self.link or "").strip()
+        if self.icon_type == "gmail" or raw.startswith("mailto:") or "@" in raw:
+            clean = raw.replace("mailto:", "").split("?")[0].strip()
+            if "@" in clean:
+                return clean
+        if "@" in (self.title or ""):
+            return self.title.strip()
+        return None
+
+    @property
     def formatted_link(self):
         url = (self.link or "").strip()
         if not url:
@@ -89,6 +101,9 @@ class ContactProfile(TimeStampedModel):
         if self.icon_type == "whatsapp" and not url.startswith(("http://", "https://")):
             clean_digits = re.sub(r"[^\d+]", "", url).replace("+", "")
             return f"https://wa.me/{clean_digits}"
+        if (self.icon_type == "gmail" or "@" in url) and not url.startswith(("http://", "https://", "mailto:")):
+            if "@" in url:
+                return f"mailto:{url}"
         if not url.startswith(("http://", "https://", "mailto:", "tel:", "#", "/")):
             return f"https://{url}"
         return url
@@ -100,12 +115,53 @@ class ContactProfile(TimeStampedModel):
                 pass
             elif self.icon_type == "whatsapp" and not val.startswith(("http://", "https://")):
                 pass
+            elif (self.icon_type == "gmail" or "@" in val) and not val.startswith(("http://", "https://", "mailto:")):
+                if "@" in val:
+                    self.link = f"mailto:{val}"
             elif val and not val.startswith(("http://", "https://", "mailto:", "tel:", "#", "/")):
                 self.link = f"https://{val}"
         super().save(*args, **kwargs)
 
+        # Synchronize SiteSetting.email when an email profile is saved
+        if self.is_active and self.extracted_email:
+            try:
+                from apps.site_settings.models import SiteSetting
+                setting = SiteSetting.objects.first()
+                if setting and setting.email != self.extracted_email:
+                    setting.email = self.extracted_email
+                    setting.save(update_fields=["email"])
+            except Exception:
+                pass
+
     def __str__(self):
         return self.title
+
+
+def get_active_primary_email():
+    """
+    Returns the email from active ContactProfiles (Active Channels & Profiles)
+    as the primary single source of truth across the entire site.
+    Falls back to SiteSetting or default.
+    """
+    try:
+        active_email_prof = ContactProfile.objects.filter(is_active=True).filter(
+            models.Q(icon_type="gmail") | models.Q(link__icontains="mailto:") | models.Q(link__icontains="@") | models.Q(title__icontains="@")
+        ).order_by("display_order", "id").first()
+        if active_email_prof and active_email_prof.extracted_email:
+            return active_email_prof.extracted_email
+    except Exception:
+        pass
+
+    try:
+        from apps.site_settings.models import SiteSetting
+        setting = SiteSetting.objects.first()
+        if setting and setting.email:
+            return setting.email.strip()
+    except Exception:
+        pass
+
+    return "info@hijbullah.me"
+
 
 
 class Feedback(TimeStampedModel):

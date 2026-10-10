@@ -944,6 +944,14 @@ def dashboard_delete_contact_profile_view(request, profile_id):
     profile = get_object_or_404(ContactProfile, id=profile_id)
     title = profile.title
     profile.delete()
+    try:
+        from apps.contact.models import get_active_primary_email
+        setting = SiteSetting.objects.first()
+        if setting:
+            setting.email = get_active_primary_email()
+            setting.save(update_fields=["email"])
+    except Exception:
+        pass
     messages.success(request, f"Professional channel '{title}' deleted successfully.")
     return redirect("dashboard")
 
