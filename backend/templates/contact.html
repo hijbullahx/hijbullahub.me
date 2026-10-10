@@ -78,11 +78,22 @@
                     {% endif %}
                   </div>
                   <div class="min-w-0">
-                    <h4 class="text-xs font-semibold text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                      {{ profile.title }}
-                    </h4>
+                    <div class="flex items-center gap-2">
+                      <h4 class="text-xs font-semibold text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                        {{ profile.title }}
+                      </h4>
+                      {% if profile.display_phone_number %}
+                        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-medium">
+                          {{ profile.display_phone_number }}
+                        </span>
+                      {% endif %}
+                    </div>
                     <p class="text-[11px] font-mono text-slate-500 dark:text-slate-400 truncate max-w-[200px] sm:max-w-[260px]">
-                      {{ profile.link }}
+                      {% if profile.display_phone_number %}
+                        Direct Phone / WhatsApp &bull; {{ profile.display_phone_number }}
+                      {% else %}
+                        {{ profile.link }}
+                      {% endif %}
                     </p>
                   </div>
                 </div>

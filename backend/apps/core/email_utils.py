@@ -43,8 +43,17 @@ def _send_clean_email(subject: str, text_content: str, html_content: str, to_ema
         return False
 
 
+def get_contact_email():
+    try:
+        from apps.contact.models import get_active_primary_email
+        return get_active_primary_email()
+    except Exception:
+        return getattr(settings, "ADMIN_EMAIL", "info@hijbullah.me")
+
+
 def _wrap_html_email(badge_text: str, heading: str, lead_text: str, content_card_html: str, cta_text: str = "Explore Projects & Research →", cta_url: str = "https://hijbullah.me/projects/") -> str:
     """Wraps content in an executive, spam-filter-friendly clean responsive layout."""
+    contact_email = get_contact_email()
     return f"""<!DOCTYPE html>
 <html>
 <head>
@@ -103,7 +112,7 @@ def _wrap_html_email(badge_text: str, heading: str, lead_text: str, content_card
                 <div style="font-size: 14px; font-weight: 700; color: #0f172a;">Md. Taher Bin Omar Hijbullah</div>
                 <div style="font-size: 12px; color: #64748b; margin-top: 2px;">Python / Django Developer &bull; AI/ML Enthusiast &bull; Research Enthusiast</div>
                 <div style="font-size: 12px; color: #0284c7; margin-top: 4px;">
-                  <a href="mailto:info@hijbullah.me" style="color: #0284c7; text-decoration: none;">info@hijbullah.me</a> &bull; 
+                  <a href="mailto:{contact_email}" style="color: #0284c7; text-decoration: none;">{contact_email}</a> &bull; 
                   <a href="https://hijbullah.me" style="color: #0284c7; text-decoration: none;">hijbullah.me</a>
                 </div>
               </div>
@@ -143,6 +152,7 @@ def send_transmission_acknowledgment(name: str, email: str, subject: str, messag
             cta_text="Explore Projects & Showcase →",
             cta_url="https://hijbullah.me/projects/"
         )
+        contact_email = get_contact_email()
         plain = (
             f"Hello {name},\n\n"
             f"Thank you for reaching out! I have received your message regarding '{subject or 'General Inquiry'}' and will respond within 24 business hours.\n\n"
@@ -150,7 +160,7 @@ def send_transmission_acknowledgment(name: str, email: str, subject: str, messag
             f"Best regards,\n"
             f"Md. Taher Bin Omar Hijbullah\n"
             f"AI & Robotics Researcher\n"
-            f"Email: info@hijbullah.me\n"
+            f"Email: {contact_email}\n"
             f"Website: https://hijbullah.me"
         )
         _send_clean_email(
