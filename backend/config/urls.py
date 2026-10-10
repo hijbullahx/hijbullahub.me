@@ -16,6 +16,7 @@ from apps.core.page_views import (
     submit_hire_request_view,
     submit_acquisition_view,
     submit_research_contribution_view,
+    submit_ai_lab_collaboration_view,
 )
 
 from apps.core.dashboard_views import (
@@ -50,6 +51,9 @@ from apps.core.dashboard_views import (
     dashboard_reply_hire_view,
     dashboard_delete_hire_view,
     dashboard_reply_contact_view,
+    dashboard_add_contact_profile_view,
+    dashboard_edit_contact_profile_view,
+    dashboard_delete_contact_profile_view,
 )
 
 urlpatterns = [
@@ -66,6 +70,7 @@ urlpatterns = [
     path("hire/submit/", submit_hire_request_view, name="submit_hire_request"),
     path("projects/acquire/", submit_acquisition_view, name="submit_acquisition"),
     path("research/contribute/", submit_research_contribution_view, name="submit_research_contribution"),
+    path("ai-ml/collaborate/", submit_ai_lab_collaboration_view, name="submit_ai_lab_collaboration"),
 
     # Custom In-Site Executive Dashboard & Studio
     path("admin/", RedirectView.as_view(url="/dashboard/", permanent=False)),
@@ -100,6 +105,9 @@ urlpatterns = [
     path("dashboard/feedback/toggle/<int:feedback_id>/", dashboard_toggle_feedback_view, name="dashboard_toggle_feedback"),
     path("dashboard/feedback/reply/<int:feedback_id>/", dashboard_reply_feedback_view, name="dashboard_reply_feedback"),
     path("dashboard/feedback/delete/<int:feedback_id>/", dashboard_delete_feedback_view, name="dashboard_delete_feedback"),
+    path("dashboard/contact-profiles/add/", dashboard_add_contact_profile_view, name="dashboard_add_contact_profile"),
+    path("dashboard/contact-profiles/edit/<int:profile_id>/", dashboard_edit_contact_profile_view, name="dashboard_edit_contact_profile"),
+    path("dashboard/contact-profiles/delete/<int:profile_id>/", dashboard_delete_contact_profile_view, name="dashboard_delete_contact_profile"),
 
     # Raw Django Admin
     path("django-admin/", admin.site.urls),

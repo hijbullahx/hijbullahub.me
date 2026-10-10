@@ -16,6 +16,8 @@ from apps.core.validators import (
 )
 from apps.hero.models import Hero
 from apps.education.models import Education
+from apps.contact.models import Contact, ContactProfile
+from apps.ai_lab.models import AILab
 
 User = get_user_model()
 
@@ -351,3 +353,104 @@ class DashboardUploadIntegrationTests(TestCase):
         messages_list = list(response.context["messages"])
         self.assertTrue(any("Invalid file format" in str(m) for m in messages_list))
         self.assertFalse(Education.objects.filter(degree_name="B.Sc. CS").exists())
+
+    def test_contact_profile_mutation_blocked_for_anonymous_and_regular_user(self):
+        client = Client()
+        add_url = reverse("dashboard_add_contact_profile")
+        # Anonymous post should redirect to login
+        res_anon = client.post(add_url, {"title": "X Profile", "link": "https://x.com/profile"})
+        self.assertEqual(res_anon.status_code, 302)
+        self.assertIn(reverse("dashboard_login"), res_anon.url)
+
+        # Regular user should also be blocked and redirected
+        reg_user = User.objects.create_user(username="anon_viewer", password="password123", is_staff=False)
+        client.login(username="anon_viewer", password="password123")
+        res_user = client.post(add_url, {"title": "X Profile", "link": "https://x.com/profile"})
+        self.assertEqual(res_user.status_code, 302)
+        self.assertIn(reverse("dashboard_login"), res_user.url)
+        self.assertFalse(ContactProfile.objects.filter(title="X Profile").exists())
+
+    def test_contact_profile_add_edit_delete_flow_staff(self):
+        client = Client()
+        client.login(username="staff_editor", password="testpassword123")
+
+        # 1. Add
+        add_url = reverse("dashboard_add_contact_profile")
+        res_add = client.post(add_url, {
+            "title": "Mastodon",
+            "icon_type": "custom",
+            "link": "https://mastodon.social/@test",
+            "display_order": 5,
+            "is_active": "on",
+        }, follow=True)
+        self.assertEqual(res_add.status_code, 200)
+        profile = ContactProfile.objects.filter(title="Mastodon").first()
+        self.assertIsNotNone(profile)
+        self.assertEqual(profile.link, "https://mastodon.social/@test")
+        self.assertTrue(profile.is_active)
+
+        # 2. Edit
+        edit_url = reverse("dashboard_edit_contact_profile", kwargs={"profile_id": profile.id})
+        res_edit = client.post(edit_url, {
+            "title": "Mastodon Official",
+            "icon_type": "website",
+            "link": "https://mastodon.social/@official",
+            "display_order": 2,
+            "is_active": "on",
+        }, follow=True)
+        self.assertEqual(res_edit.status_code, 200)
+        profile.refresh_from_db()
+        self.assertEqual(profile.title, "Mastodon Official")
+        self.assertEqual(profile.icon_type, "website")
+        self.assertEqual(profile.link, "https://mastodon.social/@official")
+
+        # 3. Delete
+        del_url = reverse("dashboard_delete_contact_profile", kwargs={"profile_id": profile.id})
+        res_del = client.post(del_url, follow=True)
+        self.assertEqual(res_del.status_code, 200)
+        self.assertFalse(ContactProfile.objects.filter(id=profile.id).exists())
+
+    def test_ai_lab_collaboration_submission_creates_contact(self):
+        client = Client()
+        experiment = AILab.objects.create(
+            title="Transformer Sentiment Analysis",
+            status="active",
+        )
+        url = reverse("submit_ai_lab_collaboration")
+        response = client.post(url, {
+            "ai_id": experiment.id,
+            "name": "Dr. Alan Turing",
+            "email": "alan@cambridge.ac.uk",
+            "message": "Interested in evaluating self-attention mechanisms on multilingual datasets.",
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse("ai_lab"))
+
+        inquiry = Contact.objects.filter(email="alan@cambridge.ac.uk").first()
+        self.assertIsNotNone(inquiry)
+        self.assertEqual(inquiry.name, "Dr. Alan Turing")
+        self.assertIn("Transformer Sentiment Analysis", inquiry.subject)
+        self.assertIn("multilingual datasets", inquiry.message)
+
+    def test_ai_lab_collaboration_requires_post_and_required_fields(self):
+        client = Client()
+        experiment = AILab.objects.create(
+            title="Vision Classifier",
+            status="active",
+        )
+        url = reverse("submit_ai_lab_collaboration")
+
+        # GET should be rejected with 405 Method Not Allowed
+        get_res = client.get(url)
+        self.assertEqual(get_res.status_code, 405)
+
+        # Missing required fields should redirect to ai_lab and not create Contact
+        missing_res = client.post(url, {
+            "ai_id": experiment.id,
+            "name": "",
+            "email": "test@domain.com",
+            "message": "",
+        }, follow=True)
+        self.assertEqual(missing_res.status_code, 200)
+        self.assertRedirects(missing_res, reverse("ai_lab"))
+        self.assertFalse(Contact.objects.filter(email="test@domain.com").exists())

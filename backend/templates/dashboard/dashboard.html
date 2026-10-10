@@ -34,10 +34,6 @@
                 <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                 <span>Public Site &nearr;</span>
             </a>
-            <a href="/admin/" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-lg text-xs font-mono font-medium bg-white/[0.04] text-slate-300 hover:text-white hover:bg-white/[0.08] border border-white/10 transition-colors flex items-center gap-1.5" title="Access raw database admin">
-                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                <span>Database Admin &nearr;</span>
-            </a>
             <a href="{% url 'dashboard_logout' %}" class="px-3.5 py-2 rounded-lg text-xs font-mono font-medium bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 border border-rose-500/20 transition-colors flex items-center gap-1.5">
                 <svg class="w-3.5 h-3.5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                 <span>Logout</span>
@@ -146,6 +142,14 @@
                         <span>Feedback &amp; Reviews</span>
                     </div>
                     <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white/[0.04] text-slate-400 border border-white/[0.06]">{{ feedbacks_count }}</span>
+                </button>
+
+                <button onclick="switchTab('channels')" id="tab-btn-channels" class="dash-tab-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-all">
+                    <div class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                        <span>Professional Channels</span>
+                    </div>
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white/[0.04] text-slate-400 border border-white/[0.06]">{{ contact_profiles|length }}</span>
                 </button>
             </div>
 
@@ -1959,6 +1963,158 @@
                 </div>
             </div>
 
+            <!-- ── TAB 11: PROFESSIONAL CHANNELS ──────────────────────────────────── -->
+            <div id="pane-channels" class="dash-pane hidden space-y-6">
+
+                <!-- ── Executive Header & Summary ── -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08]">
+                    <div>
+                        <div class="flex items-center gap-2.5">
+                            <h2 class="text-lg font-bold text-white tracking-tight">Professional Channels &amp; Social Links</h2>
+                            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                                Contact Links Active
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">Manage public social profiles, direct email, and messaging links (GitHub, LinkedIn, WhatsApp, etc.) displayed on the Contact page.</p>
+                    </div>
+
+                    <div class="flex items-center gap-3 shrink-0">
+                        <span class="text-xs font-mono text-slate-400 bg-white/[0.04] px-3 py-1.5 rounded-lg border border-white/[0.06]">
+                            Total Channels: <strong class="text-white font-bold">{{ contact_profiles|length }}</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ── Add Channel Form ── -->
+                <div class="p-5 sm:p-6 rounded-2xl bg-[#111315] border border-white/[0.08] space-y-4">
+                    <div>
+                        <h3 class="text-sm font-semibold text-white">Add Professional Channel</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Register a new social profile, direct email, or communication link.</p>
+                    </div>
+
+                    <form action="{% url 'dashboard_add_contact_profile' %}" method="POST" class="space-y-4">
+                        {% csrf_token %}
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Channel Title *</label>
+                                <input type="text" name="title" required placeholder="e.g. GitHub, LinkedIn, WhatsApp" class="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.08] bg-[#171A1C] text-white text-sm focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30 transition-all placeholder:text-slate-600">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Icon / Service *</label>
+                                <select name="icon_type" required class="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.08] bg-[#171A1C] text-white text-sm focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30 transition-all">
+                                    <option value="github">GitHub</option>
+                                    <option value="linkedin">LinkedIn</option>
+                                    <option value="whatsapp">WhatsApp</option>
+                                    <option value="gmail">Gmail / Direct Email</option>
+                                    <option value="twitter">Twitter / X</option>
+                                    <option value="telegram">Telegram</option>
+                                    <option value="phone">Phone</option>
+                                    <option value="website">Website / Portfolio</option>
+                                    <option value="custom">Custom Link</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Target Link / URL *</label>
+                                <input type="text" name="link" required placeholder="https://..., mailto:..., https://wa.me/..." class="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.08] bg-[#171A1C] text-white text-sm focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30 transition-all placeholder:text-slate-600">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Display Order</label>
+                                <input type="number" name="display_order" value="0" min="0" class="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.08] bg-[#171A1C] text-white text-sm focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30 transition-all">
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-1">
+                            <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-300">
+                                <input type="checkbox" name="is_active" checked class="w-4 h-4 rounded border-white/20 text-teal-500 focus:ring-teal-500 bg-[#171A1C]">
+                                <span>Show publicly on Contact page (Active)</span>
+                            </label>
+
+                            <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs transition-all cursor-pointer shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <span>Add Channel</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- ── Current Channels Table ── -->
+                <div class="p-5 sm:p-6 rounded-2xl bg-[#111315] border border-white/[0.08] space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-sm font-semibold text-white">Active Channels &amp; Profiles</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Drag handle to reorder. Channels appear on the Contact page in this sequence.</p>
+                        </div>
+                        <span class="text-[11px] font-mono text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/20">Drag-and-Drop Reorder</span>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-white/[0.06]">
+                        <table class="w-full text-left text-xs text-slate-300">
+                            <thead class="bg-[#171A1C] text-[10px] uppercase font-mono tracking-wider text-slate-400 border-b border-white/[0.08]">
+                                <tr>
+                                    <th class="py-3 px-3 w-10 text-center">#</th>
+                                    <th class="py-3 px-4">Channel</th>
+                                    <th class="py-3 px-4">Service</th>
+                                    <th class="py-3 px-4">Destination Link</th>
+                                    <th class="py-3 px-4">Status</th>
+                                    <th class="py-3 px-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="channels-sortable-container" class="divide-y divide-white/[0.04]">
+                                {% for p in contact_profiles %}
+                                <tr data-id="{{ p.id }}" class="hover:bg-white/[0.02] transition-colors group">
+                                    <td class="py-3 px-3 text-center">
+                                        <span class="drag-handle cursor-grab active:cursor-grabbing p-1 inline-flex items-center justify-center text-slate-500 hover:text-teal-400 transition-colors" title="Drag to reorder sequence">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
+                                        </span>
+                                    </td>
+                                    <td class="py-3 px-4 font-semibold text-white">
+                                        {{ p.title }}
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-white/[0.05] text-slate-300 border border-white/[0.08] capitalize">
+                                            {{ p.icon_type }}
+                                        </span>
+                                    </td>
+                                    <td class="py-3 px-4 font-mono text-[11px] text-slate-400 truncate max-w-[220px]">
+                                        <a href="{{ p.formatted_link }}" target="_blank" rel="noopener noreferrer" class="hover:text-teal-400 transition-colors">
+                                            {{ p.link }} &nearr;
+                                        </a>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        {% if p.is_active %}
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-teal-500/10 text-teal-400 border border-teal-500/20">Active</span>
+                                        {% else %}
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-white/[0.04] text-slate-500 border border-white/[0.06]">Hidden</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-3 px-4 text-right">
+                                        <div class="inline-flex items-center gap-2">
+                                            <button type="button" onclick="openEditChannelModal('{{ p.id }}', '{{ p.title|escapejs }}', '{{ p.icon_type|escapejs }}', '{{ p.link|escapejs }}', '{{ p.display_order }}', {{ p.is_active|lower }})" class="px-2.5 py-1 rounded-lg text-xs font-medium text-teal-400 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 transition-all cursor-pointer">
+                                                Edit
+                                            </button>
+                                            <form action="{% url 'dashboard_delete_contact_profile' p.id %}" method="POST" onsubmit="return confirm('Delete channel {{ p.title|escapejs }}?')" class="inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="px-2.5 py-1 rounded-lg text-xs font-medium text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 transition-all cursor-pointer">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="py-8 text-center text-slate-500">
+                                        <p class="text-xs font-semibold text-slate-400">No professional channels configured yet</p>
+                                        <p class="text-[11px] text-slate-500 mt-0.5">Add your first channel (e.g. GitHub, LinkedIn, WhatsApp) above.</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -2325,6 +2481,64 @@
                 <button type="submit" id="btn-submit-reply-contact" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-teal-500 hover:bg-teal-400 text-slate-950 shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
                     <span>Send Reply via System Mail</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── EDIT CHANNEL MODAL ───────────────────────────────────────────────── -->
+<div id="edit-channel-modal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-content relative w-full max-w-md bg-[#111315] border border-white/[0.12] rounded-2xl p-6 sm:p-8 shadow-2xl">
+        <div class="flex items-center justify-between pb-4 mb-5 border-b border-white/[0.08]">
+            <div>
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <span>Edit Professional Channel</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-0.5">Modify channel title, link, service icon, and visibility.</p>
+            </div>
+            <button type="button" data-modal-close class="text-slate-400 hover:text-white text-lg p-1 transition-colors cursor-pointer">✕</button>
+        </div>
+        <form id="edit-channel-form" method="POST" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Channel Title *</label>
+                <input type="text" name="title" id="edit-channel-title" required class="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.08] bg-[#171A1C] text-white text-sm focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30 transition-all">
+            </div>
+            <div>
+                <label class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Icon / Service *</label>
+                <select name="icon_type" id="edit-channel-icon-type" required class="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.08] bg-[#171A1C] text-white text-sm focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30 transition-all">
+                    <option value="github">GitHub</option>
+                    <option value="linkedin">LinkedIn</option>
+                    <option value="whatsapp">WhatsApp</option>
+                    <option value="gmail">Gmail / Direct Email</option>
+                    <option value="twitter">Twitter / X</option>
+                    <option value="telegram">Telegram</option>
+                    <option value="phone">Phone</option>
+                    <option value="website">Website / Portfolio</option>
+                    <option value="custom">Custom Link</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Target Link / URL *</label>
+                <input type="text" name="link" id="edit-channel-link" required class="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.08] bg-[#171A1C] text-white text-sm focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30 transition-all">
+            </div>
+            <div>
+                <label class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Display Order</label>
+                <input type="number" name="display_order" id="edit-channel-order" min="0" class="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.08] bg-[#171A1C] text-white text-sm focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30 transition-all">
+            </div>
+            <div>
+                <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-300">
+                    <input type="checkbox" name="is_active" id="edit-channel-active" class="w-4 h-4 rounded border-white/20 text-teal-500 focus:ring-teal-500 bg-[#171A1C]">
+                    <span>Show publicly on Contact page (Active)</span>
+                </label>
+            </div>
+            <div class="flex gap-3 pt-3">
+                <button type="submit" class="flex-1 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs transition-all cursor-pointer">
+                    Save Changes
+                </button>
+                <button type="button" data-modal-close class="px-5 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 text-xs font-medium transition-colors cursor-pointer">
+                    Cancel
                 </button>
             </div>
         </form>
@@ -2707,6 +2921,17 @@ https://hijbullah.me`;
     openModal('reply-contact-modal');
 }
 
+function openEditChannelModal(id, title, iconType, link, displayOrder, isActive) {
+    const form = document.getElementById('edit-channel-form');
+    form.action = '/dashboard/contact-profiles/edit/' + id + '/';
+    document.getElementById('edit-channel-title').value = title;
+    document.getElementById('edit-channel-icon-type').value = iconType;
+    document.getElementById('edit-channel-link').value = link;
+    document.getElementById('edit-channel-order').value = displayOrder;
+    document.getElementById('edit-channel-active').checked = Boolean(isActive);
+    openModal('edit-channel-modal');
+}
+
 // Initialize Drag-and-Drop Sortables on page load
 document.addEventListener('DOMContentLoaded', () => {
     const saved = sessionStorage.getItem('active_dash_tab') || 'overview';
@@ -2789,6 +3014,20 @@ document.addEventListener('DOMContentLoaded', () => {
             onEnd: function() {
                 const ids = Array.from(expContainer.querySelectorAll('[data-id]')).map(el => el.getAttribute('data-id'));
                 sendReorderRequest('experience', ids);
+            }
+        });
+    }
+
+    // 5. Channels sortable
+    const channelsContainer = document.getElementById('channels-sortable-container');
+    if (channelsContainer && typeof Sortable !== 'undefined') {
+        new Sortable(channelsContainer, {
+            handle: '.drag-handle',
+            animation: 180,
+            ghostClass: 'sortable-ghost',
+            onEnd: function() {
+                const ids = Array.from(channelsContainer.querySelectorAll('[data-id]')).map(el => el.getAttribute('data-id'));
+                sendReorderRequest('channels', ids);
             }
         });
     }
