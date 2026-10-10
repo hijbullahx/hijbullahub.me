@@ -1,3 +1,5 @@
+import re
+
 from django.db import models
 
 from apps.core.models import TimeStampedModel
@@ -49,16 +51,56 @@ class ContactProfile(TimeStampedModel):
         verbose_name_plural = "Contact Profiles"
 
     @property
+    def display_phone_number(self):
+        """Extracts and formats a clean phone number if this profile represents a phone or WhatsApp channel."""
+        raw = (self.link or "").strip()
+        is_phone_type = self.icon_type in ("phone", "whatsapp") or raw.startswith(("tel:", "https://wa.me/", "http://wa.me/", "wa.me/"))
+        if not is_phone_type:
+            return None
+
+        clean_link = raw.split("?")[0].split("#")[0]
+        digits = re.sub(r"[^\d+]", "", clean_link)
+        if not digits or len(digits.replace("+", "")) < 7:
+            digits = re.sub(r"[^\d+]", "", self.title or "")
+
+        clean_digits = digits.replace("+", "")
+        if len(clean_digits) < 7:
+            return None
+
+        # Bangladesh mobile numbers (e.g. 8801748470965 or 01748470965)
+        if clean_digits.startswith("880") and len(clean_digits) == 13:
+            return f"+880 {clean_digits[3:7]}-{clean_digits[7:]}"
+        elif clean_digits.startswith("01") and len(clean_digits) == 11:
+            return f"+880 {clean_digits[1:5]}-{clean_digits[5:]}"
+        elif digits.startswith("+"):
+            return digits
+        elif len(clean_digits) >= 10:
+            return f"+{clean_digits}"
+        return digits
+
+    @property
     def formatted_link(self):
         url = (self.link or "").strip()
-        if url and not url.startswith(("http://", "https://", "mailto:", "tel:", "#", "/")):
+        if not url:
+            return ""
+        if self.icon_type == "phone" and not url.startswith(("tel:", "http://", "https://")):
+            clean_digits = re.sub(r"[^\d+]", "", url)
+            return f"tel:{clean_digits}"
+        if self.icon_type == "whatsapp" and not url.startswith(("http://", "https://")):
+            clean_digits = re.sub(r"[^\d+]", "", url).replace("+", "")
+            return f"https://wa.me/{clean_digits}"
+        if not url.startswith(("http://", "https://", "mailto:", "tel:", "#", "/")):
             return f"https://{url}"
         return url
 
     def save(self, *args, **kwargs):
         if self.link:
             val = self.link.strip()
-            if val and not val.startswith(("http://", "https://", "mailto:", "tel:", "#", "/")):
+            if self.icon_type == "phone" and not val.startswith(("tel:", "http://", "https://")):
+                pass
+            elif self.icon_type == "whatsapp" and not val.startswith(("http://", "https://")):
+                pass
+            elif val and not val.startswith(("http://", "https://", "mailto:", "tel:", "#", "/")):
                 self.link = f"https://{val}"
         super().save(*args, **kwargs)
 
