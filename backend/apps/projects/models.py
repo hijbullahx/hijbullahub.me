@@ -48,7 +48,13 @@ class Project(TimeStampedModel):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            base_slug = slugify(self.title) or "project"
+            slug = base_slug
+            counter = 1
+            while Project.objects.filter(slug=slug).exclude(id=self.id).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
         if self.github_link and not self.github_link.startswith(("http://", "https://")):
             self.github_link = f"https://{self.github_link.strip()}"
         if self.live_link and not self.live_link.startswith(("http://", "https://")):

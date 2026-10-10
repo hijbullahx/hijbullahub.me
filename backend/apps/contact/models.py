@@ -81,13 +81,18 @@ class ContactProfile(TimeStampedModel):
     @property
     def extracted_email(self):
         """Extracts clean email address if this profile represents an email channel."""
-        raw = (self.link or "").strip()
-        if self.icon_type == "gmail" or raw.startswith("mailto:") or "@" in raw:
-            clean = raw.replace("mailto:", "").split("?")[0].strip()
-            if "@" in clean:
-                return clean
-        if "@" in (self.title or ""):
-            return self.title.strip()
+        title_val = (self.title or "").strip()
+        link_val = (self.link or "").replace("mailto:", "").split("?")[0].strip()
+
+        # If title contains an email (e.g. user updated title in admin), prioritize it
+        if "@" in title_val and "." in title_val:
+            return title_val
+        if "@" in link_val:
+            return link_val
+        if "@" in title_val:
+            return title_val
+        if self.icon_type == "gmail":
+            return link_val or title_val
         return None
 
     @property
@@ -101,6 +106,10 @@ class ContactProfile(TimeStampedModel):
         if self.icon_type == "whatsapp" and not url.startswith(("http://", "https://")):
             clean_digits = re.sub(r"[^\d+]", "", url).replace("+", "")
             return f"https://wa.me/{clean_digits}"
+        if self.icon_type == "gmail":
+            email_val = self.extracted_email
+            if email_val:
+                return f"mailto:{email_val}"
         if (self.icon_type == "gmail" or "@" in url) and not url.startswith(("http://", "https://", "mailto:")):
             if "@" in url:
                 return f"mailto:{url}"
@@ -109,15 +118,20 @@ class ContactProfile(TimeStampedModel):
         return url
 
     def save(self, *args, **kwargs):
-        if self.link:
+        if self.icon_type == "gmail":
+            email_val = self.extracted_email
+            if email_val:
+                self.link = f"mailto:{email_val}"
+                if "@" in (self.title or ""):
+                    self.title = email_val
+        elif self.link:
             val = self.link.strip()
             if self.icon_type == "phone" and not val.startswith(("tel:", "http://", "https://")):
                 pass
             elif self.icon_type == "whatsapp" and not val.startswith(("http://", "https://")):
                 pass
-            elif (self.icon_type == "gmail" or "@" in val) and not val.startswith(("http://", "https://", "mailto:")):
-                if "@" in val:
-                    self.link = f"mailto:{val}"
+            elif "@" in val and not val.startswith(("http://", "https://", "mailto:")):
+                self.link = f"mailto:{val}"
             elif val and not val.startswith(("http://", "https://", "mailto:", "tel:", "#", "/")):
                 self.link = f"https://{val}"
         super().save(*args, **kwargs)

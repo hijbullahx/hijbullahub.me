@@ -2929,6 +2929,24 @@ function openEditChannelModal(id, title, iconType, link, displayOrder, isActive)
     document.getElementById('edit-channel-link').value = link;
     document.getElementById('edit-channel-order').value = displayOrder;
     document.getElementById('edit-channel-active').checked = Boolean(isActive);
+
+    const titleInput = document.getElementById('edit-channel-title');
+    const linkInput = document.getElementById('edit-channel-link');
+    const typeSelect = document.getElementById('edit-channel-icon-type');
+
+    if (titleInput && linkInput && typeSelect) {
+        titleInput.oninput = () => {
+            if (typeSelect.value === 'gmail' && titleInput.value.includes('@')) {
+                linkInput.value = 'mailto:' + titleInput.value.trim().replace(/^mailto:/, '');
+            }
+        };
+        linkInput.oninput = () => {
+            if (typeSelect.value === 'gmail' && linkInput.value.includes('@')) {
+                titleInput.value = linkInput.value.trim().replace(/^mailto:/, '');
+            }
+        };
+    }
+
     openModal('edit-channel-modal');
 }
 

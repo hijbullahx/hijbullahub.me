@@ -35,8 +35,14 @@ class Education(TimeStampedModel):
         return f"{self.degree_name} at {self.institution_name}"
 
     def save(self, *args, **kwargs):
-        if self.end_date and self.end_date < datetime.date.today():
-             self.is_current = False
+        end = self.end_date
+        if isinstance(end, str):
+            try:
+                end = datetime.date.fromisoformat(end.strip())
+            except Exception:
+                end = None
+        if end and end < datetime.date.today():
+            self.is_current = False
         super().save(*args, **kwargs)
 
     @property
