@@ -54,6 +54,7 @@ from apps.core.dashboard_views import (
     dashboard_add_contact_profile_view,
     dashboard_edit_contact_profile_view,
     dashboard_delete_contact_profile_view,
+    dashboard_send_direct_mail_view,
 )
 
 urlpatterns = [
@@ -108,6 +109,7 @@ urlpatterns = [
     path("dashboard/contact-profiles/add/", dashboard_add_contact_profile_view, name="dashboard_add_contact_profile"),
     path("dashboard/contact-profiles/edit/<int:profile_id>/", dashboard_edit_contact_profile_view, name="dashboard_edit_contact_profile"),
     path("dashboard/contact-profiles/delete/<int:profile_id>/", dashboard_delete_contact_profile_view, name="dashboard_delete_contact_profile"),
+    path("dashboard/send-mail/", dashboard_send_direct_mail_view, name="dashboard_send_direct_mail"),
 
     # Raw Django Admin
     path("django-admin/", admin.site.urls),

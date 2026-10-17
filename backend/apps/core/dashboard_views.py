@@ -23,7 +23,7 @@ from apps.ai_lab.models import AILab
 from apps.research.models import Research
 from apps.hire.models import HireRequest
 from apps.site_settings.models import SiteSetting
-from apps.core.email_utils import send_proposal_custom_reply, send_contact_custom_reply
+from apps.core.email_utils import send_proposal_custom_reply, send_contact_custom_reply, send_direct_custom_email, get_contact_email
 from apps.core.validators import validate_uploaded_image, validate_uploaded_document
 
 
@@ -954,5 +954,72 @@ def dashboard_delete_contact_profile_view(request, profile_id):
         pass
     messages.success(request, f"Professional channel '{title}' deleted successfully.")
     return redirect("dashboard")
+
+
+# ── Direct Outbound Email System ──────────────────────────────────────────────
+@login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
+@require_POST
+def dashboard_send_direct_mail_view(request):
+    """
+    Dispatches a direct email to any recipient from the integrated email (info@hijbullah.me),
+    auto-attaching the owner's profile links (GitHub, LinkedIn, WhatsApp/Phone, Portfolio).
+    """
+    if not request.user.is_staff:
+        messages.error(request, "Administrative clearance required.")
+        return redirect("dashboard")
+
+    to_email = request.POST.get("to_email", "").strip()
+    recipient_name = request.POST.get("recipient_name", "").strip()
+    subject = request.POST.get("subject", "").strip()
+    message = request.POST.get("message", "").strip()
+
+    if not to_email or not subject or not message:
+        messages.error(request, "Recipient email, subject, and message are required.")
+        return redirect("dashboard")
+
+    if "@" not in to_email or "." not in to_email:
+        messages.error(request, f"'{to_email}' is not a valid email address.")
+        return redirect("dashboard")
+
+    sent = send_direct_custom_email(
+        to_email=to_email,
+        subject=subject,
+        message_body=message,
+        recipient_name=recipient_name
+    )
+
+    sender_email = get_contact_email()
+
+    if sent:
+        try:
+            Contact.objects.create(
+                name=recipient_name or to_email,
+                email=to_email,
+                subject=f"[Outbound] {subject}",
+                message=message,
+                is_read=True,
+                admin_reply=f"Dispatched via Direct Mail Console to {to_email}",
+                replied_at=timezone.now()
+            )
+        except Exception:
+            pass
+
+        dest_label = f"{recipient_name} <{to_email}>" if recipient_name else f"<{to_email}>"
+        messages.success(
+            request,
+            f"Email successfully dispatched to {dest_label} from {sender_email} with your profile links auto-attached."
+        )
+    else:
+        from apps.core.email_utils import get_last_email_error
+        err_msg = get_last_email_error()
+        err_hint = f" [Details: {err_msg}]" if err_msg else ""
+        messages.error(
+            request,
+            f"Failed to dispatch email to <{to_email}>{err_hint}. Please verify SMTP server settings."
+        )
+
+    return redirect("dashboard")
+
 
 

@@ -1,4 +1,6 @@
 import logging
+import email.utils
+from email.utils import make_msgid, formataddr
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 
@@ -6,40 +8,116 @@ logger = logging.getLogger(__name__)
 
 ADMIN_EMAIL = getattr(settings, "ADMIN_EMAIL", "info@hijbullah.me")
 DEFAULT_FROM = getattr(settings, "DEFAULT_FROM_EMAIL", "info@hijbullah.me")
-# Format sender name cleanly
-FROM_EMAIL = f"Md. Taher Bin Omar Hijbullah <{DEFAULT_FROM}>" if "<" not in str(DEFAULT_FROM) else DEFAULT_FROM
+# Format sender name cleanly with RFC 5322 quoted display name
+FROM_EMAIL = formataddr(("Md. Taher Bin Omar Hijbullah", DEFAULT_FROM))
 
 
-def _send_clean_email(subject: str, text_content: str, html_content: str, to_email: str, reply_to: str = ADMIN_EMAIL):
+LAST_EMAIL_ERROR = ""
+
+
+def get_last_email_error() -> str:
+    global LAST_EMAIL_ERROR
+    return LAST_EMAIL_ERROR
+
+
+def _send_clean_email(
+    subject: str,
+    text_content: str,
+    html_content: str,
+    to_email: str,
+    reply_to: str = None,
+    from_email: str = None,
+    is_direct_mail: bool = False
+):
     """
     Sends email using EmailMultiAlternatives with anti-spam compliance:
-    - Sets appropriate Reply-To
+    - Quotes sender display name using formataddr for strict RFC 5322 compliance
+    - Generates domain-aligned Message-ID for SPF/DKIM verification in Gmail
+    - Adds RFC 2822 localized Date header to avoid spam delivery penalties
+    - Omits bot suppression headers on direct human correspondence
     - Includes crisp plaintext fallback
-    - Standard non-spam headers
+    - Dynamically pulls fresh SMTP credentials from .env to avoid stale worker memory
     - FQDN HELO identification to comply with strict SMTP servers
     """
+    global LAST_EMAIL_ERROR
+    LAST_EMAIL_ERROR = ""
     try:
+        import os
+        from dotenv import load_dotenv
+        from django.core.mail import get_connection
+
+        # Ensure environment credentials are fresh from .env (even if server was started earlier)
+        base_dir = getattr(settings, "BASE_DIR", None)
+        if base_dir:
+            env_file = os.path.join(base_dir, ".env")
+            if os.path.exists(env_file):
+                load_dotenv(env_file, override=True)
+        else:
+            load_dotenv(override=True)
+
         from django.core.mail.utils import DNS_NAME
         local_host = getattr(settings, "EMAIL_LOCAL_HOSTNAME", "hijbullah.me")
         DNS_NAME._fqdn = local_host
 
+        active_email = get_contact_email()
+        sender_raw = from_email or active_email or DEFAULT_FROM
+        if "<" not in sender_raw:
+            sender = formataddr(("Md. Taher Bin Omar Hijbullah", sender_raw))
+        else:
+            sender = sender_raw
+
+        reply_target = reply_to or active_email or ADMIN_EMAIL
+
+        domain = sender_raw.split("@")[-1].replace(">", "").strip() if "@" in sender_raw else "hijbullah.me"
+        msg_id = make_msgid(domain=domain)
+        msg_date = email.utils.formatdate(localtime=True)
+
+        headers = {
+            "Message-ID": msg_id,
+            "Date": msg_date,
+            "X-Entity-Ref-ID": msg_id,
+        }
+
+        # Automated notifications use suppression; direct human correspondence must NOT include bot headers
+        if not is_direct_mail:
+            headers["X-Auto-Response-Suppress"] = "All"
+
+        # Explicitly configure live SMTP connection with fresh credentials
+        backend_name = getattr(settings, "EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
+        host = getattr(settings, "EMAIL_HOST", "mail.hijbullah.me")
+        port = int(getattr(settings, "EMAIL_PORT", 465))
+        use_ssl = getattr(settings, "EMAIL_USE_SSL", True)
+        use_tls = getattr(settings, "EMAIL_USE_TLS", False)
+        user = os.getenv("EMAIL_HOST_USER") or getattr(settings, "EMAIL_HOST_USER", "info@hijbullah.me")
+        password = os.getenv("EMAIL_HOST_PASSWORD") or getattr(settings, "EMAIL_HOST_PASSWORD", "")
+
+        conn = get_connection(
+            backend=backend_name,
+            host=host,
+            port=port,
+            username=user,
+            password=password,
+            use_ssl=use_ssl,
+            use_tls=use_tls,
+            timeout=20,
+        )
+
         msg = EmailMultiAlternatives(
             subject=subject,
             body=text_content,
-            from_email=FROM_EMAIL,
+            from_email=sender,
             to=[to_email],
-            reply_to=[reply_to] if reply_to else None,
-            headers={
-                "X-Mailer": "HijbullahHub Engine",
-                "X-Auto-Response-Suppress": "All",
-            },
+            reply_to=[reply_target] if reply_target else None,
+            headers=headers,
+            connection=conn,
         )
         if html_content:
             msg.attach_alternative(html_content, "text/html")
         msg.send(fail_silently=False)
         return True
     except Exception as e:
-        logger.error("Failed sending email '%s' to %s: %s", subject, to_email, e)
+        LAST_EMAIL_ERROR = str(e)
+        logger.exception("Failed sending email '%s' to %s: %s", subject, to_email, e)
         return False
 
 
@@ -701,4 +779,147 @@ def send_contact_custom_reply(
         to_email=to_email,
         reply_to=ADMIN_EMAIL,
     )
+
+
+def _wrap_direct_email_html(
+    subject: str,
+    message_body: str,
+    recipient_name: str = "",
+    github_url: str = "https://github.com/hijbullahx",
+    linkedin_url: str = "https://www.linkedin.com/in/hijbullah/",
+    phone_display: str = "",
+    phone_url: str = "",
+    contact_email: str = "info@hijbullah.me"
+) -> str:
+    """
+    Renders a clean, natural business email layout matching desktop/mobile client typography.
+    Omits newsletter banners, badges, and marketing CTA buttons to ensure maximum inbox deliverability.
+    """
+    import html as html_lib
+    paragraphs = [p.strip() for p in message_body.split("\n") if p.strip()]
+    if not paragraphs:
+        paragraphs = [message_body.strip()]
+    escaped_paragraphs = [html_lib.escape(p).replace("\n", "<br>") for p in paragraphs]
+
+    greeting_html = f"<p style='margin: 0 0 16px 0; font-size: 15px; color: #1f2937;'>Hello {html_lib.escape(recipient_name)},</p>" if recipient_name else ""
+    body_paragraphs_html = "".join([f"<p style='margin: 0 0 16px 0; font-size: 15px; line-height: 1.65; color: #1f2937;'>{p}</p>" for p in escaped_paragraphs])
+
+    phone_badge_html = ""
+    if phone_display:
+        phone_href = phone_url or f"tel:{phone_display}"
+        phone_badge_html = f"<span style='display: inline-block; margin-right: 14px;'><strong>Phone:</strong> <a href='{phone_href}' style='color: #0284c7; text-decoration: none;'>{html_lib.escape(phone_display)}</a></span>"
+
+    return f"""<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{html_lib.escape(subject)}</title>
+</head>
+<body style="margin: 0; padding: 24px 16px; background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1f2937; line-height: 1.65; font-size: 15px;">
+  <div style="max-width: 600px; margin: 0 auto;">
+    {greeting_html}
+    {body_paragraphs_html}
+
+    <div style="margin-top: 32px; padding-top: 18px; border-top: 1px solid #e5e7eb; color: #374151;">
+      <div style="font-weight: 700; color: #111827; font-size: 15px; letter-spacing: -0.2px;">Md. Taher Bin Omar Hijbullah</div>
+      <div style="color: #0284c7; font-size: 13px; font-weight: 500; margin-top: 2px;">Python / Django Developer &bull; AI/ML Enthusiast &bull; Research Enthusiast</div>
+      <div style="margin-top: 10px; font-size: 12px; color: #4b5563; line-height: 1.9;">
+        <span style="display: inline-block; margin-right: 14px;"><strong>Portfolio:</strong> <a href="https://hijbullah.me" style="color: #0284c7; text-decoration: none;">hijbullah.me</a></span>
+        <span style="display: inline-block; margin-right: 14px;"><strong>Email:</strong> <a href="mailto:{contact_email}" style="color: #0284c7; text-decoration: none;">{contact_email}</a></span>
+        <span style="display: inline-block; margin-right: 14px;"><strong>GitHub:</strong> <a href="{github_url}" style="color: #0284c7; text-decoration: none;">github.com/hijbullahx</a></span>
+        <span style="display: inline-block; margin-right: 14px;"><strong>LinkedIn:</strong> <a href="{linkedin_url}" style="color: #0284c7; text-decoration: none;">linkedin.com/in/hijbullah</a></span>
+        {phone_badge_html}
+      </div>
+    </div>
+  </div>
+</body>
+</html>"""
+
+
+def send_direct_custom_email(
+    to_email: str,
+    subject: str,
+    message_body: str,
+    recipient_name: str = ""
+) -> bool:
+    """
+    Direct mail dispatch engine for admin panel.
+    Sends standard outbound email from the integrated email (info@hijbullah.me)
+    with the administrator's verified profile channels (Portfolio, GitHub, LinkedIn, WhatsApp/Phone, Email)
+    automatically appended to both HTML and plaintext versions.
+    """
+    if not to_email:
+        return False
+
+    contact_email = get_contact_email()
+
+    # Query active social profiles dynamically
+    github_url = "https://github.com/hijbullahx"
+    linkedin_url = "https://www.linkedin.com/in/hijbullah/"
+    phone_display = None
+    phone_url = None
+
+    try:
+        from apps.contact.models import ContactProfile
+        from django.db.models import Q
+        gh_profile = ContactProfile.objects.filter(is_active=True).filter(
+            Q(icon_type="github") | Q(link__icontains="github.com") | Q(title__icontains="github")
+        ).first()
+        if gh_profile:
+            github_url = gh_profile.formatted_link or gh_profile.link
+
+        li_profile = ContactProfile.objects.filter(is_active=True).filter(
+            Q(icon_type="linkedin") | Q(link__icontains="linkedin.com") | Q(title__icontains="linkedin")
+        ).first()
+        if li_profile:
+            linkedin_url = li_profile.formatted_link or li_profile.link
+
+        phone_profile = ContactProfile.objects.filter(is_active=True).filter(
+            Q(icon_type__in=["phone", "whatsapp"]) | Q(link__icontains="wa.me") | Q(link__startswith="tel:")
+        ).first()
+        if phone_profile:
+            phone_display = phone_profile.display_phone_number or phone_profile.title
+            phone_url = phone_profile.formatted_link or phone_profile.link
+    except Exception as e:
+        logger.warning("Could not query dynamic ContactProfile for email signature: %s", e)
+
+    greeting_text = f"Hello {recipient_name}," if recipient_name else ""
+    phone_plain = f"\nPhone: {phone_display}" if phone_display else ""
+
+    html = _wrap_direct_email_html(
+        subject=subject,
+        message_body=message_body,
+        recipient_name=recipient_name,
+        github_url=github_url,
+        linkedin_url=linkedin_url,
+        phone_display=phone_display,
+        phone_url=phone_url,
+        contact_email=contact_email
+    )
+
+    greeting_block = f"{greeting_text}\n\n" if greeting_text else ""
+    plain = (
+        f"{greeting_block}"
+        f"{message_body}\n\n"
+        f"--\n"
+        f"Md. Taher Bin Omar Hijbullah\n"
+        f"Python / Django Developer • AI/ML Enthusiast • Research Enthusiast\n"
+        f"Website: https://hijbullah.me\n"
+        f"Email: {contact_email}\n"
+        f"GitHub: {github_url}\n"
+        f"LinkedIn: {linkedin_url}"
+        f"{phone_plain}\n"
+    )
+
+    return _send_clean_email(
+        subject=subject,
+        text_content=plain,
+        html_content=html,
+        to_email=to_email,
+        reply_to=contact_email,
+        from_email=contact_email,
+        is_direct_mail=True,
+    )
+
 
