@@ -454,3 +454,75 @@ class DashboardUploadIntegrationTests(TestCase):
         self.assertEqual(missing_res.status_code, 200)
         self.assertRedirects(missing_res, reverse("ai_lab"))
         self.assertFalse(Contact.objects.filter(email="test@domain.com").exists())
+
+    def test_send_direct_custom_email_attaches_profile_signature(self):
+        from apps.core.email_utils import send_direct_custom_email, get_contact_email
+        from django.core import mail
+
+        # Create active profiles
+        ContactProfile.objects.create(
+            title="GitHub Official",
+            icon_type="github",
+            link="https://github.com/hijbullahx",
+            is_active=True
+        )
+        ContactProfile.objects.create(
+            title="LinkedIn Official",
+            icon_type="linkedin",
+            link="https://www.linkedin.com/in/hijbullah/",
+            is_active=True
+        )
+
+        sent = send_direct_custom_email(
+            to_email="colleague@example.com",
+            subject="Technical Collaboration Inquiry",
+            message_body="Hello, I would like to discuss the upcoming research roadmap.",
+            recipient_name="Dr. Colleague"
+        )
+        self.assertTrue(sent)
+        self.assertEqual(len(mail.outbox), 1)
+        msg = mail.outbox[0]
+        self.assertEqual(msg.to, ["colleague@example.com"])
+        self.assertEqual(msg.subject, "Technical Collaboration Inquiry")
+        active_email = get_contact_email()
+        self.assertIn(active_email, msg.from_email)
+        self.assertIn("github.com/hijbullahx", msg.body)
+        self.assertIn("linkedin.com/in/hijbullah", msg.body)
+        self.assertIn("hijbullah.me", msg.body)
+
+    def test_dashboard_send_direct_mail_view_staff_required(self):
+        client = Client()
+        url = reverse("dashboard_send_direct_mail")
+
+        # Anonymous cannot post
+        anon_res = client.post(url, {
+            "to_email": "someone@example.com",
+            "subject": "Hello",
+            "message": "Testing",
+        })
+        self.assertEqual(anon_res.status_code, 302)
+        self.assertIn(reverse("dashboard_login"), anon_res.url)
+
+        # Staff can post
+        client.force_login(self.staff_user)
+        from django.core import mail
+        mail.outbox.clear()
+
+        staff_res = client.post(url, {
+            "to_email": "partner@firm.org",
+            "recipient_name": "Senior Partner",
+            "subject": "Executive Consultancy Proposal",
+            "message": "Detailed scope of AI architecture and deployment plan.",
+        }, follow=True)
+
+        self.assertEqual(staff_res.status_code, 200)
+        self.assertRedirects(staff_res, reverse("dashboard"))
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ["partner@firm.org"])
+
+        # Check that outbound correspondence log was recorded in Contact model
+        log = Contact.objects.filter(email="partner@firm.org").first()
+        self.assertIsNotNone(log)
+        self.assertIn("Executive Consultancy Proposal", log.subject)
+        self.assertTrue(log.is_read)
+
