@@ -132,9 +132,15 @@ if DB_NAME and not USE_SQLITE:
     if "mysql" in DB_ENGINE:
         engine = "django.db.backends.mysql"
         port = DB_PORT or "3306"
+        db_options = {
+            "charset": "utf8mb4",
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES', wait_timeout=30, interactive_timeout=30",
+            "connect_timeout": 10,
+        }
     else:
         engine = "django.db.backends.postgresql"
         port = DB_PORT or "5432"
+        db_options = {}
 
     DATABASES = {
         "default": {
@@ -144,14 +150,15 @@ if DB_NAME and not USE_SQLITE:
             "PASSWORD": DB_PASSWORD,
             "HOST": DB_HOST,
             "PORT": port,
-            "CONN_MAX_AGE": 60,
+            "CONN_MAX_AGE": int(os.getenv("DB_CONN_MAX_AGE", "0")),
+            "OPTIONS": db_options,
         }
     }
 elif os.getenv("DATABASE_URL"):
     DATABASES = {
         "default": dj_database_url.config(
             default=os.getenv("DATABASE_URL"),
-            conn_max_age=60,
+            conn_max_age=int(os.getenv("DB_CONN_MAX_AGE", "0")),
             conn_health_checks=True,
         )
     }

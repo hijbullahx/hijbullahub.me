@@ -526,3 +526,75 @@ class DashboardUploadIntegrationTests(TestCase):
         self.assertIn("Executive Consultancy Proposal", log.subject)
         self.assertTrue(log.is_read)
 
+    def test_dashboard_send_direct_mail_with_attachment(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        from django.core import mail
+        client = Client()
+        client.force_login(self.staff_user)
+        mail.outbox.clear()
+
+        fake_pdf = SimpleUploadedFile(
+            "proposal_spec.pdf",
+            b"%PDF-1.4 sample pdf content for transmission",
+            content_type="application/pdf"
+        )
+
+        url = reverse("dashboard_send_direct_mail")
+        res = client.post(url, {
+            "to_email": "client@enterprise.com",
+            "recipient_name": "CTO Client",
+            "subject": "System Specification",
+            "message": "Attached is the engineering spec.",
+            "attachments": [fake_pdf],
+        }, follow=True)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        msg = mail.outbox[0]
+        self.assertEqual(msg.to, ["client@enterprise.com"])
+        self.assertEqual(len(msg.attachments), 1)
+        att = msg.attachments[0]
+        self.assertEqual(att[0], "proposal_spec.pdf")
+        self.assertEqual(att[2], "application/pdf")
+
+    def test_dashboard_inbox_views_staff_required(self):
+        client = Client()
+        inbox_url = reverse("dashboard_inbox_list")
+        detail_url = reverse("dashboard_inbox_detail", kwargs={"uid": "123"})
+
+        # Anonymous cannot access inbox API
+        res = client.get(inbox_url)
+        self.assertEqual(res.status_code, 302)
+        res_det = client.get(detail_url)
+        self.assertEqual(res_det.status_code, 302)
+
+        # Staff can access inbox API
+        client.force_login(self.staff_user)
+        # Mock fetch_inbox_messages and detail to avoid real network call during test suite
+        from unittest.mock import patch
+        with patch("apps.core.imap_utils.fetch_inbox_messages") as mock_fetch:
+            mock_fetch.return_value = {
+                "success": True,
+                "total": 5,
+                "mailbox": "info@hijbullah.me",
+                "messages": [{"uid": "123", "subject": "Test IMAP", "from_name": "Sender"}],
+                "error": None
+            }
+            res_staff = client.get(inbox_url)
+            self.assertEqual(res_staff.status_code, 200)
+            data = res_staff.json()
+            self.assertTrue(data["success"])
+            self.assertEqual(len(data["messages"]), 1)
+
+        with patch("apps.core.imap_utils.fetch_inbox_message_detail") as mock_detail:
+            mock_detail.return_value = {
+                "success": True,
+                "message": {"uid": "123", "subject": "Test IMAP", "text_body": "Hello"}
+            }
+            res_det_staff = client.get(detail_url)
+            self.assertEqual(res_det_staff.status_code, 200)
+            det_data = res_det_staff.json()
+            self.assertTrue(det_data["success"])
+            self.assertEqual(det_data["message"]["uid"], "123")
+
+

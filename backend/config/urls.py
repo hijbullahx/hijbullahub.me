@@ -55,6 +55,9 @@ from apps.core.dashboard_views import (
     dashboard_edit_contact_profile_view,
     dashboard_delete_contact_profile_view,
     dashboard_send_direct_mail_view,
+    dashboard_inbox_list_view,
+    dashboard_inbox_detail_view,
+    dashboard_inbox_attachment_view,
 )
 
 urlpatterns = [
@@ -110,6 +113,9 @@ urlpatterns = [
     path("dashboard/contact-profiles/edit/<int:profile_id>/", dashboard_edit_contact_profile_view, name="dashboard_edit_contact_profile"),
     path("dashboard/contact-profiles/delete/<int:profile_id>/", dashboard_delete_contact_profile_view, name="dashboard_delete_contact_profile"),
     path("dashboard/send-mail/", dashboard_send_direct_mail_view, name="dashboard_send_direct_mail"),
+    path("dashboard/inbox/", dashboard_inbox_list_view, name="dashboard_inbox_list"),
+    path("dashboard/inbox/message/<str:uid>/", dashboard_inbox_detail_view, name="dashboard_inbox_detail"),
+    path("dashboard/inbox/message/<str:uid>/attachment/<int:att_idx>/", dashboard_inbox_attachment_view, name="dashboard_inbox_attachment"),
 
     # Raw Django Admin
     path("django-admin/", admin.site.urls),
