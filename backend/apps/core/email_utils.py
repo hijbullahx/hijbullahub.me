@@ -27,7 +27,8 @@ def _send_clean_email(
     to_email: str,
     reply_to: str = None,
     from_email: str = None,
-    is_direct_mail: bool = False
+    is_direct_mail: bool = False,
+    attachments: list = None
 ):
     """
     Sends email using EmailMultiAlternatives with anti-spam compliance:
@@ -113,6 +114,24 @@ def _send_clean_email(
         )
         if html_content:
             msg.attach_alternative(html_content, "text/html")
+
+        if attachments:
+            for item in attachments:
+                try:
+                    if hasattr(item, "read"):
+                        # Django UploadedFile or file-like object
+                        filename = getattr(item, "name", "attachment")
+                        content = item.read()
+                        content_type = getattr(item, "content_type", "application/octet-stream")
+                        msg.attach(filename, content, content_type)
+                    elif isinstance(item, (tuple, list)) and len(item) >= 2:
+                        filename = item[0]
+                        content = item[1]
+                        mimetype = item[2] if len(item) > 2 else "application/octet-stream"
+                        msg.attach(filename, content, mimetype)
+                except Exception as att_err:
+                    logger.warning("Could not attach file to email: %s", att_err)
+
         msg.send(fail_silently=False)
         return True
     except Exception as e:
@@ -841,7 +860,8 @@ def send_direct_custom_email(
     to_email: str,
     subject: str,
     message_body: str,
-    recipient_name: str = ""
+    recipient_name: str = "",
+    attachments: list = None
 ) -> bool:
     """
     Direct mail dispatch engine for admin panel.
@@ -920,6 +940,7 @@ def send_direct_custom_email(
         reply_to=contact_email,
         from_email=contact_email,
         is_direct_mail=True,
+        attachments=attachments,
     )
 
 

@@ -963,7 +963,8 @@ def dashboard_delete_contact_profile_view(request, profile_id):
 def dashboard_send_direct_mail_view(request):
     """
     Dispatches a direct email to any recipient from the integrated email (info@hijbullah.me),
-    auto-attaching the owner's profile links (GitHub, LinkedIn, WhatsApp/Phone, Portfolio).
+    auto-attaching the owner's profile links (GitHub, LinkedIn, WhatsApp/Phone, Portfolio),
+    with optional multi-file attachments (PDF, Docs, Images, ZIP up to 25MB total).
     """
     if not request.user.is_staff:
         messages.error(request, "Administrative clearance required.")
@@ -982,24 +983,36 @@ def dashboard_send_direct_mail_view(request):
         messages.error(request, f"'{to_email}' is not a valid email address.")
         return redirect("dashboard")
 
+    # Process and validate attachments
+    attachments = request.FILES.getlist("attachments")
+    MAX_TOTAL_SIZE = 25 * 1024 * 1024  # 25 MB
+    total_attachment_size = sum(f.size for f in attachments) if attachments else 0
+
+    if total_attachment_size > MAX_TOTAL_SIZE:
+        messages.error(request, "Total file attachment size exceeds 25MB limit. Please attach smaller files.")
+        return redirect("dashboard")
+
     sent = send_direct_custom_email(
         to_email=to_email,
         subject=subject,
         message_body=message,
-        recipient_name=recipient_name
+        recipient_name=recipient_name,
+        attachments=attachments,
     )
 
     sender_email = get_contact_email()
 
     if sent:
+        att_note = f" (with {len(attachments)} attached file{'s' if len(attachments) != 1 else ''})" if attachments else ""
         try:
+            att_names = ", ".join([f.name for f in attachments]) if attachments else "None"
             Contact.objects.create(
                 name=recipient_name or to_email,
                 email=to_email,
                 subject=f"[Outbound] {subject}",
                 message=message,
                 is_read=True,
-                admin_reply=f"Dispatched via Direct Mail Console to {to_email}",
+                admin_reply=f"Dispatched via Direct Mail Console to {to_email}. Attachments: {att_names}",
                 replied_at=timezone.now()
             )
         except Exception:
@@ -1008,7 +1021,7 @@ def dashboard_send_direct_mail_view(request):
         dest_label = f"{recipient_name} <{to_email}>" if recipient_name else f"<{to_email}>"
         messages.success(
             request,
-            f"Email successfully dispatched to {dest_label} from {sender_email} with your profile links auto-attached."
+            f"Email successfully dispatched to {dest_label} from {sender_email} with your profile links auto-attached{att_note}."
         )
     else:
         from apps.core.email_utils import get_last_email_error
@@ -1020,6 +1033,48 @@ def dashboard_send_direct_mail_view(request):
         )
 
     return redirect("dashboard")
+
+
+@login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
+def dashboard_inbox_list_view(request):
+    """
+    JSON API for fetching latest messages from info@hijbullah.me via IMAP SSL.
+    """
+    from apps.core.imap_utils import fetch_inbox_messages
+    limit = int(request.GET.get("limit", 25))
+    search = request.GET.get("q", "").strip()
+    data = fetch_inbox_messages(limit=min(limit, 50), search_term=search)
+    return JsonResponse(data)
+
+
+@login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
+def dashboard_inbox_detail_view(request, uid):
+    """
+    JSON API for fetching full email body and attachment metadata by UID.
+    """
+    from apps.core.imap_utils import fetch_inbox_message_detail
+    data = fetch_inbox_message_detail(str(uid))
+    return JsonResponse(data)
+
+
+@login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
+def dashboard_inbox_attachment_view(request, uid, att_idx):
+    """
+    Downloads an email attachment from IMAP.
+    """
+    from apps.core.imap_utils import fetch_attachment_content
+    from django.http import HttpResponse, Http404
+
+    filename, payload, content_type = fetch_attachment_content(str(uid), int(att_idx))
+    if not payload:
+        raise Http404("Attachment not found or expired.")
+
+    response = HttpResponse(payload, content_type=content_type)
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+    return response
 
 
 

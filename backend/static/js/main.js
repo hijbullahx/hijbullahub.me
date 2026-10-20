@@ -126,15 +126,18 @@ function initModalsAndDrawers() {
   }
 }
 
-function openModal(modalId) {
-  const modal = document.getElementById(modalId);
+function openModal(modalTarget) {
+  if (!modalTarget) return;
+  const modal = typeof modalTarget === "string" ? document.getElementById(modalTarget) : modalTarget;
   if (!modal) return;
   modal.classList.add("open");
   modal.classList.remove("hidden");
   document.body.style.overflow = "hidden";
 }
 
-function closeModal(modalElement) {
+function closeModal(modalTarget) {
+  if (!modalTarget) return;
+  const modalElement = typeof modalTarget === "string" ? document.getElementById(modalTarget) : modalTarget;
   if (!modalElement) return;
   modalElement.classList.remove("open");
   if (modalElement.classList.contains("drawer")) {

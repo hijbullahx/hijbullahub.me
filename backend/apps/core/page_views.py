@@ -27,6 +27,10 @@ from apps.site_settings.models import SiteSetting
 
 
 def home_view(request):
+    if request.method == "HEAD":
+        from django.http import HttpResponse
+        return HttpResponse(status=200)
+
     hero = Hero.objects.filter(is_active=True).first()
     about = About.objects.first()
     skills = Skill.objects.all().order_by("display_order", "name")
