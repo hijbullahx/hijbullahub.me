@@ -597,4 +597,22 @@ class DashboardUploadIntegrationTests(TestCase):
             self.assertTrue(det_data["success"])
             self.assertEqual(det_data["message"]["uid"], "123")
 
+    def test_dashboard_inbox_delete_view_staff_required(self):
+        client = Client()
+        del_url = reverse("dashboard_inbox_delete", kwargs={"uid": "999"})
+
+        # Anonymous cannot delete
+        res = client.post(del_url)
+        self.assertEqual(res.status_code, 302)
+
+        # Staff can delete
+        client.force_login(self.staff_user)
+        from unittest.mock import patch
+        with patch("apps.core.imap_utils.delete_inbox_message") as mock_delete:
+            mock_delete.return_value = {"success": True, "uid": "999"}
+            res_staff = client.post(del_url)
+            self.assertEqual(res_staff.status_code, 200)
+            self.assertTrue(res_staff.json()["success"])
+
+
 

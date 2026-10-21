@@ -1077,4 +1077,17 @@ def dashboard_inbox_attachment_view(request, uid, att_idx):
     return response
 
 
+@login_required(login_url="dashboard_login")
+@user_passes_test(lambda u: u.is_staff, login_url="dashboard_login")
+@require_POST
+def dashboard_inbox_delete_view(request, uid):
+    """
+    Permanently deletes an email by UID from the server INBOX (cPanel Webmail).
+    """
+    from apps.core.imap_utils import delete_inbox_message
+    res = delete_inbox_message(str(uid))
+    return JsonResponse(res)
+
+
+
 
