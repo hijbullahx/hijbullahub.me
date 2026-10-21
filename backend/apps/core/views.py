@@ -142,23 +142,70 @@ def resolve_ip_location(ip, request=None):
     return "Unknown", ""
 
 
+import logging
+import unicodedata
+
+logger = logging.getLogger(__name__)
+
+
+def _sanitize_analytic_string(val, max_len=100) -> str:
+    """
+    Cleans and normalizes analytics strings.
+    Converts accented unicode characters (e.g. 'ā' -> 'a') so that legacy or strict
+    MySQL charsets (latin1/utf8mb3) never crash with DataError 1366.
+    """
+    if not val:
+        return ""
+    val_str = str(val).strip()
+    # NFKD decomposes accented characters e.g. 'ā' -> 'a' + combining macron
+    ascii_transliterated = unicodedata.normalize("NFKD", val_str).encode("ascii", "ignore").decode("ascii").strip()
+    if ascii_transliterated:
+        return ascii_transliterated[:max_len]
+    return val_str[:max_len]
+
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def record_visit(request):
-    """Public endpoint — called silently in background on page load."""
-    page = request.data.get("page", "home")[:80]
-    referrer = request.data.get("referrer", "")[:255]
-    ip = get_client_ip(request)
-    country, city = resolve_ip_location(ip, request)
+    """
+    Public endpoint — called silently in background on page load.
+    Zero-crash resilience: never fails with 500 error on unicode/database issues.
+    """
+    try:
+        page = _sanitize_analytic_string(request.data.get("page", "home"), 80) or "home"
+        referrer = _sanitize_analytic_string(request.data.get("referrer", ""), 255)
+        ip = get_client_ip(request)
+        country, city = resolve_ip_location(ip, request)
 
-    PageVisit.objects.create(
-        page=page,
-        referrer=referrer,
-        ip_address=ip[:45],
-        country=country[:100],
-        city=city[:100]
-    )
-    return Response({"ok": True}, status=201)
+        clean_country = _sanitize_analytic_string(country, 100) or "Unknown"
+        clean_city = _sanitize_analytic_string(city, 100)
+
+        try:
+            PageVisit.objects.create(
+                page=page,
+                referrer=referrer,
+                ip_address=ip[:45],
+                country=clean_country,
+                city=clean_city
+            )
+        except Exception as db_err:
+            logger.warning("Retrying PageVisit with strict ASCII fallback: %s", db_err)
+            safe_page = page.encode("ascii", "ignore").decode("ascii") or "home"
+            safe_referrer = referrer.encode("ascii", "ignore").decode("ascii")
+            safe_country = clean_country.encode("ascii", "ignore").decode("ascii") or "Unknown"
+            safe_city = clean_city.encode("ascii", "ignore").decode("ascii")
+
+            PageVisit.objects.create(
+                page=safe_page[:80],
+                referrer=safe_referrer[:255],
+                ip_address=ip[:45],
+                country=safe_country[:100],
+                city=safe_city[:100]
+            )
+    except Exception as e:
+        logger.warning("Failed to record visit analytics: %s", e)
+
+    return Response({"ok": True}, status=200)
 
 
 @api_view(["GET"])
