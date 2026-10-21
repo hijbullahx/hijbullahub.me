@@ -58,6 +58,7 @@ from apps.core.dashboard_views import (
     dashboard_inbox_list_view,
     dashboard_inbox_detail_view,
     dashboard_inbox_attachment_view,
+    dashboard_inbox_delete_view,
 )
 
 urlpatterns = [
@@ -116,6 +117,7 @@ urlpatterns = [
     path("dashboard/inbox/", dashboard_inbox_list_view, name="dashboard_inbox_list"),
     path("dashboard/inbox/message/<str:uid>/", dashboard_inbox_detail_view, name="dashboard_inbox_detail"),
     path("dashboard/inbox/message/<str:uid>/attachment/<int:att_idx>/", dashboard_inbox_attachment_view, name="dashboard_inbox_attachment"),
+    path("dashboard/inbox/message/<str:uid>/delete/", dashboard_inbox_delete_view, name="dashboard_inbox_delete"),
 
     # Raw Django Admin
     path("django-admin/", admin.site.urls),

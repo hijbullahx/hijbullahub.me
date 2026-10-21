@@ -384,3 +384,37 @@ def fetch_attachment_content(uid: str, attachment_index: int):
                 client.logout()
             except Exception:
                 pass
+
+
+def delete_inbox_message(uid: str) -> dict:
+    """
+    Permanently deletes an email by UID from the server INBOX (cPanel Webmail).
+    Marks the message with the IMAP \Deleted flag and executes EXPUNGE.
+    """
+    client = None
+    try:
+        client = get_imap_client()
+        client.select("INBOX", readonly=False)
+
+        res, data = client.uid("store", str(uid).encode(), "+FLAGS", "(\\Deleted)")
+        if res != "OK":
+            return {"success": False, "error": f"Failed to mark message UID {uid} for deletion on server."}
+
+        # Permanently purge deleted messages from the mailbox
+        client.expunge()
+
+        return {"success": True, "uid": str(uid)}
+    except Exception as e:
+        logger.exception("Failed to delete IMAP message UID %s: %s", uid, e)
+        return {"success": False, "error": str(e)}
+    finally:
+        if client:
+            try:
+                client.close()
+            except Exception:
+                pass
+            try:
+                client.logout()
+            except Exception:
+                pass
+
